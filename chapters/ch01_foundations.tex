@@ -321,6 +321,7 @@ clip=false
 \addplot[only marks, mark=*, mark size=2pt] coordinates {
 (0.523598776,0.5)    % pi/6
 (2.617993878,0.5)    % 5pi/6
+(6.806783967,0.5)    % 13pi/6
 (-3.665191429,0.5)   % -7pi/6
 (-5.759586531,0.5)   % -11pi/6
 };
@@ -1525,3 +1526,408 @@ Therefore, by the squeeze theorem,
 \end{solution}
 
 The limit laws and the techniques of factoring, rationalization, and squeezing allow us to evaluate many limits. In the next section, we will give the precise definition of a limit.
+
+\section{The Precise Definition of a Limit}
+
+From the time of Newton and Leibniz, calculus was remarkably successful in solving problems in geometry, mechanics, and astronomy. However, for a long time, there was also controversy about its logical foundations. Early arguments often relied on infinitesimals---quantities thought of as being extremely small, but not described in a fully precise way. As a result, mathematicians continued to ask what it really means to say that \(x\) approaches \(a\) or that \(f(x)\) approaches \(L\).
+
+In the previous sections, we used graphs, tables, and algebraic techniques to study limits. However, informal expressions such as ``\(x\) is close to \(a\)'' and ``\(f(x)\) is close to \(L\)'' are not rigorous enough. The modern resolution to this difficulty is the \(\varepsilon\)-\(\delta\) definition of a limit. Instead of relying on vague language, it describes exactly what it means for \(f(x)\) to be close to \(L\) whenever \(x\) is sufficiently close to \(a\). We now introduce this precise definition.
+
+To motivate the definition, consider the function
+\[
+f(x)=
+\begin{cases}
+2x-1, & x\ne 3,\\[4pt]
+6, & x=3.
+\end{cases}
+\]
+When \(x\) is close to \(3\), but \(x\ne 3\), the value of \(f(x)=2x-1\) is close to \(5\). Thus it is natural to expect that
+\(\displaystyle
+\lim_{x\to 3} f(x)=5.
+\)
+
+\begin{example}
+For the function
+\[
+f(x)=
+\begin{cases}
+2x-1, & x\ne 3,\\[4pt]
+6, & x=3,
+\end{cases}
+\]
+how close must \(x\) be to \(3\) in order to guarantee that \(f(x)\) differs from \(5\) by less than \(0.1\)?
+\end{example}
+
+\begin{solution}
+We want
+\[
+|f(x)-5|<0.1.
+\]
+Since \(f(x)=2x-1\) for \(x\ne 3\), we have
+\[
+|f(x)-5|
+=
+|(2x-1)-5|
+=
+|2x-6|
+=
+2|x-3|.
+\]
+Therefore, to ensure that
+\[
+|f(x)-5|<0.1,
+\]
+it is enough to require that
+\[
+2|x-3|<0.1.
+\]
+This gives
+\[
+|x-3|<0.05.
+\]
+So if \(x\) is within \(0.05\) of \(3\), but \(x\ne 3\), then \(f(x)\) is within \(0.1\) of \(5\).
+\end{solution}
+
+If we replace \(0.1\) by the smaller number \(0.01\), then the same reasoning shows that
+\[
+|f(x)-5|<0.01
+\qquad \text{whenever} \qquad
+0<|x-3|<0.005.
+\]
+Thus, when we ask for \(f(x)\) to be closer to \(5\), we must require \(x\) to be closer to \(3\).
+
+More generally, if we want
+\[
+|f(x)-5|<\varepsilon
+\]
+for some \(\varepsilon>0\), then it is enough to require that
+\[
+2|x-3|<\varepsilon,
+\]
+that is,
+\[
+|x-3|<\frac{\varepsilon}{2}.
+\]
+Thus for this example we may choose
+\[
+\delta=\frac{\varepsilon}{2}.
+\]
+
+The previous discussion shows the basic idea. We want to control the distance between \(f(x)\) and the limit \(L\) by controlling the distance between \(x\) and the point \(a\).
+
+\begin{definition}
+Let \(f\) be a function defined on an open interval containing \(a\), except possibly at \(a\) itself. We say that
+\(\displaystyle
+\lim_{x\to a} f(x)=L
+\)
+if for every \(\varepsilon>0\) there exists a number \(\delta>0\) such that
+\[
+|f(x)-L|<\varepsilon
+\qquad \text{whenever} \qquad
+0<|x-a|<\delta.
+\]
+\end{definition}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=9cm,
+    height=5.8cm,
+    axis lines=middle,
+    xmin=0, xmax=3.8,
+    ymin=0, ymax=14,
+    xtick=\empty,
+    ytick=\empty,
+    xlabel={\(x\)},
+    ylabel={\(y\)},
+    xlabel style={at={(axis description cs:0.98,0.03)},anchor=west},
+    ylabel style={at={(axis description cs:0.06,0.98)},anchor=south},
+    samples=200,
+    clip=false
+]
+    % graph with a hole at x=a
+    \addplot[thick, blue, domain=0.45:2.95] {pow(2,x)};
+    \addplot[thick, blue, domain=3.05:3.45] {pow(2,x)};
+
+    % epsilon band
+    \addplot[dashed, red] coordinates {(0,6.498019) (3.8,6.498019)};
+    \addplot[dashed, red] coordinates {(0,9.849155) (3.8,9.849155)};
+
+    % delta window
+    \addplot[dashed, red] coordinates {(2.7,0) (2.7,14)};
+    \addplot[dashed, red] coordinates {(3.3,0) (3.3,14)};
+
+    % point at the limit and a different value at x=a
+    \addplot[
+        only marks,
+        mark=o,
+        mark size=2.8pt,
+        mark options={draw=black, fill=white}
+    ] coordinates {(3,8)};
+
+    \addplot[
+        only marks,
+        mark=*,
+        mark size=2.8pt
+    ] coordinates {(3,11.6)};
+
+    \addplot[
+        only marks,
+        mark=*,
+        mark size=1.5pt
+    ] coordinates {(2.7,6.498019)};
+
+    \addplot[
+        only marks,
+        mark=*,
+        mark size=1.5pt
+    ] coordinates {(3.3,9.849155)};
+
+    % labels
+    \node[below] at (axis cs:2.7,0) {\(a-\delta\)};
+    \node[below] at (axis cs:3,0) {\(a\)};
+    \node[below] at (axis cs:3.3,0) {\(a+\delta\)};
+
+    \node[left] at (axis cs:0,6.498019) {\(L-\varepsilon\)};
+    \node[left] at (axis cs:0,8) {\(L\)};
+    \node[left] at (axis cs:0,9.849155) {\(L+\varepsilon\)};
+
+    % arrows suggesting smaller and smaller neighborhoods
+    \draw[->] (axis cs:2.7,0.35) -- (axis cs:3,0.35);
+    \draw[->] (axis cs:3.3,0.35) -- (axis cs:3,0.35);
+
+    \draw[->] (axis cs:0.05,9.849155) -- (axis cs:0.05,8);
+    \draw[->] (axis cs:0.05,6.498019) -- (axis cs:0.05,8);
+\end{axis}
+\end{tikzpicture}
+\caption{A geometric interpretation of the precise definition of a limit.}
+\label{fig:precise-limit}
+\end{figure}
+
+Figure~\ref{fig:precise-limit} illustrates the definition. If \(x\) is restricted to lie in the interval
+\(\displaystyle
+(a-\delta,a+\delta),
+x\ne a,
+\)
+then the corresponding values of \(f(x)\) are forced to lie in the interval
+\(\displaystyle
+(L-\varepsilon,L+\varepsilon).
+\)
+Notice that the value \(f(a)\) itself may be different from \(L\). The limit depends only on the behavior of \(f(x)\) when \(x\) is close to \(a\), not necessarily on the value of the function at \(x=a\).
+
+\begin{remark}
+The condition
+\(\displaystyle
+0<|x-a|<\delta
+\)
+means that \(x\) is within a distance \(\delta\) of \(a\), but \(x\ne a\).
+\end{remark}
+
+\begin{remark}
+The inequality
+\(\displaystyle
+|f(x)-L|<\varepsilon
+\)
+means that \(f(x)\) is within a distance \(\varepsilon\) of \(L\).
+\end{remark}
+
+\begin{remark}
+The statement
+\(\displaystyle
+\lim_{x\to a} f(x)=L
+\)
+must hold for every \(\varepsilon>0\), no matter how small \(\varepsilon\) is.
+\end{remark}
+
+\begin{example}
+Show from the definition that
+\(\displaystyle
+\lim_{x\to 3} (4x-5)=7.
+\)
+\end{example}
+
+\begin{solution}
+Given \(\varepsilon>0\), we want to find \(\delta>0\) such that
+\[
+|(4x-5)-7|<\varepsilon
+\qquad \text{whenever} \qquad
+0<|x-3|<\delta.
+\]
+Now
+\[
+|(4x-5)-7|
+=
+|4x-12|
+=
+4|x-3|.
+\]
+So if we require
+\[
+4|x-3|<\varepsilon,
+\]
+then it is enough to have
+\[
+|x-3|<\frac{\varepsilon}{4}.
+\]
+Hence we may choose
+\[
+\delta=\frac{\varepsilon}{4}.
+\]
+Then, whenever
+\[
+0<|x-3|<\delta=\frac{\varepsilon}{4},
+\]
+we have
+\[
+|(4x-5)-7|
+=
+4|x-3|
+<
+4\left(\frac{\varepsilon}{4}\right)
+=
+\varepsilon.
+\]
+Therefore,
+\[
+\lim_{x\to 3} (4x-5)=7.
+\]
+\end{solution}
+
+\begin{example}
+Show from the definition that
+\(\displaystyle
+\lim_{x\to 1} (x^{2}-5x+6)=2.
+\)
+\end{example}
+
+\begin{solution}
+Given \(\varepsilon>0\), we want to find \(\delta>0\) such that
+\[
+|(x^{2}-5x+6)-2|<\varepsilon
+\qquad \text{whenever} \qquad
+0<|x-1|<\delta.
+\]
+First we simplify:
+\[
+|(x^{2}-5x+6)-2|
+=
+|x^{2}-5x+4|
+=
+|(x-1)(x-4)|.
+\]
+The difficulty is that the factor \(|x-4|\) also depends on \(x\). To control it, we first assume
+\[
+|x-1|<1.
+\]
+Then
+\[
+-1<x-1<1,
+\]
+so
+\[
+0<x<2.
+\]
+Therefore,
+\[
+-4<x-4<-2,
+\]
+and hence
+\[
+|x-4|<4.
+\]
+Thus, whenever \(|x-1|<1\), we have
+\[
+|(x-1)(x-4)|<4|x-1|.
+\]
+So to guarantee that
+\[
+|(x-1)(x-4)|<\varepsilon,
+\]
+it is enough to require
+\[
+4|x-1|<\varepsilon,
+\]
+that is,
+\[
+|x-1|<\frac{\varepsilon}{4}.
+\]
+Therefore we choose
+\[
+\delta=\min\left\{1,\frac{\varepsilon}{4}\right\}.
+\]
+Then, whenever
+\[
+0<|x-1|<\delta,
+\]
+we have both \(|x-1|<1\) and \(|x-1|<\dfrac{\varepsilon}{4}\). Hence
+\[
+|x-4|<4
+\]
+and
+\[
+|(x^{2}-5x+6)-2|
+=
+|(x-1)(x-4)|
+<
+4|x-1|
+<
+4\left(\frac{\varepsilon}{4}\right)
+=
+\varepsilon.
+\]
+Therefore,
+\[
+\lim_{x\to 1} (x^{2}-5x+6)=2.
+\]
+\end{solution}
+
+\begin{definition}
+We write
+\(\displaystyle
+\lim_{x\to a} f(x)=\infty
+\)
+if for every positive number \(M\), there exists \(\delta>0\) such that
+\[
+f(x)>M
+\qquad \text{whenever} \qquad
+0<|x-a|<\delta.
+\]
+\end{definition}
+
+\begin{definition}
+We write
+\(\displaystyle
+\lim_{x\to a} f(x)=-\infty
+\)
+if for every negative number \(N\), there exists \(\delta>0\) such that
+\[
+f(x)<N
+\qquad \text{whenever} \qquad
+0<|x-a|<\delta.
+\]
+\end{definition}
+
+\begin{remark}
+In the definition of
+\(\displaystyle
+\lim_{x\to a} f(x)=\infty,
+\)
+we may think of \(M\) as \(100\), \(1000\), \(10000\), and so on.
+\end{remark}
+
+\begin{remark}
+In the definition of
+\(\displaystyle
+\lim_{x\to a} f(x)=-\infty,
+\)
+we may think of \(N\) as \(-100\), \(-1000\), \(-10000\), and so on.
+\end{remark}
+
+\begin{definition}
+If \(f\) is defined at every point near \(a\), including \(a\), and if
+\(\displaystyle
+\lim_{x\to a} f(x)=f(a),
+\)
+then we say that \(f\) is \emph{continuous at \(a\)}.
+\end{definition}
