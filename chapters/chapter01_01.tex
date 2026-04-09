@@ -2,6 +2,12 @@
 
 \section{Inverse Functions and One-to-One Functions}
 
+\begin{remark}[Problem-Driven Opener]
+\textbf{Guiding question.} If a process returns an output \(y\), when can we recover a unique input \(x\)?
+
+\textbf{Why this matters.} In real systems, decoding ID numbers, converting units, and reverse calibration all rely on inverse maps. This section gives the exact condition that makes such reversal possible.
+\end{remark}
+
 In many situations, a function describes a process that sends an input \(x\) to an output \(y=f(x)\). We are often interested in reversing this process and recovering the original input from the output. This leads to the ideas of one-to-one functions and inverse functions.
 
 \subsection{One-to-One Functions}
@@ -73,7 +79,7 @@ Thus two different inputs produce the same output, so \(g\) is not one-to-one.
 The previous example shows that not every function has an inverse. For \(g(x)=x^2\) on \([-1,1]\), the value \(\frac14\) comes from both \(\frac12\) and \(-\frac12\). Therefore there is no unique value that can be assigned to \(g^{-1}\!\left(\frac14\right)\).
 
 \begin{theorem}[Horizontal Line Test]
-A function is one-to-one if and only if no horizontal line intersects its graph more than once.
+A real-valued function is one-to-one if and only if no horizontal line intersects its graph more than once.
 \end{theorem}
 
 
@@ -85,7 +91,7 @@ f(x_1)=c=f(x_2).
 Thus two different inputs produce the same output, so $f$ is not one-to-one.
 Conversely, if every horizontal line intersects the graph at most once, then no output value corresponds to more than one input, and hence $f$ is one-to-one.
 
-\begin{figure}[ht]
+\begin{figure}[tbp]
 \centering
 \begin{minipage}{0.46\textwidth}
 \centering
@@ -120,8 +126,7 @@ Intersects at most once.
 \node[red, right] at (1.9,1.25) {$y=c$};
 \end{tikzpicture}
 
-\vspace{
-    .4em}
+\vspace{0.4em}
 Not one-to-one\\
 Intersects more than once.
 \end{minipage}
@@ -193,7 +198,7 @@ f(f^{-1}(x))=x
 \qquad \text{for every } x\in B.
 \]
 
-\begin{figure}[htbp]
+\begin{figure}[tbp]
     \centering
     \begin{tikzpicture}[
         transform shape,
@@ -230,8 +235,7 @@ f(f^{-1}(x))=x
 
 \end{proposition}
 
-\newpage
-
+% manual page break removed to let floats place naturally
 \subsection{Finding the Inverse of a Function}
 
 When \(f\) is one-to-one, the following procedure is often useful for finding \(f^{-1}\).
@@ -286,16 +290,22 @@ Thus the inverse is correct.
 \end{solution}
 
  %-----------------------------------------------------
- %反三角函數
+ %??閫??
  %-----------------------------------------------------
 
 \section{Inverse Trigonometric Functions}
+
+\begin{remark}[Problem-Driven Opener]
+\textbf{Guiding question.} Why does \(\sin x\) need a domain restriction before we can define its inverse?
+
+\textbf{Why this matters.} Angle reconstruction appears in surveying, robotics pose estimation, and signal phase analysis. The branch choice is not cosmetic; it determines the answer students get.
+\end{remark}
 
 The trigonometric functions are not one-to-one on all of \(\mathbb{R}\), so they do not have inverse functions on their full domains. To define inverse trigonometric functions, we restrict the domains of the trigonometric functions so that they become one-to-one.
 
 Consider the sine function on all of \(\mathbb{R}\). As shown in Figure~\ref{fig:sine-not-one-to-one}, a horizontal line can intersect the graph of \(y=\sin x\) more than once. Therefore \(\sin x\) is not one-to-one on \(\mathbb{R}\), and so it does not have an inverse function on its full domain.
 
-\begin{figure}[ht]
+\begin{figure}[tbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -341,7 +351,7 @@ To define the inverse sine function, we restrict \(\sin x\) to the interval
 \]
 On this interval, \(\sin x\) is one-to-one, and every value in the range \([-1,1]\) is attained. The restricted branch is shown in Figure~\ref{fig:restricted-sine}.
 
-\begin{figure}[ht]
+\begin{figure}[tbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -437,7 +447,7 @@ Evaluate the following expressions.
     \]
     Since \(\sin\theta>0\), we take \(\theta\) in the first quadrant. A right triangle corresponding to this relation is shown in Figure~\ref{fig:tan-arcsin-triangle}.
 
-    \begin{figure}[ht]
+    \begin{figure}[tbp]
     \centering
     \begin{tikzpicture}[scale=1.1]
     \coordinate (A) at (0,0);
@@ -477,7 +487,7 @@ The cosine function becomes one-to-one when its domain is restricted to
 \]
 The restricted branch is shown in Figure~\ref{fig:restricted-cosine}.
 
-\begin{figure}[ht]
+\begin{figure}[tbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -541,7 +551,7 @@ The tangent function becomes one-to-one when its domain is restricted to
 \]
 The restricted branch is shown in Figure~\ref{fig:restricted-tangent}.
 
-\begin{figure}[ht]
+\begin{figure}[tbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -647,14 +657,14 @@ y=\arccsc x \quad (|x|\ge 1)
 \quad \Longleftrightarrow \quad
 \csc y=x,
 \qquad
-y\in \left(0,\frac{\pi}{2}\right]\cup\left(\pi,\frac{3\pi}{2}\right]
+y\in \left[-\frac{\pi}{2},0\right)\cup\left(0,\frac{\pi}{2}\right]
 \]
 \[
 y=\arcsec x \quad (|x|\ge 1)
 \quad \Longleftrightarrow \quad
 \sec y=x,
 \qquad
-y\in \left[0,\frac{\pi}{2}\right)\cup\left[\pi,\frac{3\pi}{2}\right)
+y\in \left[0,\frac{\pi}{2}\right)\cup\left(\frac{\pi}{2},\pi\right]
 \]
 \[
 y=\arccot x \quad (x\in\mathbb{R})
@@ -665,10 +675,16 @@ y\in (0,\pi)
 \]
 
 \begin{remark}
-For \(\arcsec x\), we also can choose \(y\in \left[0,\frac{\pi}{2}\right)\cup\left(\frac{\pi}{2},\pi\right]\). The reason for the choice \(y\in \left[0,\frac{\pi}{2}\right)\cup\left[\pi,\frac{3\pi}{2}\right)\) is that the differentiation formulas are simpler.
+Different textbooks may choose different principal-value branches for \(\arcsec\) and \(\arccsc\). In this chapter we use the ranges above, and all identities and differentiation formulas should be interpreted with this convention.
 \end{remark}
 
 \section{The Limit of a Function}
+
+\begin{remark}[Problem-Driven Opener]
+\textbf{Guiding question.} How can we measure speed at one instant if velocity is computed from two times?
+
+\textbf{Why this matters.} Limits formalize the transition from average change to instantaneous change. Historically, this idea developed from Newton--Leibniz methods to modern rigor by Cauchy and Weierstrass.
+\end{remark}
 
 In many situations, we are interested not only in the value of a function at a point, but also in the behavior of the function when the input is close to that point. One important example comes from the study of motion.
 
@@ -698,14 +714,14 @@ and say that the limit of \(f(x)\) as \(x\) approaches \(a\) is \(L\) if \(f(x)\
 When we consider \(\lim_{x\to a} f(x)\), we are concerned with the values of \(f(x)\) for \(x\) near \(a\), not necessarily with the value of \(f(a)\). In particular, \(f(a)\) need not be defined at all.
 \end{remark}
 
-\begin{figure}[ht]
+\begin{figure}[tbp]
 \centering
 
 \def\a{3}
 \def\L{8}
-\def\fy{5} % 第二張圖中，另外指定的 f(a)
+\def\fy{5} % 蝚砌?撘萄?銝哨??血?????f(a)
 
-%==================== 第 1 張 ====================
+%==================== 蝚?1 撘?====================
 \begin{minipage}[t]{0.32\textwidth}
 \centering
 \begin{tikzpicture}
@@ -725,14 +741,14 @@ When we consider \(\lim_{x\to a} f(x)\), we are concerned with the values of \(f
     clip=false
 ]
     \addplot[thick, blue, domain=0.45:3.45] {pow(2,x)};
-    % L 的水平虛線
+    % L ?偌撟唾?蝺?
     \addplot[dashed,red] coordinates {(0,\L) (\a,\L)};
     \node[below] at (axis cs:\a,0) {\(a\)};
     \node[left] at (axis cs:0,\L) {\(L\)};
 \end{axis}
 \end{tikzpicture}
 \end{minipage}\hfill
-%==================== 第 2 張 ====================
+%==================== 蝚?2 撘?====================
 \begin{minipage}[t]{0.32\textwidth}
 \centering
 \begin{tikzpicture}
@@ -751,14 +767,14 @@ When we consider \(\lim_{x\to a} f(x)\), we are concerned with the values of \(f
     samples=200,
     clip=false
 ]
-    % 空心點處留洞
+    % 蝛箏?暺???
     \addplot[thick, blue, domain=0.45:2.95] {pow(2,x)};
     \addplot[thick, blue, domain=3.05:3.45] {pow(2,x)};
 
-    % L 的水平虛線
+    % L ?偌撟唾?蝺?
     \addplot[dashed,red] coordinates {(0,\L) (\a,\L)};
 
-    % 曲線上的空心點 (3,8)
+    % ?脩?銝?蝛箏?暺?(3,8)
     \addplot[
         only marks,
         mark=o,
@@ -766,7 +782,7 @@ When we consider \(\lim_{x\to a} f(x)\), we are concerned with the values of \(f
         mark options={draw=black, fill=white}
     ] coordinates {(\a,\L)};
 
-    % 另外指定的 f(3)
+    % ?血?????f(3)
     \addplot[
         only marks,
         mark=*,
@@ -778,7 +794,7 @@ When we consider \(\lim_{x\to a} f(x)\), we are concerned with the values of \(f
 \end{axis}
 \end{tikzpicture}
 \end{minipage}\hfill
-%==================== 第 3 張 ====================
+%==================== 蝚?3 撘?====================
 \begin{minipage}[t]{0.32\textwidth}
 \centering
 \begin{tikzpicture}
@@ -797,14 +813,14 @@ When we consider \(\lim_{x\to a} f(x)\), we are concerned with the values of \(f
     samples=200,
     clip=false
 ]
-    % 空心點處留洞
+    % 蝛箏?暺???
     \addplot[thick, blue, domain=0.45:2.95] {pow(2,x)};
     \addplot[thick, blue, domain=3.05:3.45] {pow(2,x)};
 
-    % L 的水平虛線
+    % L ?偌撟唾?蝺?
     \addplot[dashed,red] coordinates {(0,\L) (\a,\L)};
 
-    % 空心點
+    % 蝛箏?暺?
     \addplot[
         only marks,
         mark=o,
@@ -886,6 +902,12 @@ The examples above show that the value of a limit can often be guessed by lookin
 
 \section{One-Sided Limits, Infinite Limits, and Vertical Asymptotes}
 
+\begin{remark}[Problem-Driven Opener]
+\textbf{Guiding question.} What if a system behaves differently from the left and from the right of a threshold?
+
+\textbf{Why this matters.} Piecewise models, queueing behavior near saturation, and singular formulas in physics all require one-sided and infinite-limit language.
+\end{remark}
+
 In the previous section, we introduced the idea of the limit of a function. Sometimes, however, the behavior of a function from the left and from the right is different. This leads to the notion of one-sided limits. We also study situations in which the values of a function become arbitrarily large positive or arbitrarily large negative near a point.
 
 \subsection{One-sided limits}
@@ -904,7 +926,7 @@ Similarly, we write
 and say that the \emph{right-hand limit} of \(f(x)\) as \(x\) approaches \(a\) is \(L\) if \(f(x)\) approaches \(L\) as \(x\) approaches \(a\) through values greater than \(a\).
 \end{definition}
 
-\begin{figure}[ht]
+\begin{figure}[tbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -985,7 +1007,7 @@ Similar definitions apply to one-sided infinite limits:
 \lim_{x\to a^+}f(x)=-\infty.
 \]
 
-\begin{figure}[ht]
+\begin{figure}[tbp]
 \centering
 
 \begin{minipage}{0.23\textwidth}
@@ -1213,7 +1235,7 @@ x=3
 is a vertical asymptote of the curve.
 \end{solution}
 
-\begin{figure}[ht]
+\begin{figure}[tbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -1262,6 +1284,12 @@ A two-sided infinite limit such as \(\displaystyle \lim_{x\to a}f(x)=\infty\) re
 \end{remark}
 
 \section{Limit Laws and Computational Techniques}
+
+\begin{remark}[Problem-Driven Opener]
+\textbf{Guiding question.} After understanding the idea of limit, how do we compute one efficiently by hand?
+
+\textbf{Why this matters.} Most first-year calculus work is not proving from first principles every time. This section gives a reliable workflow: substitute, simplify, and squeeze.
+\end{remark}
 
 In the previous sections, we used tables and graphs to guess the values of limits. We now introduce algebraic tools for evaluating limits more systematically. The basic idea is that limits behave well with respect to the usual algebraic operations.
 
@@ -1442,36 +1470,36 @@ If \(x\to 0^{+}\), then \(|x|=x\to 0\). If \(x\to 0^{-}\), then \(|x|=-x\to 0\).
 \end{solution}
 
 \begin{example}
-The greatest integer function \([x]\) is defined to be the largest integer less than or equal to \(x\). Evaluate
+The greatest integer function \(\lfloor x \rfloor\) is defined to be the largest integer less than or equal to \(x\). Evaluate
 \[
-\lim_{x\to 3^{+}}[x]
+\lim_{x\to 3^{+}}\lfloor x \rfloor
 \qquad \text{and} \qquad
-\lim_{x\to 3^{-}}[x].
+\lim_{x\to 3^{-}}\lfloor x \rfloor.
 \]
 \end{example}
 
 \begin{solution}
 If \(x\to 3^{+}\), then \(x\) is slightly greater than \(3\), so
 \[
-[x]=3.
+\lfloor x \rfloor=3.
 \]
 Hence
 \[
-\lim_{x\to 3^{+}}[x]=3.
+\lim_{x\to 3^{+}}\lfloor x \rfloor=3.
 \]
 
 If \(x\to 3^{-}\), then \(x\) is slightly less than \(3\), so
 \[
-[x]=2.
+\lfloor x \rfloor=2.
 \]
 Hence
 \[
-\lim_{x\to 3^{-}}[x]=2.
+\lim_{x\to 3^{-}}\lfloor x \rfloor=2.
 \]
 
 Since the left-hand and right-hand limits are different, we conclude that
 \(\displaystyle
-\lim_{x\to 3}[x]
+\lim_{x\to 3}\lfloor x \rfloor
 \)
 does not exist.
 \end{solution}
@@ -1528,6 +1556,12 @@ Therefore, by the squeeze theorem,
 The limit laws and the techniques of factoring, rationalization, and squeezing allow us to evaluate many limits. In the next section, we will give the precise definition of a limit.
 
 \section{The Precise Definition of a Limit}
+
+\begin{remark}[Problem-Driven Opener]
+\textbf{Guiding question.} What does ``\(x\) close to \(a\)'' mean in a way that can be proved?
+
+\textbf{Why this matters.} The \(\varepsilon\)-\(\delta\) definition turns intuition into a verifiable statement. This is the foundation used in advanced analysis and modern mathematical modeling.
+\end{remark}
 
 From the time of Newton and Leibniz, calculus was remarkably successful in solving problems in geometry, mechanics, and astronomy. However, for a long time, there was also controversy about its logical foundations. Early arguments often relied on infinitesimals---quantities thought of as being extremely small, but not described in a fully precise way. As a result, mathematicians continued to ask what it really means to say that \(x\) approaches \(a\) or that \(f(x)\) approaches \(L\).
 
@@ -1628,7 +1662,7 @@ if for every \(\varepsilon>0\) there exists a number \(\delta>0\) such that
 \]
 \end{definition}
 
-\begin{figure}[ht]
+\begin{figure}[tbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -1931,3 +1965,4 @@ If \(f\) is defined at every point near \(a\), including \(a\), and if
 \)
 then we say that \(f\) is \emph{continuous at \(a\)}.
 \end{definition}
+
