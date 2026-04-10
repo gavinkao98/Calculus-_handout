@@ -86,7 +86,7 @@ f(x_1)=c=f(x_2).
 Thus two different inputs produce the same output, so \(f\) is not one-to-one. Conversely, if every horizontal line intersects the graph at most once, then no output value corresponds to more than one input, and hence \(f\) is one-to-one.
 \end{remark}
 
-\begin{figure}[\stdfigureplacement]
+\begin{figure}[!tbp]
 \centering
 \begin{minipage}{0.46\textwidth}
 \centering
@@ -208,7 +208,7 @@ f(f^{-1}(x))=x
 \qquad \text{for every } x\in B.
 \]
 
-\begin{figure}[\stdfigureplacement]
+\begin{figure}[!tbp]
     \centering
     \begin{tikzpicture}[
         transform shape,
@@ -298,6 +298,32 @@ x.
 Thus the inverse is correct.
 \end{solution}
 
+\begin{example}
+Find the inverse of
+\[
+f(x)=x^2,
+\qquad x\ge 0.
+\]
+\end{example}
+
+\begin{solution}
+On the domain \([0,\infty)\), the function \(f(x)=x^2\) is one-to-one. Let
+\[
+y=x^2,
+\qquad x\ge 0.
+\]
+Solving for \(x\), we obtain
+\[
+x=\sqrt{y}.
+\]
+We choose the nonnegative square root because the original domain requires \(x\ge 0\). Interchanging \(x\) and \(y\), we obtain
+\[
+f^{-1}(x)=\sqrt{x},
+\qquad x\ge 0.
+\]
+This example shows that a function that is not one-to-one on all of \(\mathbb{R}\) may still have an inverse after its domain is restricted appropriately.
+\end{solution}
+
  %-----------------------------------------------------
  %??閫??
  %-----------------------------------------------------
@@ -316,7 +342,7 @@ To define an inverse trigonometric function, we must restrict the domain of the 
 
 Consider the sine function on all of \(\mathbb{R}\). As shown in Figure~\ref{fig:sine-not-one-to-one}, a horizontal line can intersect the graph of \(y=\sin x\) more than once. Therefore \(\sin x\) is not one-to-one on \(\mathbb{R}\), and so it does not have an inverse function on its full domain.
 
-\begin{figure}[\corefigureplacement]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -362,7 +388,7 @@ To define the inverse sine function, we restrict \(\sin x\) to the interval
 \]
 On this interval, \(\sin x\) is one-to-one, and every value in the range \([-1,1]\) is attained. The restricted branch is shown in Figure~\ref{fig:restricted-sine}.
 
-\begin{figure}[\corefigureplacement]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -423,8 +449,8 @@ For \(-\frac{\pi}{2}\le x\le \frac{\pi}{2}\),
 \begin{example}
 Evaluate the following expressions.
 \begin{enumerate}
-    \item \(\arcsin\left(\dfrac{1}{2}\right)\)
-    \item \(\tan\left(\arcsin\left(\dfrac{1}{3}\right)\right)\)
+    \item \(\arcsin\left(\tfrac{1}{2}\right)\)
+    \item \(\tan\left(\arcsin\left(\tfrac{1}{3}\right)\right)\)
 \end{enumerate}
 \end{example}
 
@@ -460,7 +486,7 @@ Evaluate the following expressions.
     \]
     Since \(\sin\theta>0\), we take \(\theta\) in the first quadrant. A right triangle corresponding to this relation is shown in Figure~\ref{fig:tan-arcsin-triangle}.
 
-    \begin{figure}[\stdfigureplacement]
+    \begin{figure}[!tbp]
     \centering
     \begin{tikzpicture}[scale=1.1]
     \coordinate (A) at (0,0);
@@ -473,7 +499,7 @@ Evaluate the following expressions.
     \node[right] at (3,0.5) {\(1\)};
     \node[above left] at (1.45,0.5) {\(3\)};
     \end{tikzpicture}
-    \caption{Reference Triangle to find \(\tan x\).}
+    \caption{Reference triangle for \(\tan\left(\arcsin\left(\tfrac{1}{3}\right)\right)\).}
     \label{fig:tan-arcsin-triangle}
     \end{figure}
 
@@ -500,7 +526,7 @@ The cosine function becomes one-to-one when its domain is restricted to
 \]
 The restricted branch is shown in Figure~\ref{fig:restricted-cosine}.
 
-\begin{figure}[\corefigureplacement]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -565,7 +591,7 @@ The tangent function becomes one-to-one when its domain is restricted to
 \]
 The restricted branch is shown in Figure~\ref{fig:restricted-tangent}.
 
-\begin{figure}[\corefigureplacement]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -709,6 +735,10 @@ The domains of \(\arccsc x\) and \(\arcsec x\) are \((-\infty,-1]\cup[1,\infty)\
 For \(\arcsec x\), we can also choose \(y\in \left[0,\frac{\pi}{2}\right)\cup\left(\frac{\pi}{2},\pi\right]\). The reason for the choice \(y\in \left[0,\frac{\pi}{2}\right)\cup\left[\pi,\frac{3\pi}{2}\right)\) is that the differentiation formulas are simpler.
 \end{remark}
 
+\begin{remark}
+For \(\arccsc x\), another common choice is \(y\in \left[-\frac{\pi}{2},0\right)\cup\left(0,\frac{\pi}{2}\right]\). In this text we use \(y\in \left(0,\frac{\pi}{2}\right]\cup\left(\pi,\frac{3\pi}{2}\right]\) so that the chosen branch parallels the branch selected for \(\arcsec x\). Once the principal range is fixed consistently, either convention gives a valid inverse function.
+\end{remark}
+
 \section{The Limit of a Function}
 
 In many situations, we are interested not only in the value of a function at a point, but also in the behavior of the function when the input is close to that point. One important example comes from the study of motion.
@@ -739,7 +769,7 @@ and say that the limit of \(f(x)\) as \(x\) approaches \(a\) is \(L\) if \(f(x)\
 When we consider \(\lim_{x\to a} f(x)\), we are concerned with the values of \(f(x)\) for \(x\) near \(a\), not necessarily with the value of \(f(a)\). In particular, \(f(a)\) need not be defined at all.
 \end{remark}
 
-\begin{figure}[\stdfigureplacement]
+\begin{figure}[!tbp]
 \centering
 
 \def\a{3}
@@ -875,9 +905,9 @@ f(x)\to L \qquad \text{as } x\to a.
 
 \begin{example}
 Guess the value of
-\(\displaystyle
+\[
 \lim_{x\to 1}\frac{x-1}{x^{2}-1}.
-\)
+\]
 \end{example}
 
 \begin{solution}
@@ -885,14 +915,14 @@ Although the expression is not defined at \(x=1\), we can examine its values for
 \[
 \begin{array}{c|cccccc}
 x & 0.9 & 0.99 & 0.999 & 1.001 & 1.01 & 1.1 \\ \hline
-\dfrac{x-1}{x^{2}-1} & 0.5263 & 0.5025 & 0.5003 & 0.4998 & 0.4975 & 0.4762
+\tfrac{x-1}{x^{2}-1} & 0.5263 & 0.5025 & 0.5003 & 0.4998 & 0.4975 & 0.4762
 \end{array}
 \]
 These values suggest that
 \[
 \frac{x-1}{x^{2}-1}
 \]
-gets close to \(\dfrac{1}{2}\) as \(x\) approaches \(1\). Thus we guess that
+gets close to \(\tfrac{1}{2}\) as \(x\) approaches \(1\). Thus we guess that
 \[
 \lim_{x\to 1}\frac{x-1}{x^{2}-1}=\frac{1}{2}.
 \]
@@ -900,9 +930,9 @@ gets close to \(\dfrac{1}{2}\) as \(x\) approaches \(1\). Thus we guess that
 
 \begin{example}
 Guess the value of
-\(\displaystyle
+\[
 \lim_{t\to 0}\frac{\sqrt{t^{2}+9}-3}{t^{2}}.
-\)
+\]
 \end{example}
 
 \begin{solution}
@@ -910,7 +940,7 @@ We evaluate the expression for values of \(t\) close to \(0\):
 \[
 \begin{array}{c|cccc}
 t & -0.1 & -0.01 & 0.01 & 0.1 \\ \hline
-\dfrac{\sqrt{t^{2}+9}-3}{t^{2}} & 0.166620 & 0.166666 & 0.166666 & 0.166620
+\tfrac{\sqrt{t^{2}+9}-3}{t^{2}} & 0.166620 & 0.166666 & 0.166666 & 0.166620
 \end{array}
 \]
 These values are close to
@@ -945,7 +975,7 @@ Similarly, we write
 and say that the \emph{right-hand limit} of \(f(x)\) as \(x\) approaches \(a\) is \(L\) if \(f(x)\) approaches \(L\) as \(x\) approaches \(a\) through values greater than \(a\).
 \end{definition}
 
-\begin{figure}[\corefigureplacement]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -993,6 +1023,36 @@ if and only if
 If the left-hand limit and the right-hand limit are different, then the two-sided limit does not exist.
 \end{remark}
 
+\begin{example}
+Let
+\[
+f(x)=
+\begin{cases}
+x+1, & x<2,\\[4pt]
+4-x, & x\ge 2.
+\end{cases}
+\]
+Evaluate \(\lim_{x\to 2^-}f(x)\), \(\lim_{x\to 2^+}f(x)\), and determine whether \(\lim_{x\to 2}f(x)\) exists.
+\end{example}
+
+\begin{solution}
+If \(x\to 2^{-}\), then we use the branch \(f(x)=x+1\). Therefore,
+\[
+\lim_{x\to 2^-}f(x)=\lim_{x\to 2^-}(x+1)=3.
+\]
+
+If \(x\to 2^{+}\), then we use the branch \(f(x)=4-x\). Therefore,
+\[
+\lim_{x\to 2^+}f(x)=\lim_{x\to 2^+}(4-x)=2.
+\]
+
+Since the left-hand limit and the right-hand limit are different, the two-sided limit does not exist. Hence
+\[
+\lim_{x\to 2}f(x)
+\]
+does not exist.
+\end{solution}
+
 \subsection{Infinite limits}
 
 In some cases, the values of \(f(x)\) do not approach a finite number as \(x\to a\). Instead, they become arbitrarily large positive or arbitrarily large negative.
@@ -1026,7 +1086,7 @@ Similar definitions apply to one-sided infinite limits:
 \lim_{x\to a^+}f(x)=-\infty.
 \]
 
-\begin{figure}[\stdfigureplacement]
+\begin{figure}[!tbp]
 \centering
 
 \begin{minipage}{0.23\textwidth}
@@ -1161,13 +1221,13 @@ clip=false
 
 \begin{example}
 Consider the function
-\(\displaystyle
+\(
 f(x)=\frac{1}{x^2}.
 \)
 Guess the value of
-\(\displaystyle
+\[
 \lim_{x\to 0}\frac{1}{x^2}.
-\)
+\]
 \end{example}
 
 \begin{solution}
@@ -1185,9 +1245,9 @@ Thus the values of \(\dfrac{1}{x^2}\) increase without bound as \(x\to 0\). Henc
 
 \begin{example}
 Guess the value of
-\(\displaystyle
+\[
 \lim_{x\to 0}\left(-\frac{1}{x^2}\right).
-\)
+\]
 \end{example}
 
 \begin{solution}
@@ -1220,7 +1280,7 @@ If \(x=a\) is a vertical asymptote, then the function values become arbitrarily 
 
 \begin{example}
 Does the curve
-\(\displaystyle
+\(
 y=\frac{2x}{x-3}
 \)
 have a vertical asymptote?
@@ -1254,7 +1314,7 @@ x=3
 is a vertical asymptote of the curve.
 \end{solution}
 
-\begin{figure}[\stdfigureplacement]
+\begin{figure}[!tbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -1283,7 +1343,10 @@ clip=false
 \end{figure}
 
 \begin{example}
-Guess the value of \(\displaystyle \lim_{x\to 0^+}\ln x\).
+Guess the value of
+\[
+\lim_{x\to 0^+}\ln x.
+\]
 \end{example}
 
 \begin{solution}
@@ -1299,7 +1362,7 @@ is a vertical asymptote of the graph of \(y=\ln x\).
 \end{solution}
 
 \begin{remark}
-A two-sided infinite limit such as \(\displaystyle \lim_{x\to a}f(x)=\infty\) requires the function to approach \(\infty\) from both sides. If the behavior from the left and from the right is different, then the two-sided limit does not exist, even though \(x=a\) may still be a vertical asymptote.
+A two-sided infinite limit such as \(\lim_{x\to a}f(x)=\infty\) requires the function to approach \(\infty\) from both sides. If the behavior from the left and from the right is different, then the two-sided limit does not exist, even though \(x=a\) may still be a vertical asymptote.
 \end{remark}
 
 \section{Limit Laws and Computational Techniques}
@@ -1390,9 +1453,9 @@ Sometimes direct substitution does not work because it leads to an expression su
 
 \begin{example}
 Evaluate
-\(\displaystyle
+\[
 \lim_{x\to 1}\frac{x-1}{x^{2}-1}.
-\)
+\]
 \end{example}
 
 \begin{solution}
@@ -1462,9 +1525,9 @@ Not all limits can be evaluated by direct substitution alone. Sometimes we must 
 
 \begin{example}
 Evaluate
-\(\displaystyle
+\[
 \lim_{x\to 0}|x|.
-\)
+\]
 \end{example}
 
 \begin{solution}
@@ -1511,7 +1574,7 @@ Hence
 \]
 
 Since the left-hand and right-hand limits are different, we conclude that
-\(\displaystyle
+\(
 \lim_{x\to 3}[x]
 \)
 does not exist.
@@ -1540,9 +1603,9 @@ then
 
 \begin{example}
 Evaluate
-\(\displaystyle
+\[
 \lim_{x\to 0}x^{2}\sin\left(\frac{1}{x}\right).
-\)
+\]
 \end{example}
 
 \begin{solution}
@@ -1561,9 +1624,42 @@ Now,
 \lim_{x\to 0}x^{2}=0.
 \]
 Therefore, by the squeeze theorem,
-\(\displaystyle
+\[
 \lim_{x\to 0}x^{2}\sin\left(\frac{1}{x}\right)=0.
-\)
+\]
+\end{solution}
+
+\begin{example}
+Evaluate
+\[
+\lim_{x\to 0}x\cos\left(\frac{1}{x}\right).
+\]
+\end{example}
+
+\begin{solution}
+Since
+\[
+\left|\cos\left(\frac{1}{x}\right)\right|\le 1,
+\]
+we have
+\[
+\left|x\cos\left(\frac{1}{x}\right)\right|
+\le |x|.
+\]
+Equivalently,
+\[
+-|x|\le x\cos\left(\frac{1}{x}\right)\le |x|.
+\]
+Now
+\[
+\lim_{x\to 0}(-|x|)=0
+\qquad \text{and} \qquad
+\lim_{x\to 0}|x|=0.
+\]
+Therefore, by the squeeze theorem,
+\[
+\lim_{x\to 0}x\cos\left(\frac{1}{x}\right)=0.
+\]
 \end{solution}
 
 The limit laws and the techniques of factoring, rationalization, and squeezing allow us to evaluate many limits. In the next section, we will give the precise definition of a limit.
@@ -1587,7 +1683,7 @@ f(x)=
 \end{cases}
 \]
 When \(x\) is close to \(3\), but \(x\ne 3\), the value of \(f(x)=2x-1\) is close to \(5\). Thus it is natural to expect that
-\(\displaystyle
+\(
 \lim_{x\to 3} f(x)=5.
 \)
 
@@ -1662,7 +1758,7 @@ The previous discussion shows the basic idea. We want to control the distance be
 
 \begin{definition}
 Let \(f\) be a function defined on an open interval containing \(a\), except possibly at \(a\) itself. We say that
-\(\displaystyle
+\(
 \lim_{x\to a} f(x)=L
 \)
 if for every \(\varepsilon>0\) there exists a number \(\delta>0\) such that
@@ -1673,7 +1769,7 @@ if for every \(\varepsilon>0\) there exists a number \(\delta>0\) such that
 \]
 \end{definition}
 
-\begin{figure}[\stdfigureplacement]
+\begin{figure}[!tbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -1746,24 +1842,19 @@ if for every \(\varepsilon>0\) there exists a number \(\delta>0\) such that
     \draw[->] (axis cs:0.05,6.498019) -- (axis cs:0.05,8);
 \end{axis}
 \end{tikzpicture}
-\caption{A geometric interpretation of the precise definition of a limit.}
+\caption{A geometric interpretation of the precise definition of a limit; the choice of \(\delta\) depends on \(\varepsilon\).}
 \label{fig:precise-limit}
 \end{figure}
 
 Figure~\ref{fig:precise-limit} illustrates the definition. If \(x\) is restricted to lie in the interval
-\(\displaystyle
-(a-\delta,a+\delta),
-x\ne a,
-\)
+\((a-\delta,a+\delta)\), \(x\ne a\),
 then the corresponding values of \(f(x)\) are forced to lie in the interval
-\(\displaystyle
-(L-\varepsilon,L+\varepsilon).
-\)
+\((L-\varepsilon,L+\varepsilon)\).
 Notice that the value \(f(a)\) itself may be different from \(L\). The limit depends only on the behavior of \(f(x)\) when \(x\) is close to \(a\), not necessarily on the value of the function at \(x=a\).
 
 \begin{remark}
 The condition
-\(\displaystyle
+\(
 0<|x-a|<\delta
 \)
 means that \(x\) is within a distance \(\delta\) of \(a\), but \(x\ne a\).
@@ -1771,7 +1862,7 @@ means that \(x\) is within a distance \(\delta\) of \(a\), but \(x\ne a\).
 
 \begin{remark}
 The inequality
-\(\displaystyle
+\(
 |f(x)-L|<\varepsilon
 \)
 means that \(f(x)\) is within a distance \(\varepsilon\) of \(L\).
@@ -1779,14 +1870,14 @@ means that \(f(x)\) is within a distance \(\varepsilon\) of \(L\).
 
 \begin{remark}
 The statement
-\(\displaystyle
+\(
 \lim_{x\to a} f(x)=L
 \)
 must hold for every \(\varepsilon>0\), no matter how small \(\varepsilon\) is.
 \end{remark}
 
 \begin{proposition}[Uniqueness of Limits]
-If \(\displaystyle \lim_{x\to a} f(x)\) exists, then it is unique.
+If \(\lim_{x\to a} f(x)\) exists, then it is unique.
 \end{proposition}
 
 \begin{proof}
@@ -1829,9 +1920,9 @@ which is impossible. Therefore \(L=M\).
 
 \begin{example}
 Show from the definition that
-\(\displaystyle
+\[
 \lim_{x\to 3} (4x-5)=7.
-\)
+\]
 \end{example}
 
 \begin{solution}
@@ -1883,9 +1974,9 @@ Therefore,
 
 \begin{example}
 Show from the definition that
-\(\displaystyle
+\[
 \lim_{x\to 1} (x^{2}-5x+6)=2.
-\)
+\]
 \end{example}
 
 \begin{solution}
@@ -1971,7 +2062,7 @@ Therefore,
 
 \begin{definition}
 We write
-\(\displaystyle
+\(
 \lim_{x\to a} f(x)=\infty
 \)
 if for every positive number \(M\), there exists \(\delta>0\) such that
@@ -1984,7 +2075,7 @@ f(x)>M
 
 \begin{definition}
 We write
-\(\displaystyle
+\(
 \lim_{x\to a} f(x)=-\infty
 \)
 if for every negative number \(N\), there exists \(\delta>0\) such that
@@ -1997,7 +2088,7 @@ f(x)<N
 
 \begin{remark}
 In the definition of
-\(\displaystyle
+\(
 \lim_{x\to a} f(x)=\infty,
 \)
 we may think of \(M\) as \(100\), \(1000\), \(10000\), and so on.
@@ -2005,7 +2096,7 @@ we may think of \(M\) as \(100\), \(1000\), \(10000\), and so on.
 
 \begin{remark}
 In the definition of
-\(\displaystyle
+\(
 \lim_{x\to a} f(x)=-\infty,
 \)
 we may think of \(N\) as \(-100\), \(-1000\), \(-10000\), and so on.
@@ -2013,9 +2104,13 @@ we may think of \(N\) as \(-100\), \(-1000\), \(-10000\), and so on.
 
 \begin{definition}
 If \(f\) is defined at every point near \(a\), including \(a\), and if
-\(\displaystyle
+\(
 \lim_{x\to a} f(x)=f(a),
 \)
 then we say that \(f\) is \emph{continuous at \(a\)}.
 \end{definition}
+
+\begin{remark}
+We introduce this definition here because continuity is expressed in terms of limits. In a later chapter, we will study continuity more systematically and develop its main properties and theorems.
+\end{remark}
 

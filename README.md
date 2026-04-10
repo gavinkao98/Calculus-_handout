@@ -157,6 +157,7 @@ Good uses of `remark` include:
 - explaining principal-value restrictions for inverse trigonometric functions
 - warning that `\sin^{-1} x` does not mean `1/\sin x`
 - clarifying that the existence of a limit does not imply `f(a)` equals the limit
+- presenting the horizontal line test as a geometric teaching criterion when it is not a central theorem of the section
 - giving a short historical or real-world motivation in 2 to 5 sentences
 
 Important rule:
@@ -241,6 +242,19 @@ In short:
 - theorem-like statements -> `proof` when warranted
 - worked examples -> `solution`
 
+## Example Selection Policy
+
+1. Preserve professor-manuscript examples unless the user explicitly asks for cuts or restructuring.
+2. Do not delete, merge, or substantially rewrite a manuscript example unless there is a clear editorial reason and the user has asked for that level of intervention.
+3. Additional examples may be added when they materially improve student understanding.
+4. Good reasons to add an example include:
+   - illustrating a central theorem
+   - covering a standard case missing from the manuscript
+   - reinforcing a common source of confusion
+   - giving a slightly more challenging example after a basic one
+5. Added examples should be concise, pedagogically purposeful, and consistent with the level of the section.
+6. Do not add filler examples simply to make a section look more complete.
+
 ## Exercise Policy
 
 1. Include exercises only if they are present in the professor manuscript.
@@ -283,6 +297,72 @@ Use standard notation such as:
 - interval notation such as `(a,b)`, `[a,b]`, `[a,b)`, and so on
 
 Do not switch notation style from chapter to chapter without a strong reason.
+
+When a manuscript adopts a less-common but mathematically legitimate convention, such as a principal range for an inverse trigonometric function, preserve it unless there is a strong reason to change it.
+If the convention may surprise students, add a brief `remark` noting a common alternative and clarifying the choice made in this text.
+
+## Formula Display Policy
+
+Use three levels of formula presentation consistently throughout the book.
+
+### Inline Math
+
+Use inline math `\(...\)` for formulas that are short and behave as part of a sentence.
+
+Typical uses:
+- single symbols and variables
+- function names and short expressions
+- short intervals
+- short limits
+- short derivative notation
+
+Examples:
+- `\(f\) is continuous at \(a\)`
+- `\(\lim_{x\to a} f(x)=L\)`
+- `\(f'(x)\)`
+
+### Display Math
+
+Use display math `\[...\]` when the formula is the visual focus of the sentence or when readability benefits from separation.
+
+Typical uses:
+- the main formula in a definition
+- theorem and proposition statements
+- multi-step calculations
+- long fractions
+- identities to be emphasized
+- expressions in example prompts such as "Evaluate" or "Show that"
+- piecewise definitions
+
+If the reader should stop and look carefully at the formula, prefer display math.
+
+### Inline Math with `\displaystyle`
+
+Use `\(\displaystyle ...\)` only sparingly.
+
+This is appropriate only when:
+- the formula must remain inside the sentence, and
+- it contains a large fraction, integral, sum, or limit that becomes hard to read in ordinary inline style.
+
+Examples:
+- `the difference quotient \(\displaystyle \frac{f(x+h)-f(x)}{h}\)`
+- `the definite integral \(\displaystyle \int_a^b f(x)\,dx\)`
+
+Do not use `\displaystyle` as the default way to make formulas look important.
+If a formula is important enough to stand out, it usually should be moved to display math instead.
+
+### Formulas in Tables
+
+Inside tables, prefer `\tfrac` or plain-text forms instead of `\dfrac` unless the larger display style is genuinely necessary.
+This helps keep table rows compact and visually even.
+
+### House Rule for Formula Choice
+
+- short formula inside a sentence -> inline math
+- main formula or visually central expression -> display math
+- inline formula with large operators only when the sentence must remain unbroken -> inline math with `\displaystyle`
+
+Avoid scattering large `\displaystyle` expressions through prose when ordinary inline or display math would be clearer.
 
 ## Terminology Policy
 
@@ -438,16 +518,12 @@ Good caption models:
 Place figures as close as reasonably possible to the paragraph where they are discussed, but do not force placement aggressively unless readability truly requires it.
 
 Current house policy in this repository is:
-- ordinary figures -> `\stdfigureplacement`
-- concept-critical figures -> `\corefigureplacement`
-
-These commands are defined in `preamble/layout.tex` as:
-- `\stdfigureplacement = !tbp`
-- `\corefigureplacement = !ht`
+- ordinary figures -> `[!tbp]`
+- concept-critical figures -> `[!ht]`
 
 Interpretation:
-- `\stdfigureplacement` is for ordinary figures that may float naturally
-- `\corefigureplacement` is for figures that should stay close to the surrounding explanation, such as a key concept graph immediately after a definition
+- `[!tbp]` is for ordinary figures that may float naturally
+- `[!ht]` is for figures that should stay close to the surrounding explanation, such as a key concept graph immediately after a definition
 
 Important rules:
 1. Do not default to `[H]`.
@@ -515,12 +591,13 @@ When asked to draft a chapter or section:
 2. reorganize if needed
 3. standardize notation and terminology
 4. classify environments by mathematical role
-5. decide selectively whether proofs are needed
-6. include exercises only if present in the manuscript
-7. add figures only when they materially improve understanding
-8. use `\stdfigureplacement` or `\corefigureplacement` for figures as appropriate
-9. write clean textbook prose
-10. output explicit LaTeX content only
+5. preserve manuscript examples and add only targeted supplementary examples when they materially help
+6. decide selectively whether proofs are needed
+7. include exercises only if present in the manuscript
+8. add figures only when they materially improve understanding
+9. use `[!tbp]` or `[!ht]` for figures as appropriate
+10. write clean textbook prose
+11. output explicit LaTeX content only
 
 ## Consistency Check Before Final Output
 
@@ -534,6 +611,8 @@ Before accepting chapter content, verify that:
 - theorems are reserved for major results
 - propositions are used for formal but secondary results
 - examples use `solution`, not `proof`
+- manuscript examples are preserved unless the user asked for editorial replacement
+- any added examples have a clear pedagogical purpose
 - proofs are used only for genuine proofs
 - proofs are included only when warranted
 - exercises appear only if they are present in the professor manuscript
