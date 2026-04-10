@@ -25,7 +25,7 @@ f(x_1)=f(x_2) \implies x_1=x_2.
 \end{definition}
 
 \begin{example}
-Let's look at some everyday scenarios. Consider the functions mapping a group of students to their personal details:
+Consider the following functions defined on a group of students:
 \[
 f(\text{student})=\text{Student ID number}
 \]
@@ -83,10 +83,10 @@ A function is one-to-one if and only if no horizontal line intersects its graph 
 \[
 f(x_1)=c=f(x_2).
 \]
-Thus two different inputs produce the same output, so \(f\) is not one-to-one. Conversely, if every horizontal line intersects the graph at most once, then no output value corresponds to more than one input, and hence \(f\) is one-to-one.
+Thus two different inputs produce the same output, so \(f\) is not one-to-one. Conversely, if every horizontal line intersects the graph at most once, then no output value corresponds to more than one input, and hence \(f\) is one-to-one. This criterion is illustrated in Figure~\ref{fig:horizontal-line-test}.
 \end{remark}
 
-\begin{figure}[!tbp]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.46\textwidth}
 \centering
@@ -121,12 +121,12 @@ Intersects at most once.
 \node[red, right] at (1.9,1.25) {$y=c$};
 \end{tikzpicture}
 
-\vspace{
-    .4em}
+\vspace{0.4em}
 Not one-to-one\\
 Intersects more than once.
 \end{minipage}
 \caption{Geometric interpretation of the horizontal line test.}
+\label{fig:horizontal-line-test}
 \end{figure}
 
 \subsection{Inverse Functions}
@@ -167,10 +167,11 @@ Conversely, suppose that \(f\) is one-to-one with domain \(A\) and range \(B\). 
 \end{proof}
 
 \begin{example}
-Find the inverse of each function. 
-
-1.\(f(x)=x\) \qquad 2. \(g(x)=x^3\)
-
+Find the inverse of each function.
+\begin{enumerate}
+    \item \(f(x)=x\)
+    \item \(g(x)=x^3\)
+\end{enumerate}
 \end{example}
 
 \begin{solution}
@@ -207,8 +208,11 @@ and
 f(f^{-1}(x))=x
 \qquad \text{for every } x\in B.
 \]
+\end{proposition}
 
-\begin{figure}[!tbp]
+Figure~\ref{fig:inverse-composition} illustrates these two composition identities.
+
+\begin{figure}[H]
     \centering
     \begin{tikzpicture}[
         transform shape,
@@ -220,7 +224,6 @@ f(f^{-1}(x))=x
         bwd/.style={->, very thick, draw=red!70!blue}
     ]
 
-    % left diagram
     \node[mainnode] (xA) at (0,0) {$x\in A$};
     \node[mainnode] (fxB) at (4.8,0) {$f(x)\in B$};
 
@@ -229,7 +232,6 @@ f(f^{-1}(x))=x
 
     \node[text=blue!60!black] at (2.4,-1.5) {$f^{-1}(f(x))=x$};
 
-    % right diagram
     \node[mainnode] (xB) at (8.2,0) {$x\in B$};
     \node[mainnode] (finvxA) at (13,0) {$f^{-1}(x)\in A$};
 
@@ -243,7 +245,9 @@ f(f^{-1}(x))=x
     \label{fig:inverse-composition}
 \end{figure}
 
-\end{proposition}
+\begin{remark}
+If the graph of \(f^{-1}\) is drawn in the same coordinate plane as the graph of \(f\), then the two graphs are reflections of one another across the line \(y=x\). Indeed, the point \((a,b)\) lies on the graph of \(f\) exactly when the point \((b,a)\) lies on the graph of \(f^{-1}\).
+\end{remark}
 
 \subsection{Finding the Inverse of a Function}
 
@@ -324,10 +328,6 @@ f^{-1}(x)=\sqrt{x},
 This example shows that a function that is not one-to-one on all of \(\mathbb{R}\) may still have an inverse after its domain is restricted appropriately.
 \end{solution}
 
- %-----------------------------------------------------
- %??閫??
- %-----------------------------------------------------
-
 \section{Inverse Trigonometric Functions}
 
 The trigonometric functions are not one-to-one on all of \(\mathbb{R}\), so they do not have inverse functions on their full domains. To define inverse trigonometric functions, we restrict the domains of the trigonometric functions so that they become one-to-one.
@@ -342,7 +342,7 @@ To define an inverse trigonometric function, we must restrict the domain of the 
 
 Consider the sine function on all of \(\mathbb{R}\). As shown in Figure~\ref{fig:sine-not-one-to-one}, a horizontal line can intersect the graph of \(y=\sin x\) more than once. Therefore \(\sin x\) is not one-to-one on \(\mathbb{R}\), and so it does not have an inverse function on its full domain.
 
-\begin{figure}[!ht]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -388,7 +388,7 @@ To define the inverse sine function, we restrict \(\sin x\) to the interval
 \]
 On this interval, \(\sin x\) is one-to-one, and every value in the range \([-1,1]\) is attained. The restricted branch is shown in Figure~\ref{fig:restricted-sine}.
 
-\begin{figure}[!ht]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -446,6 +446,14 @@ For \(-\frac{\pi}{2}\le x\le \frac{\pi}{2}\),
 \]
 \end{proposition}
 
+\begin{remark}
+The identity \(\arcsin(\sin x)=x\) holds only when \(x\) lies in the principal interval \(\left[-\frac{\pi}{2},\frac{\pi}{2}\right]\). For example,
+\[
+\arcsin(\sin \pi)=\arcsin(0)=0\ne \pi.
+\]
+This is because \(\arcsin x\) always returns a value in \(\left[-\frac{\pi}{2},\frac{\pi}{2}\right]\).
+\end{remark}
+
 \begin{example}
 Evaluate the following expressions.
 \begin{enumerate}
@@ -484,9 +492,11 @@ Evaluate the following expressions.
     \qquad
     -\frac{\pi}{2}\le \theta\le \frac{\pi}{2}.
     \]
+    \Needspace{14\baselineskip}
     Since \(\sin\theta>0\), we take \(\theta\) in the first quadrant. A right triangle corresponding to this relation is shown in Figure~\ref{fig:tan-arcsin-triangle}.
 
-    \begin{figure}[!tbp]
+    \begin{center}
+    \begin{minipage}{0.42\textwidth}
     \centering
     \begin{tikzpicture}[scale=1.1]
     \coordinate (A) at (0,0);
@@ -499,9 +509,10 @@ Evaluate the following expressions.
     \node[right] at (3,0.5) {\(1\)};
     \node[above left] at (1.45,0.5) {\(3\)};
     \end{tikzpicture}
-    \caption{Reference triangle for \(\tan\left(\arcsin\left(\tfrac{1}{3}\right)\right)\).}
+    \captionof{figure}{Reference triangle for \(\tan\left(\arcsin\left(\tfrac{1}{3}\right)\right)\).}
     \label{fig:tan-arcsin-triangle}
-    \end{figure}
+    \end{minipage}
+    \end{center}
 
     By the Pythagorean Theorem, the adjacent side is
     \[
@@ -526,7 +537,7 @@ The cosine function becomes one-to-one when its domain is restricted to
 \]
 The restricted branch is shown in Figure~\ref{fig:restricted-cosine}.
 
-\begin{figure}[!ht]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -591,7 +602,7 @@ The tangent function becomes one-to-one when its domain is restricted to
 \]
 The restricted branch is shown in Figure~\ref{fig:restricted-tangent}.
 
-\begin{figure}[!ht]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -610,8 +621,8 @@ ylabel={\(y\)},
 samples=200,
 clip=false
 ]
-\addplot[dashed] coordinates {(-1.570796327,-5) (-1.570796327,5)};
-\addplot[dashed] coordinates {(1.570796327,-5) (1.570796327,5)};
+\addplot[dashed][red] coordinates {(-1.570796327,-5) (-1.570796327,5)};
+\addplot[dashed][red] coordinates {(1.570796327,-5) (1.570796327,5)};
 \addplot[thick,blue, domain=-1.35:1.35] {tan(deg(x))};
 \node at (axis cs:0.65,1.55) {\(\tan x\)};
 \end{axis}
@@ -732,7 +743,7 @@ The domains of \(\arccsc x\) and \(\arcsec x\) are \((-\infty,-1]\cup[1,\infty)\
 \end{remark}
 
 \begin{remark}
-For \(\arcsec x\), we can also choose \(y\in \left[0,\frac{\pi}{2}\right)\cup\left(\frac{\pi}{2},\pi\right]\). The reason for the choice \(y\in \left[0,\frac{\pi}{2}\right)\cup\left[\pi,\frac{3\pi}{2}\right)\) is that the differentiation formulas are simpler.
+For \(\arcsec x\), we can also choose \(y\in \left[0,\frac{\pi}{2}\right)\cup\left(\frac{\pi}{2},\pi\right]\). In this text we use \(y\in \left[0,\frac{\pi}{2}\right)\cup\left[\pi,\frac{3\pi}{2}\right)\) because later chapters will use derivatives of inverse trigonometric functions, and with this branch choice the differentiation formulas are simpler.
 \end{remark}
 
 \begin{remark}
@@ -769,14 +780,8 @@ and say that the limit of \(f(x)\) as \(x\) approaches \(a\) is \(L\) if \(f(x)\
 When we consider \(\lim_{x\to a} f(x)\), we are concerned with the values of \(f(x)\) for \(x\) near \(a\), not necessarily with the value of \(f(a)\). In particular, \(f(a)\) need not be defined at all.
 \end{remark}
 
-\begin{figure}[!tbp]
+\begin{figure}[H]
 \centering
-
-\def\a{3}
-\def\L{8}
-\def\fy{5} % 蝚砌?撘萄?銝哨??血?????f(a)
-
-%==================== 蝚?1 撘?====================
 \begin{minipage}[t]{0.32\textwidth}
 \centering
 \begin{tikzpicture}
@@ -796,60 +801,19 @@ When we consider \(\lim_{x\to a} f(x)\), we are concerned with the values of \(f
     clip=false
 ]
     \addplot[thick, blue, domain=0.45:3.45] {pow(2,x)};
-    % L ?偌撟唾?蝺?
-    \addplot[dashed,red] coordinates {(0,\L) (\a,\L)};
-    \node[below] at (axis cs:\a,0) {\(a\)};
-    \node[left] at (axis cs:0,\L) {\(L\)};
-\end{axis}
-\end{tikzpicture}
-\end{minipage}\hfill
-%==================== 蝚?2 撘?====================
-\begin{minipage}[t]{0.32\textwidth}
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=\linewidth,
-    height=5cm,
-    axis lines=middle,
-    xmin=0, xmax=3.7,
-    ymin=0, ymax=14,
-    xtick=\empty,
-    ytick=\empty,
-    xlabel={\(x\)},
-    ylabel={\(y\)},
-    xlabel style={at={(axis description cs:0.98,0.03)},anchor=west},
-    ylabel style={at={(axis description cs:0.06,0.98)},anchor=south},
-    samples=200,
-    clip=false
-]
-    % 蝛箏?暺???
-    \addplot[thick, blue, domain=0.45:2.95] {pow(2,x)};
-    \addplot[thick, blue, domain=3.05:3.45] {pow(2,x)};
-
-    % L ?偌撟唾?蝺?
-    \addplot[dashed,red] coordinates {(0,\L) (\a,\L)};
-
-    % ?脩?銝?蝛箏?暺?(3,8)
-    \addplot[
-        only marks,
-        mark=o,
-        mark size=2.6pt,
-        mark options={draw=black, fill=white}
-    ] coordinates {(\a,\L)};
-
-    % ?血?????f(3)
+    \addplot[dashed,red] coordinates {(0,8) (3,8)};
     \addplot[
         only marks,
         mark=*,
         mark size=2.6pt
-    ] coordinates {(\a,\fy)};
-
-    \node[below] at (axis cs:\a,0) {\(a\)};
-    \node[left] at (axis cs:0,\L) {\(L\)};
+    ] coordinates {(3,8)};
+    \node[below] at (axis cs:3,0) {\(a\)};
+    \node[left] at (axis cs:0,8) {\(L\)};
 \end{axis}
 \end{tikzpicture}
+\vspace{0.3em}
+\(f(a)=L\)
 \end{minipage}\hfill
-%==================== 蝚?3 撘?====================
 \begin{minipage}[t]{0.32\textwidth}
 \centering
 \begin{tikzpicture}
@@ -868,25 +832,67 @@ When we consider \(\lim_{x\to a} f(x)\), we are concerned with the values of \(f
     samples=200,
     clip=false
 ]
-    % 蝛箏?暺???
     \addplot[thick, blue, domain=0.45:2.95] {pow(2,x)};
     \addplot[thick, blue, domain=3.05:3.45] {pow(2,x)};
 
-    % L ?偌撟唾?蝺?
-    \addplot[dashed,red] coordinates {(0,\L) (\a,\L)};
+    \addplot[dashed,red] coordinates {(0,8) (3,8)};
 
-    % 蝛箏?暺?
     \addplot[
         only marks,
         mark=o,
         mark size=2.6pt,
         mark options={draw=black, fill=white}
-    ] coordinates {(\a,\L)};
+    ] coordinates {(3,8)};
 
-    \node[below] at (axis cs:\a,0) {\(a\)};
-    \node[left] at (axis cs:0,\L) {\(L\)};
+    \addplot[
+        only marks,
+        mark=*,
+        mark size=2.6pt
+    ] coordinates {(3,5)};
+
+    \node[below] at (axis cs:3,0) {\(a\)};
+    \node[left] at (axis cs:0,8) {\(L\)};
 \end{axis}
 \end{tikzpicture}
+\vspace{0.3em}
+\(f(a)\ne L\)
+\end{minipage}\hfill
+\begin{minipage}[t]{0.32\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=\linewidth,
+    height=5cm,
+    axis lines=middle,
+    xmin=0, xmax=3.7,
+    ymin=0, ymax=14,
+    xtick=\empty,
+    ytick=\empty,
+    xlabel={\(x\)},
+    ylabel={\(y\)},
+    xlabel style={at={(axis description cs:0.98,0.03)},anchor=west},
+    ylabel style={at={(axis description cs:0.06,0.98)},anchor=south},
+    samples=200,
+    clip=false
+]
+    \addplot[thick, blue, domain=0.45:2.95] {pow(2,x)};
+    \addplot[thick, blue, domain=3.05:3.45] {pow(2,x)};
+
+    \addplot[dashed,red] coordinates {(0,8) (3,8)};
+
+    \addplot[
+        only marks,
+        mark=o,
+        mark size=2.6pt,
+        mark options={draw=black, fill=white}
+    ] coordinates {(3,8)};
+
+    \node[below] at (axis cs:3,0) {\(a\)};
+    \node[left] at (axis cs:0,8) {\(L\)};
+\end{axis}
+\end{tikzpicture}
+\vspace{0.3em}
+\(f(a)\) is undefined
 \end{minipage}
 
 \caption{Three functions with the same limit as \(x\to a\).}
@@ -975,7 +981,7 @@ Similarly, we write
 and say that the \emph{right-hand limit} of \(f(x)\) as \(x\) approaches \(a\) is \(L\) if \(f(x)\) approaches \(L\) as \(x\) approaches \(a\) through values greater than \(a\).
 \end{definition}
 
-\begin{figure}[!ht]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -1086,7 +1092,7 @@ Similar definitions apply to one-sided infinite limits:
 \lim_{x\to a^+}f(x)=-\infty.
 \]
 
-\begin{figure}[!tbp]
+\begin{figure}[H]
 \centering
 
 \begin{minipage}{0.23\textwidth}
@@ -1279,6 +1285,42 @@ If \(x=a\) is a vertical asymptote, then the function values become arbitrarily 
 \end{remark}
 
 \begin{example}
+Evaluate
+\[
+\lim_{x\to 0^-}\frac{1}{x},
+\qquad
+\lim_{x\to 0^+}\frac{1}{x},
+\]
+determine whether
+\[
+\lim_{x\to 0}\frac{1}{x}
+\]
+exists, and decide whether \(x=0\) is a vertical asymptote of the graph of \(y=\dfrac{1}{x}\).
+\end{example}
+
+\begin{solution}
+If \(x\to 0^{-}\), then \(x\) is negative and very close to \(0\), so \(\dfrac{1}{x}\) is a large negative number. Hence
+\[
+\lim_{x\to 0^-}\frac{1}{x}=-\infty.
+\]
+
+If \(x\to 0^{+}\), then \(x\) is positive and very close to \(0\), so \(\dfrac{1}{x}\) is a large positive number. Hence
+\[
+\lim_{x\to 0^+}\frac{1}{x}=\infty.
+\]
+
+Since the left-hand and right-hand limits are different, the two-sided limit
+\[
+\lim_{x\to 0}\frac{1}{x}
+\]
+does not exist. However, at least one one-sided infinite limit occurs, so the line
+\[
+x=0
+\]
+is a vertical asymptote of the graph of \(y=\dfrac{1}{x}\).
+\end{solution}
+
+\begin{example}
 Does the curve
 \(
 y=\frac{2x}{x-3}
@@ -1314,7 +1356,7 @@ x=3
 is a vertical asymptote of the curve.
 \end{solution}
 
-\begin{figure}[!tbp]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -1546,36 +1588,36 @@ If \(x\to 0^{+}\), then \(|x|=x\to 0\). If \(x\to 0^{-}\), then \(|x|=-x\to 0\).
 \end{solution}
 
 \begin{example}
-The greatest integer function \([x]\) is defined to be the largest integer less than or equal to \(x\). Evaluate
+The greatest integer function, also called the floor function, is denoted by \(\lfloor x \rfloor\) and defined to be the largest integer less than or equal to \(x\). Evaluate
 \[
-\lim_{x\to 3^{+}}[x]
+\lim_{x\to 3^{+}}\lfloor x \rfloor
 \qquad \text{and} \qquad
-\lim_{x\to 3^{-}}[x].
+\lim_{x\to 3^{-}}\lfloor x \rfloor.
 \]
 \end{example}
 
 \begin{solution}
 If \(x\to 3^{+}\), then \(x\) is slightly greater than \(3\), so
 \[
-[x]=3.
+\lfloor x \rfloor=3.
 \]
 Hence
 \[
-\lim_{x\to 3^{+}}[x]=3.
+\lim_{x\to 3^{+}}\lfloor x \rfloor=3.
 \]
 
 If \(x\to 3^{-}\), then \(x\) is slightly less than \(3\), so
 \[
-[x]=2.
+\lfloor x \rfloor=2.
 \]
 Hence
 \[
-\lim_{x\to 3^{-}}[x]=2.
+\lim_{x\to 3^{-}}\lfloor x \rfloor=2.
 \]
 
 Since the left-hand and right-hand limits are different, we conclude that
 \(
-\lim_{x\to 3}[x]
+\lim_{x\to 3}\lfloor x \rfloor
 \)
 does not exist.
 \end{solution}
@@ -1769,7 +1811,7 @@ if for every \(\varepsilon>0\) there exists a number \(\delta>0\) such that
 \]
 \end{definition}
 
-\begin{figure}[!tbp]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -1787,19 +1829,15 @@ if for every \(\varepsilon>0\) there exists a number \(\delta>0\) such that
     samples=200,
     clip=false
 ]
-    % graph with a hole at x=a
     \addplot[thick, blue, domain=0.45:2.95] {pow(2,x)};
     \addplot[thick, blue, domain=3.05:3.45] {pow(2,x)};
 
-    % epsilon band
     \addplot[dashed, red] coordinates {(0,6.498019) (3.8,6.498019)};
     \addplot[dashed, red] coordinates {(0,9.849155) (3.8,9.849155)};
 
-    % delta window
     \addplot[dashed, red] coordinates {(2.7,0) (2.7,14)};
     \addplot[dashed, red] coordinates {(3.3,0) (3.3,14)};
 
-    % point at the limit and a different value at x=a
     \addplot[
         only marks,
         mark=o,
@@ -1825,7 +1863,6 @@ if for every \(\varepsilon>0\) there exists a number \(\delta>0\) such that
         mark size=1.5pt
     ] coordinates {(3.3,9.849155)};
 
-    % labels
     \node[below] at (axis cs:2.7,0) {\(a-\delta\)};
     \node[below] at (axis cs:3,0) {\(a\)};
     \node[below] at (axis cs:3.3,0) {\(a+\delta\)};
@@ -1834,7 +1871,6 @@ if for every \(\varepsilon>0\) there exists a number \(\delta>0\) such that
     \node[left] at (axis cs:0,8) {\(L\)};
     \node[left] at (axis cs:0,9.849155) {\(L+\varepsilon\)};
 
-    % arrows suggesting smaller and smaller neighborhoods
     \draw[->] (axis cs:2.7,0.35) -- (axis cs:3,0.35);
     \draw[->] (axis cs:3.3,0.35) -- (axis cs:3,0.35);
 
