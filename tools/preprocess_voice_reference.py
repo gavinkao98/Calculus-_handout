@@ -28,7 +28,7 @@ def parse_args() -> argparse.Namespace:
         description="Trim and normalize a short reference clip for local voice cloning."
     )
     parser.add_argument("--input", type=Path, default=default_input_path())
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--output", type=Path)
     parser.add_argument("--start-seconds", type=float, default=0.0)
     parser.add_argument("--duration-seconds", type=float, default=30.0)
     parser.add_argument("--mono", action="store_true")
@@ -44,16 +44,34 @@ def normalize_audio(audio: np.ndarray, peak: float) -> np.ndarray:
     return audio * scale
 
 
+def default_output_path(input_path: Path) -> Path:
+    default_inputs = {DEFAULT_INPUT.resolve(), LEGACY_INPUT.resolve()}
+    if input_path in default_inputs:
+        return DEFAULT_OUTPUT
+    return DEFAULT_OUTPUT.parent / f"{input_path.stem}_reference_30s.wav"
+
+
+def read_audio(input_path: Path, start_seconds: float, duration_seconds: float) -> tuple[np.ndarray, int]:
+    if input_path.suffix.lower() != ".wav":
+        raise ValueError(
+            f"Voice reference input must be a .wav file, got '{input_path.name}'."
+        )
+
+    with sf.SoundFile(str(input_path)) as handle:
+        sample_rate = handle.samplerate
+        start_frame = max(int(start_seconds * sample_rate), 0)
+        frame_count = max(int(duration_seconds * sample_rate), 1)
+        handle.seek(start_frame)
+        return handle.read(frames=frame_count, always_2d=True, dtype="float32"), sample_rate
+
+
 def main() -> int:
     args = parse_args()
     input_path = require_path(args.input.resolve(), "voice reference input")
-    output_path = args.output.resolve()
+    output_path = (args.output.resolve() if args.output else default_output_path(input_path))
     ensure_directory(output_path.parent)
 
-    audio, sample_rate = sf.read(str(input_path), always_2d=True)
-    start_frame = max(int(args.start_seconds * sample_rate), 0)
-    end_frame = start_frame + max(int(args.duration_seconds * sample_rate), 1)
-    clipped = audio[start_frame:end_frame]
+    clipped, sample_rate = read_audio(input_path, args.start_seconds, args.duration_seconds)
     if clipped.size == 0:
         raise ValueError("The selected time range produced an empty clip.")
 

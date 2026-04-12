@@ -1,15 +1,38 @@
+% Reserve more space for formal result blocks and less for worked material that may flow naturally.
+\newcommand{\formalblockneedspace}{10\baselineskip}
+\newcommand{\supportingblockneedspace}{7\baselineskip}
+\newcommand{\workedblockneedspace}{4\baselineskip}
+\newcommand{\proofblockneedspace}{3\baselineskip}
+\newcommand{\reserveblockspace}[2]{%
+  \AddToHook{env/#1/before}{\Needspace{#2}}%
+}
+\newcommand{\declareformalblock}[2]{%
+  \newtheorem{#1}{#2}[chapter]%
+  \reserveblockspace{#1}{\formalblockneedspace}%
+}
+\newcommand{\declareworkedblock}[2]{%
+  \newtheorem{#1}{#2}[chapter]%
+  \reserveblockspace{#1}{\workedblockneedspace}%
+}
+\newcommand{\declaresupportingblock}[2]{%
+  \newtheorem{#1}{#2}[chapter]%
+  \reserveblockspace{#1}{\supportingblockneedspace}%
+}
+
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\newtheorem{lemma}{Lemma}[chapter]
-\newtheorem{proposition}{Proposition}[chapter]
-\newtheorem{corollary}{Corollary}[chapter]
+\declareformalblock{theorem}{Theorem}
+\declareformalblock{lemma}{Lemma}
+\declareformalblock{proposition}{Proposition}
+\declareformalblock{corollary}{Corollary}
 
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\newtheorem{example}{Example}[chapter]
-\newtheorem{exercise}{Exercise}[chapter]
+\declareformalblock{definition}{Definition}
+\declareworkedblock{example}{Example}
+\declareworkedblock{exercise}{Exercise}
 
 \theoremstyle{remark}
-\newtheorem{remark}{Remark}[chapter]
+\declaresupportingblock{remark}{Remark}
 
 \newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
+
+\reserveblockspace{proof}{\proofblockneedspace}

@@ -6,7 +6,14 @@ import os
 import re
 from pathlib import Path
 
+from media_paths import (
+    DEFAULT_DECK_ID,
+    audio_dir_path,
+    audio_manifest_path,
+    deck_json_path,
+)
 from runtime_bootstrap import REPO_ROOT, bootstrap_repo_deps, ensure_directory, require_path
+from slide_script_workflow import final_script_path, load_slide_scripts
 
 bootstrap_repo_deps()
 
@@ -16,10 +23,7 @@ import torch
 from TTS.api import TTS
 
 
-DEFAULT_DECK = REPO_ROOT / "artifacts" / "slide_spec" / "ch01_inverse_functions.json"
 DEFAULT_REFERENCE = REPO_ROOT / "artifacts" / "voice" / "reference_30s.wav"
-DEFAULT_OUTPUT_DIR = REPO_ROOT / "artifacts" / "audio" / "ch01_inverse_functions"
-DEFAULT_MANIFEST = DEFAULT_OUTPUT_DIR / "manifest.json"
 XTTS_MODEL = "tts_models/multilingual/multi-dataset/xtts_v2"
 DEFAULT_BUILTIN_MODEL = "tts_models/en/jenny/jenny"
 COQUI_CPML_URL = "https://coqui.ai/cpml"
@@ -27,12 +31,14 @@ COQUI_CPML_URL = "https://coqui.ai/cpml"
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Synthesize per-slide narration audio from the section JSON artifact."
+        description="Synthesize per-slide narration audio from the section deck JSON and final narration markdown."
     )
-    parser.add_argument("--deck-json", type=Path, default=DEFAULT_DECK)
+    parser.add_argument("--deck-id", default=DEFAULT_DECK_ID)
+    parser.add_argument("--deck-json", type=Path)
+    parser.add_argument("--script-file", type=Path)
     parser.add_argument("--reference-wav", type=Path, default=DEFAULT_REFERENCE)
-    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
-    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--manifest", type=Path)
     parser.add_argument("--model-name", default=XTTS_MODEL)
     parser.add_argument("--voice-mode", choices=("clone", "builtin"), default="clone")
     parser.add_argument("--speaker")
@@ -45,6 +51,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--repetition-penalty", type=float, default=11.0)
     parser.add_argument("--max-chars-per-chunk", type=int, default=220)
     parser.add_argument("--inter-chunk-pause-ms", type=int, default=120)
+    parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()
 
 
@@ -61,6 +68,12 @@ def resolve_device(requested: str) -> str:
 def load_deck(path: Path) -> dict:
     with require_path(path.resolve(), "slide deck JSON").open("r", encoding="utf-8") as handle:
         return json.load(handle)
+
+
+def default_output_suffix(voice_mode: str) -> str:
+    if voice_mode == "builtin":
+        return "builtin"
+    return ""
 
 
 def require_coqui_tos_agreement(agreed: bool) -> None:
@@ -188,10 +201,28 @@ def build_tts_kwargs(api: TTS, args: argparse.Namespace, reference_wav: Path | N
 
 def main() -> int:
     args = parse_args()
-    deck = load_deck(args.deck_json)
-    output_dir = ensure_directory(args.output_dir.resolve())
-    manifest_path = args.manifest.resolve()
+    deck_json = (args.deck_json or deck_json_path(REPO_ROOT, args.deck_id)).resolve()
+    deck = load_deck(deck_json)
+    resolved_deck_id = deck["deck_id"]
+    script_file = (args.script_file or final_script_path(REPO_ROOT, resolved_deck_id)).resolve()
+    scripts = load_slide_scripts(script_file, deck)
+    output_dir = ensure_directory(
+        (args.output_dir or audio_dir_path(REPO_ROOT, resolved_deck_id, default_output_suffix(args.voice_mode))).resolve()
+    )
+    manifest_path = (
+        args.manifest
+        or audio_manifest_path(REPO_ROOT, resolved_deck_id, default_output_suffix(args.voice_mode))
+    ).resolve()
     ensure_directory(manifest_path.parent)
+    slides = deck["slides"]
+    if args.max_slides is not None:
+        slides = slides[: args.max_slides]
+        scripts = scripts[: args.max_slides]
+
+    if args.dry_run:
+        print(f"Validated {len(slides)} slide narrations from {script_file}")
+        return 0
+
     reference_wav = None
     if args.voice_mode == "clone":
         reference_wav = require_path(args.reference_wav.resolve(), "voice reference WAV")
@@ -202,12 +233,9 @@ def main() -> int:
     api = TTS(args.model_name).to(device)
     tts_kwargs = build_tts_kwargs(api, args, reference_wav)
 
-    slides = deck["slides"]
-    if args.max_slides is not None:
-        slides = slides[: args.max_slides]
-
     manifest = {
         "deck_id": deck["deck_id"],
+        "script_file": str(script_file),
         "model_name": args.model_name,
         "voice_mode": args.voice_mode,
         "language": args.language,
@@ -217,13 +245,10 @@ def main() -> int:
         "slides": [],
     }
 
-    for slide in slides:
+    for slide, text in zip(slides, scripts):
         slide_number = int(slide["slide_number"])
         slide_id = slide["slide_id"]
         output_wav = output_dir / f"{slide_number:02d}_{slide_id}.wav"
-        text = slide["script"].strip()
-        if not text:
-            raise ValueError(f"Slide {slide_number} has an empty script.")
 
         audio, sample_rate, chunks = synthesize_chunks(
             api=api,

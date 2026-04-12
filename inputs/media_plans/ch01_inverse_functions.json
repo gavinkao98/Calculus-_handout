@@ -1,0 +1,441 @@
+{
+  "deck_id": "ch01_inverse_functions",
+  "source_file": "chapters/ch01_foundations.tex",
+  "source_section": "Inverse Functions and One-to-One Functions",
+  "language": "English",
+  "defaults": {
+    "render_hints": {
+      "tikz_scale_mode": "none",
+      "max_width": "\\textwidth",
+      "max_height_ratio": 0.58,
+      "allow_frame_breaks": false
+    }
+  },
+  "slides": [
+    {
+      "slide_id": "why_inverse_functions_matter",
+      "title": "Why Study Inverse Functions?",
+      "learning_goal": "See why reversing a process leads naturally to one-to-one functions.",
+      "slide_type": "motivation",
+      "bullets": [
+        "A function can be viewed as a process that sends an input \\(x\\) to an output \\(y=f(x)\\).",
+        "Some formulas should be reversible, such as converting Celsius to Fahrenheit and back again.",
+        "A reversible rule needs each output to come from exactly one input."
+      ],
+      "math_blocks": [],
+      "tikz_code": null,
+      "script_draft": "We begin with the practical question of when a function can be reversed. If a formula converts one quantity into another, we often want to go back in the opposite direction. A temperature-conversion formula is a simple example: Celsius to Fahrenheit, then Fahrenheit back to Celsius. But reversal only works if an output identifies one original input. That is why the first idea we need is one-to-one behavior.",
+      "source_refs": [
+        {
+          "kind": "remark",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "slide_id": "one_to_one_definition",
+      "title": "Definition of a One-to-One Function",
+      "learning_goal": "Recognize the formal condition that makes a function invertible.",
+      "slide_type": "definition",
+      "bullets": [
+        "Different inputs must produce different outputs.",
+        "The equivalent implication form is often the easier test in practice.",
+        "This is the key property that allows a function to have an inverse."
+      ],
+      "math_blocks": [
+        {
+          "block": {
+            "kind": "definition",
+            "index": 0
+          },
+          "math_index": 0
+        },
+        {
+          "block": {
+            "kind": "definition",
+            "index": 0
+          },
+          "math_index": 1
+        }
+      ],
+      "tikz_code": null,
+      "script_draft": "Here is the formal condition. A function is one-to-one when different inputs never collapse to the same output. Equivalently, if two outputs are equal, then the inputs must already be equal. The second statement is often the better proof tool, but both say the same mathematical thing. This is the point where rigor matters: an inverse function can only be defined if every output leads back to one and only one input.",
+      "source_refs": [
+        {
+          "kind": "definition",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "slide_id": "student_id_example",
+      "title": "A Real-World One-to-One Test",
+      "learning_goal": "Apply the definition to ordinary processes before moving to algebraic functions.",
+      "slide_type": "example",
+      "bullets": [
+        "Student ID numbers are unique, so the function is one-to-one.",
+        "Blood types repeat across students, so that function is not one-to-one.",
+        "The test is always the same: can one output belong to more than one input?"
+      ],
+      "math_blocks": [
+        {
+          "block": {
+            "kind": "example",
+            "index": 0
+          },
+          "math_index": 0
+        },
+        {
+          "block": {
+            "kind": "example",
+            "index": 0
+          },
+          "math_index": 1
+        }
+      ],
+      "tikz_code": null,
+      "script_draft": "This example shows that the definition is about matching, not about algebraic symbols. If each student is matched with a student ID number, the function is one-to-one because each ID belongs to exactly one student. But if each student is matched with a blood type, then many students can share the same output, so the function is not one-to-one. This is the right habit to build early: do not stare at the symbols first. Ask whether one output can be traced back to several different inputs.",
+      "source_refs": [
+        {
+          "kind": "example",
+          "index": 0
+        },
+        {
+          "kind": "solution",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "slide_id": "square_function_inverse_failure",
+      "title": "Why \\(x^2\\) Can Fail To Be Invertible",
+      "learning_goal": "See exactly how repeated outputs prevent an inverse from being well defined.",
+      "slide_type": "warning",
+      "bullets": [
+        "\\(f(x)=x\\) on \\([0,1]\\) is one-to-one, but \\(g(x)=x^2\\) on \\([-1,1]\\) is not.",
+        "The output \\(\\frac14\\) comes from both \\(\\frac12\\) and \\(-\\frac12\\).",
+        "\\(g^{-1}\\!\\left(\\frac14\\right)\\) is not well defined on the full interval \\([-1,1]\\)."
+      ],
+      "math_blocks": [
+        {
+          "block": {
+            "kind": "example",
+            "index": 1
+          },
+          "math_index": 0
+        },
+        {
+          "block": {
+            "kind": "example",
+            "index": 1
+          },
+          "math_index": 1
+        },
+        {
+          "block": {
+            "kind": "solution",
+            "index": 1
+          },
+          "math_index": 0
+        }
+      ],
+      "tikz_code": null,
+      "script_draft": "Now we move to a standard mathematical example. The identity function on zero to one is one-to-one because every input keeps its own value. In contrast, the square function on minus one to one is not one-to-one: one half and minus one half both give one fourth. That repeated output is not a minor issue. It means the inverse would have to send one fourth back to two different inputs, which is impossible for a function. Not every function has an inverse. A function can have an inverse only if each output corresponds to exactly one input; in other words, the function must be one-to-one. For g of x equals x squared on the interval from minus one to one, the value one fourth comes from both one half and minus one half. Therefore g inverse of one fourth is not well defined.",
+      "source_refs": [
+        {
+          "kind": "example",
+          "index": 1
+        },
+        {
+          "kind": "solution",
+          "index": 1
+        },
+        {
+          "kind": "remark",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "slide_id": "horizontal_line_test_rule",
+      "title": "The Horizontal Line Test",
+      "learning_goal": "Connect the definition of one-to-one with a geometric test on the graph.",
+      "slide_type": "definition",
+      "bullets": [
+        "A horizontal line represents a fixed output value \\(y=c\\).",
+        "If the graph is hit twice, then two inputs share the same output.",
+        "So a function is one-to-one exactly when every horizontal line meets the graph at most once."
+      ],
+      "math_blocks": [
+        {
+          "block": {
+            "kind": "remark",
+            "index": 0,
+            "title": "Horizontal Line Test"
+          },
+          "math_index": 0
+        }
+      ],
+      "tikz_code": null,
+      "script_draft": "The horizontal line test is the graph version of the definition. A horizontal line means the output value is fixed at y equals c. If that line meets the graph twice, then the same output c is being produced by two different x-values, so the function cannot be one-to-one. If every horizontal line meets the graph at most once, then every output corresponds to at most one input, which is exactly the condition we need.",
+      "source_refs": [
+        {
+          "kind": "remark",
+          "index": 0,
+          "title": "Horizontal Line Test"
+        }
+      ]
+    },
+    {
+      "slide_id": "horizontal_line_test_figure",
+      "title": "Horizontal Line Test: Visual Check",
+      "learning_goal": "Read the horizontal line test directly from a graph.",
+      "slide_type": "figure",
+      "bullets": [],
+      "math_blocks": [],
+      "tikz_code": {
+        "block": {
+          "kind": "figure",
+          "index": 0
+        }
+      },
+      "script_draft": "This figure lets us read the test directly. On the left, the horizontal line intersects only once, so the graph is still consistent with a one-to-one function. On the right, the horizontal line meets the parabola twice, which tells us immediately that one output value is coming from two inputs. That visual failure is exactly why an inverse cannot be defined on the entire interval.",
+      "source_refs": [
+        {
+          "kind": "figure",
+          "index": 0
+        }
+      ],
+      "render_hints": {
+        "max_height_ratio": 0.62
+      }
+    },
+    {
+      "slide_id": "inverse_function_definition",
+      "title": "Definition of an Inverse Function",
+      "learning_goal": "Describe an inverse as a function that reverses the original correspondence.",
+      "slide_type": "definition",
+      "bullets": [
+        "If \\(f\\) sends \\(x\\) to \\(y\\), then \\(f^{-1}\\) sends \\(y\\) back to \\(x\\).",
+        "The domain and range switch roles when we pass to the inverse.",
+        "Using \\(x\\) as the input variable for \\(f^{-1}\\) is only a notation change, not a new idea."
+      ],
+      "math_blocks": [
+        {
+          "block": {
+            "kind": "definition",
+            "index": 1
+          },
+          "math_index": 0
+        },
+        {
+          "block": {
+            "kind": "remark",
+            "index": 3
+          },
+          "math_index": 0
+        }
+      ],
+      "tikz_code": null,
+      "script_draft": "Once a function is one-to-one, we can define its inverse. If the original function sends x to y, then the inverse sends y back to x. That is why the domain and range switch roles. The outputs of the original function become the allowed inputs of the inverse. Sometimes the notation is rewritten with x as the input variable for the inverse, but that is only a relabeling. The mathematical content is still that the inverse reverses the original correspondence.",
+      "source_refs": [
+        {
+          "kind": "definition",
+          "index": 1
+        },
+        {
+          "kind": "remark",
+          "index": 3
+        }
+      ]
+    },
+    {
+      "slide_id": "inverse_existence_theorem",
+      "title": "When Does an Inverse Exist?",
+      "learning_goal": "Use the theorem that completely characterizes when an inverse exists.",
+      "slide_type": "theorem",
+      "bullets": [
+        "A function has an inverse function if and only if it is one-to-one.",
+        "Being one-to-one is both necessary and sufficient.",
+        "Quick checks: \\(f(x)=x\\) and \\(g(x)=x^3\\) are both invertible."
+      ],
+      "math_blocks": [
+        {
+          "block": {
+            "kind": "solution",
+            "index": 2
+          },
+          "math_index": 0
+        },
+        {
+          "block": {
+            "kind": "solution",
+            "index": 2
+          },
+          "math_index": 3
+        }
+      ],
+      "tikz_code": null,
+      "script_draft": "This theorem gives the complete criterion: a function has an inverse if and only if it is one-to-one. So the property we studied earlier is not just helpful; it is exactly the right condition. The examples show how the theorem turns into computation. The identity function stays unchanged under inversion, and for x cubed we solve y equals x cubed for x, then interchange x and y to get the cube root function.",
+      "source_refs": [
+        {
+          "kind": "theorem",
+          "index": 0
+        },
+        {
+          "kind": "example",
+          "index": 2
+        },
+        {
+          "kind": "solution",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "slide_id": "finding_inverse_procedure",
+      "title": "Three Steps For Finding An Inverse",
+      "learning_goal": "Use the standard algebraic procedure for computing inverse functions.",
+      "slide_type": "procedure",
+      "bullets": [
+        "Write \\(y=f(x)\\).",
+        "Solve this equation for \\(x\\) in terms of \\(y\\).",
+        "Interchange \\(x\\) and \\(y\\) to obtain \\(f^{-1}(x)\\)."
+      ],
+      "math_blocks": [],
+      "tikz_code": null,
+      "script_draft": "Once we know an inverse exists, there is a standard algebraic procedure for finding it. First write y equals f of x. Next solve that equation for x in terms of y. Then interchange x and y. That final relabeling is not cosmetic; it rewrites the answer with the inverse viewed as a new function of x.",
+      "source_refs": [
+        {
+          "kind": "remark",
+          "index": 5
+        }
+      ]
+    },
+    {
+      "slide_id": "shifted_cubic_example",
+      "title": "Example: Finding The Inverse Of \\(x^3+2\\)",
+      "learning_goal": "Apply the three-step procedure to a function that is already one-to-one.",
+      "slide_type": "example",
+      "bullets": [
+        "Start with \\(y=x^3+2\\) and solve for \\(x\\).",
+        "After isolating \\(x\\), interchange the variables.",
+        "A composition check confirms the answer."
+      ],
+      "math_blocks": [
+        {
+          "block": {
+            "kind": "solution",
+            "index": 3
+          },
+          "math_index": 0
+        },
+        {
+          "block": {
+            "kind": "solution",
+            "index": 3
+          },
+          "math_index": 2
+        },
+        {
+          "block": {
+            "kind": "solution",
+            "index": 3
+          },
+          "math_index": 3
+        }
+      ],
+      "tikz_code": null,
+      "script_draft": "Here the procedure works cleanly. We start with y equals x cubed plus two, solve for x, and then interchange the variables. That gives the inverse function x minus two under a cube root. Because x cubed is already one-to-one on all real numbers, we do not need any domain restriction first.",
+      "source_refs": [
+        {
+          "kind": "example",
+          "index": 3
+        },
+        {
+          "kind": "solution",
+          "index": 3
+        }
+      ]
+    },
+    {
+      "slide_id": "restricted_parabola_example",
+      "title": "Example: Restricting The Domain Of \\(x^2\\)",
+      "learning_goal": "See how a domain restriction can create an inverse for a function that was not invertible before.",
+      "slide_type": "example",
+      "bullets": [
+        "On \\([0,\\infty)\\), the function \\(f(x)=x^2\\) becomes one-to-one.",
+        "We choose the nonnegative square root because the original domain requires \\(x\\ge 0\\).",
+        "Restricting the domain can make an inverse possible."
+      ],
+      "math_blocks": [
+        {
+          "block": {
+            "kind": "solution",
+            "index": 4
+          },
+          "math_index": 0
+        },
+        {
+          "block": {
+            "kind": "solution",
+            "index": 4
+          },
+          "math_index": 1
+        },
+        {
+          "block": {
+            "kind": "solution",
+            "index": 4
+          },
+          "math_index": 2
+        }
+      ],
+      "tikz_code": null,
+      "script_draft": "This example shows why domain restriction matters. On all of the real numbers, x squared is not one-to-one. But once we restrict the domain to x greater than or equal to zero, every output comes from exactly one input. That is why the inverse becomes the nonnegative square root rather than plus or minus square root.",
+      "source_refs": [
+        {
+          "kind": "example",
+          "index": 4
+        },
+        {
+          "kind": "solution",
+          "index": 4
+        }
+      ]
+    },
+    {
+      "slide_id": "composition_identities_figure",
+      "title": "Checking An Inverse By Composition",
+      "learning_goal": "Use the composition identities to verify that a candidate inverse really works.",
+      "slide_type": "recap",
+      "bullets": [
+        "\\(f^{-1}(f(x))=x\\) for every \\(x\\in A\\).",
+        "\\(f(f^{-1}(x))=x\\) for every \\(x\\in B\\).",
+        "These identities are the standard verification step after solving for an inverse."
+      ],
+      "math_blocks": [],
+      "tikz_code": {
+        "block": {
+          "kind": "figure",
+          "index": 1
+        }
+      },
+      "script_draft": "To finish the section, we record the identities that certify an inverse. If you apply a function and then its inverse, you must return to the starting point. If you apply the inverse first and then the function, you must also return to the starting point, provided you begin in the correct set. These are the formulas you should check whenever you want to confirm that a proposed inverse is correct.",
+      "source_refs": [
+        {
+          "kind": "proposition",
+          "index": 0
+        },
+        {
+          "kind": "figure",
+          "index": 1
+        }
+      ],
+      "render_hints": {
+        "tikz_scale_mode": "fit_width",
+        "max_height_ratio": 0.62
+      }
+    }
+  ]
+}

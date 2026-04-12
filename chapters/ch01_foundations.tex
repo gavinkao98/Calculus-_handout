@@ -743,7 +743,7 @@ The domains of \(\arccsc x\) and \(\arcsec x\) are \((-\infty,-1]\cup[1,\infty)\
 \end{remark}
 
 \begin{remark}
-For \(\arcsec x\), we can also choose \(y\in \left[0,\frac{\pi}{2}\right)\cup\left(\frac{\pi}{2},\pi\right]\). In this text we use \(y\in \left[0,\frac{\pi}{2}\right)\cup\left[\pi,\frac{3\pi}{2}\right)\) because later chapters will use derivatives of inverse trigonometric functions, and with this branch choice the differentiation formulas are simpler.
+For \(\arcsec x\), we can also choose \(y\in \left[0,\frac{\pi}{2}\right)\cup\left(\frac{\pi}{2},\pi\right]\). In this text we use \(y\in \left[0,\frac{\pi}{2}\right)\cup\left[\pi,\frac{3\pi}{2}\right)\) because later chapters will use derivatives of inverse trigonometric functions, and with this branch choice the differentiation formulas are simpler. When consulting other sources or software, always check which convention is being used, since different branch choices can lead to different values.
 \end{remark}
 
 \begin{remark}
@@ -1011,7 +1011,7 @@ clip=false
 \label{fig:one-sided-limits}
 \end{figure}
 
-Figure~\ref{fig:one-sided-limits} illustrates that the left-hand limit and the right-hand limit at a point need not be the same.
+Figure~\ref{fig:one-sided-limits} illustrates that the left-hand limit and the right-hand limit at a point need not be the same. The filled dot indicates the actual value \(f(a)\), which is different from both one-sided limits.
 
 \begin{proposition}[Criterion for a Two-Sided Limit]
 \[
@@ -1655,11 +1655,11 @@ Since
 \[
 -1\le \sin\left(\frac{1}{x}\right)\le 1,
 \]
-we may multiply all parts by \(x^{2}\ge 0\) to obtain
+for all \(x\ne 0\), we may multiply all parts by \(x^{2}\ge 0\) to obtain
 \[
 -x^{2}\le x^{2}\sin\left(\frac{1}{x}\right)\le x^{2}.
 \]
-Now,
+This inequality holds for all \(x\ne 0\). Now,
 \[
 \lim_{x\to 0}(-x^{2})=0
 \qquad \text{and} \qquad
@@ -1683,7 +1683,7 @@ Since
 \[
 \left|\cos\left(\frac{1}{x}\right)\right|\le 1,
 \]
-we have
+for all \(x\ne 0\), we have
 \[
 \left|x\cos\left(\frac{1}{x}\right)\right|
 \le |x|.
@@ -1692,7 +1692,7 @@ Equivalently,
 \[
 -|x|\le x\cos\left(\frac{1}{x}\right)\le |x|.
 \]
-Now
+This inequality also holds for all \(x\ne 0\). Now
 \[
 \lim_{x\to 0}(-|x|)=0
 \qquad \text{and} \qquad

@@ -28,6 +28,11 @@ The final book should read like a coherent textbook written in one voice.
 
 - `main.tex`: document structure only
 - `preamble/`: packages, layout, theorem setup, numbering, bibliography
+- `preamble/packages.tex`: shared package loading
+- `preamble/layout.tex`: global spacing, float, header/footer, and chapter-title layout
+- `preamble/theorem_setup.tex`: theorem-like environments, `solution`, stronger pagination protection for formal result blocks, and lighter flow rules for examples, solutions, and proofs
+- `preamble/numbering.tex`: numbering rules such as equation numbering
+- `preamble/bibliography.tex`: bibliography backend and source registration
 - `chapters/`: one file per chapter
 - `refs/`: bibliography database
 
@@ -562,6 +567,8 @@ Rules:
 4. Do not redefine standard commands in chapter files.
 5. Do not use single-letter macros in generated chapter content.
 6. Do not hide structure behind custom wrappers.
+7. Do not insert manual `\newpage`, `\pagebreak`, or `\clearpage` in chapter files just to keep theorem-like blocks, remarks, examples, solutions, or proofs together.
+8. The template already handles that pagination in `preamble/theorem_setup.tex`, with stronger protection for formal result blocks and lighter flow for examples, solutions, and proofs; if a split still looks bad, fix the template or the local content structure deliberately instead of adding ad hoc page breaks.
 
 Preferred style:
 

@@ -43,7 +43,7 @@
           "bullets",
           "math_blocks",
           "tikz_code",
-          "script",
+          "script_draft",
           "render_hints"
         ],
         "properties": {
@@ -70,11 +70,14 @@
           "slide_type": {
             "type": "string",
             "enum": [
+              "motivation",
               "overview",
               "definition",
               "example",
               "figure",
               "theorem",
+              "warning",
+              "procedure",
               "recap"
             ]
           },
@@ -96,7 +99,7 @@
               "null"
             ]
           },
-          "script": {
+          "script_draft": {
             "type": "string",
             "minLength": 1
           },

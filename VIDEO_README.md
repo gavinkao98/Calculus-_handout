@@ -1,65 +1,42 @@
-# Video Pipeline README
+# Video README
 
-This file documents the slide, audio, and video generation workflow for this repository.
+This file covers audio synthesis and MP4 rendering only.
 
-The textbook-writing rules live in [`CONTENT_README.md`](CONTENT_README.md).
-The repository overview lives in [`README.md`](README.md).
-This file is only about the media pipeline that turns chapter content into narrated slide videos.
+Use the other guides for upstream stages:
+
+- [`CONTENT_README.md`](CONTENT_README.md): textbook-writing rules
+- [`SLIDES_README.md`](SLIDES_README.md): slide generation and plan rules
+- [`SCRIPT_README.md`](SCRIPT_README.md): narration draft/final workflow
+- [`README.md`](README.md): repository overview
 
 ## Purpose
 
-The current video workflow is a prototype pipeline for one textbook section:
+This stage starts after:
 
-- source chapter content in LaTeX
-- extract a section into a structured slide deck JSON
-- render a Beamer slide deck
-- synthesize narration per slide
-- combine slide images and narration into an MP4
+- the slide deck has been generated
+- the final narration markdown has been edited and settled
 
-At the moment, the scripts are specialized to:
+Its job is to:
 
-- source file: `chapters/ch01_foundations.tex`
-- source section: `Inverse Functions and One-to-One Functions`
-- deck id: `ch01_inverse_functions`
+1. prepare or choose a voice reference
+2. synthesize one WAV file per slide
+3. validate that the audio set matches the current deck
+4. render the final MP4 from slide PDF plus narration WAV files
 
-So this is a working pipeline for Chapter 1 media generation, not yet a general-purpose framework for all chapters.
+## Relevant Paths
 
-## Directory Map
+- `inputs/voice/`: raw voice recordings
+- `artifacts/voice/`: processed reference clips
+- `artifacts/audio/`: per-slide narration WAVs and manifests
+- `artifacts/video/`: final MP4 outputs and intermediate render files
+- `tools/preprocess_voice_reference.py`
+- `tools/synthesize_section_audio.py`
+- `tools/synthesize_section_audio_f5.py`
+- `tools/render_section_video.py`
 
-- `chapters/`: textbook source content
-- `tools/`: Python scripts for media generation
-- `schemas/`: JSON schema for generated deck data
-- `inputs/voice/`: raw voice recordings used as reference input
-- `artifacts/slide_spec/`: generated deck JSON
-- `artifacts/slides/`: generated Beamer `.tex` and slide PDF
-- `artifacts/scripts/`: generated narration script markdown
-- `artifacts/voice/`: processed short reference clip for voice cloning
-- `artifacts/audio/`: per-slide narration WAV files and synthesis manifests
-- `artifacts/video/`: final MP4 files plus intermediate frames and segments
-- `.deps/`: local Python dependencies used by most scripts
-- `.deps_f5/`: extra local Python dependencies for F5-TTS
-- `.cache/`: Hugging Face, torch, and TTS model caches
+## Voice Reference Preparation
 
-## Pipeline Overview
-
-The current pipeline is:
-
-1. Prepare a short reference voice clip.
-2. Generate the structured deck JSON, Beamer source, and script markdown from the chapter.
-3. Compile the Beamer slide deck into a PDF.
-4. Synthesize slide-by-slide narration.
-5. Render the final MP4 from the slide PDF and narration WAV files.
-
-## Scripts
-
-### `tools/preprocess_voice_reference.py`
-
-Purpose:
-- trims and normalizes a voice sample for cloning
-
-Default input and output:
-- input: `inputs/voice/my_voice.wav`
-- output: `artifacts/voice/reference_30s.wav`
+Use the preprocessing tool when you want a cleaned reference clip for voice cloning.
 
 Example:
 
@@ -67,260 +44,233 @@ Example:
 python .\tools\preprocess_voice_reference.py
 ```
 
-Useful options:
-- `--start-seconds`
-- `--duration-seconds`
-- `--mono`
-- `--peak`
-
-### `tools/generate_inverse_functions_demo.py`
-
-Purpose:
-- reads the Chapter 1 LaTeX source
-- extracts one specific section
-- builds a structured deck JSON
-- writes Beamer slide source
-- writes a narration script markdown file
-- optionally compiles the Beamer PDF
-
-Generated files:
-- `artifacts/slide_spec/ch01_inverse_functions.json`
-- `artifacts/slides/ch01_inverse_functions.tex`
-- `artifacts/slides/ch01_inverse_functions.pdf`
-- `artifacts/scripts/ch01_inverse_functions.md`
-
-Example:
+Custom input example:
 
 ```powershell
-python .\tools\generate_inverse_functions_demo.py --compile auto
+python .\tools\preprocess_voice_reference.py `
+  --input inputs\voice\sample_reference.wav `
+  --output artifacts\voice\sample_reference_30s.wav
 ```
 
-Compile modes:
-- `--compile auto`: compile if LaTeX/Beamer tools are available
-- `--compile never`: skip PDF compilation
-- `--compile require`: fail if compilation prerequisites are missing
+Reference-script note:
 
-Beamer compilation depends on:
-- `latexmk`
-- `pdflatex`
-- `beamer.cls`
+- keep reference inputs in `.wav` format
+- `inputs/voice/reference_script_en.txt` is a recording script template for a new F5 reference clip
+- if you pass `--reference-text`, it must match the spoken content of `--reference-wav` word for word
+- if you do not know the exact transcript, leave `--reference-text` empty and let the tool transcribe the reference clip first
 
-### `tools/synthesize_section_audio.py`
+## Coqui TTS
 
-Purpose:
-- synthesizes one WAV file per slide using Coqui TTS
+Script:
 
-Default outputs:
-- audio directory: `artifacts/audio/ch01_inverse_functions/`
-- manifest: `artifacts/audio/ch01_inverse_functions/manifest.json`
+- `tools/synthesize_section_audio.py`
 
-Default mode:
-- XTTS v2 voice cloning from `artifacts/voice/reference_30s.wav`
+What it does:
 
-Basic example:
+- reads the deck JSON
+- reads the final narration markdown
+- synthesizes one WAV per slide
+- writes a synthesis manifest
 
-```powershell
-python .\tools\synthesize_section_audio.py --coqui-tos-agreed
-```
-
-Important notes:
-- XTTS v2 requires explicit agreement to Coqui CPML terms.
-- Device can be selected with `--device auto|cpu|cuda`.
-- The script writes one WAV per slide and a manifest with chunking metadata.
-
-Example with built-in Jenny voice instead of cloning:
+Default example:
 
 ```powershell
 python .\tools\synthesize_section_audio.py `
-  --voice-mode builtin `
-  --model-name tts_models/en/jenny/jenny `
-  --output-dir artifacts\audio\ch01_inverse_functions_jenny `
-  --manifest artifacts\audio\ch01_inverse_functions_jenny\manifest.json
+  --deck-id ch01_inverse_functions `
+  --coqui-tos-agreed
+```
+
+Dry-run validation:
+
+```powershell
+python .\tools\synthesize_section_audio.py --deck-id ch01_inverse_functions --dry-run
 ```
 
 Useful options:
+
+- `--deck-id`
+- `--script-file`
+- `--reference-wav`
+- `--voice-mode clone|builtin`
+- `--device auto|cpu|cuda`
 - `--max-slides`
-- `--split-sentences`
-- `--speed`
-- `--repetition-penalty`
-- `--max-chars-per-chunk`
-- `--inter-chunk-pause-ms`
+- `--dry-run`
 
-### `tools/synthesize_section_audio_f5.py`
+Notes:
 
-Purpose:
-- synthesizes one WAV file per slide using F5-TTS
+- XTTS v2 requires explicit agreement to Coqui CPML terms
+- TTS reads the final narration file only
+- built-in voices can be routed to a custom output directory if you want to keep multiple audio variants
 
-Default outputs:
-- audio directory: `artifacts/audio/ch01_inverse_functions_f5_clone/`
-- manifest: `artifacts/audio/ch01_inverse_functions_f5_clone/manifest.json`
+## F5-TTS
+
+Script:
+
+- `tools/synthesize_section_audio_f5.py`
 
 Clone example:
 
 ```powershell
 python .\tools\synthesize_section_audio_f5.py `
-  --reference-mode clone `
-  --output-dir artifacts\audio\ch01_inverse_functions_f5_clone `
-  --manifest artifacts\audio\ch01_inverse_functions_f5_clone\manifest.json
+  --deck-id ch01_inverse_functions `
+  --reference-mode clone
 ```
 
 Example-reference mode:
 
 ```powershell
 python .\tools\synthesize_section_audio_f5.py `
-  --reference-mode example `
-  --output-dir artifacts\audio\ch01_inverse_functions_f5_example `
-  --manifest artifacts\audio\ch01_inverse_functions_f5_example\manifest.json
+  --deck-id ch01_inverse_functions `
+  --reference-mode example
+```
+
+Dry-run validation:
+
+```powershell
+python .\tools\synthesize_section_audio_f5.py `
+  --deck-id ch01_inverse_functions `
+  --reference-mode clone `
+  --dry-run
 ```
 
 Useful options:
+
+- `--deck-id`
+- `--script-file`
+- `--reference-mode clone|example`
+- `--reference-wav`
+- `--reference-text`
 - `--device auto|cpu|cuda`
 - `--max-slides`
-- `--nfe-step`
-- `--cfg-strength`
-- `--sway-sampling-coef`
-- `--cross-fade-duration`
-- `--speed`
-- `--fix-duration`
+- `--dry-run`
 
-### `tools/render_section_video.py`
+Clone-mode note:
 
-Purpose:
-- renders the slide PDF into images
-- pairs each slide image with its narration WAV
+- F5 clone quality depends on `reference_wav` and `reference_text` matching exactly
+- a mismatched transcript can leak stray words from the reference prompt into every slide audio
+- the wrapper now auto-transcribes the reference clip locally when `--reference-text` is omitted
+
+## Video Rendering
+
+Script:
+
+- `tools/render_section_video.py`
+
+What it does:
+
+- validates that slide PDF, slide count, and audio filenames match the current deck
+- renders slide images from the PDF
+- pairs each image with its slide audio
 - creates one MP4 segment per slide
-- concatenates all segments into a final MP4
+- concatenates the segments into a final MP4
 
-Default inputs and output:
-- deck JSON: `artifacts/slide_spec/ch01_inverse_functions.json`
-- slide PDF: `artifacts/slides/ch01_inverse_functions.pdf`
-- audio directory: `artifacts/audio/ch01_inverse_functions/`
-- final video: `artifacts/video/ch01_inverse_functions.mp4`
-
-Basic example:
+Dry-run validation:
 
 ```powershell
-python .\tools\render_section_video.py
+python .\tools\render_section_video.py --deck-id ch01_inverse_functions --dry-run
 ```
 
-Example using the Jenny audio set:
+Basic render:
+
+```powershell
+python .\tools\render_section_video.py --deck-id ch01_inverse_functions
+```
+
+Render with a custom audio variant:
 
 ```powershell
 python .\tools\render_section_video.py `
-  --audio-dir artifacts\audio\ch01_inverse_functions_jenny `
-  --output artifacts\video\ch01_inverse_functions_jenny.mp4
+  --deck-id ch01_inverse_functions `
+  --audio-dir artifacts\audio\ch01_inverse_functions_f5_clone `
+  --output artifacts\video\ch01_inverse_functions_f5_clone.mp4
 ```
 
 Useful options:
+
+- `--deck-id`
+- `--audio-dir`
+- `--output`
+- `--dry-run`
 - `--dpi-scale`
 - `--lead-in-seconds`
 - `--target-width`
 - `--target-height`
 - `--crf`
 
-The renderer also creates intermediate files under:
-- `artifacts/video/<output_stem>/frames/`
-- `artifacts/video/<output_stem>/segments/`
-- `artifacts/video/<output_stem>/segments.txt`
+## Recommended Order
 
-## End-to-End Examples
-
-### Path A: Beamer slides + Coqui XTTS clone + MP4
+### Path A: slide PDF + edited final narration + Coqui clone + MP4
 
 ```powershell
 python .\tools\preprocess_voice_reference.py
-python .\tools\generate_inverse_functions_demo.py --compile auto
-python .\tools\synthesize_section_audio.py --coqui-tos-agreed
-python .\tools\render_section_video.py
+python .\tools\synthesize_section_audio.py --deck-id ch01_inverse_functions --dry-run
+python .\tools\synthesize_section_audio.py --deck-id ch01_inverse_functions --coqui-tos-agreed
+python .\tools\render_section_video.py --deck-id ch01_inverse_functions --dry-run
+python .\tools\render_section_video.py --deck-id ch01_inverse_functions
 ```
 
-### Path B: Beamer slides + built-in Jenny voice + MP4
-
-```powershell
-python .\tools\generate_inverse_functions_demo.py --compile auto
-python .\tools\synthesize_section_audio.py `
-  --voice-mode builtin `
-  --model-name tts_models/en/jenny/jenny `
-  --output-dir artifacts\audio\ch01_inverse_functions_jenny `
-  --manifest artifacts\audio\ch01_inverse_functions_jenny\manifest.json
-python .\tools\render_section_video.py `
-  --audio-dir artifacts\audio\ch01_inverse_functions_jenny `
-  --output artifacts\video\ch01_inverse_functions_jenny.mp4
-```
-
-### Path C: Beamer slides + F5 clone + MP4
+### Path B: slide PDF + edited final narration + F5 clone + MP4
 
 ```powershell
 python .\tools\preprocess_voice_reference.py
-python .\tools\generate_inverse_functions_demo.py --compile auto
 python .\tools\synthesize_section_audio_f5.py `
+  --deck-id ch01_inverse_functions `
   --reference-mode clone `
-  --output-dir artifacts\audio\ch01_inverse_functions_f5_clone `
-  --manifest artifacts\audio\ch01_inverse_functions_f5_clone\manifest.json
+  --dry-run
+python .\tools\synthesize_section_audio_f5.py `
+  --deck-id ch01_inverse_functions `
+  --reference-mode clone
 python .\tools\render_section_video.py `
+  --deck-id ch01_inverse_functions `
+  --audio-dir artifacts\audio\ch01_inverse_functions_f5_clone `
+  --dry-run
+python .\tools\render_section_video.py `
+  --deck-id ch01_inverse_functions `
   --audio-dir artifacts\audio\ch01_inverse_functions_f5_clone `
   --output artifacts\video\ch01_inverse_functions_f5_clone.mp4
 ```
 
-## Current Generated Assets
-
-The repository already contains generated examples for several voice variants:
-
-- `artifacts/audio/ch01_inverse_functions/`
-- `artifacts/audio/ch01_inverse_functions_jenny/`
-- `artifacts/audio/ch01_inverse_functions_f5_clone/`
-- `artifacts/audio/ch01_inverse_functions_f5_example/`
-- `artifacts/video/ch01_inverse_functions.mp4`
-- `artifacts/video/ch01_inverse_functions_jenny.mp4`
-- `artifacts/video/ch01_inverse_functions_f5_clone.mp4`
-- `artifacts/video/ch01_inverse_functions_f5_example.mp4`
-
-## Assumptions and Constraints
-
-- The deck-generation script is currently hard-coded to one chapter section.
-- The generated deck format is validated against `schemas/slide_deck.schema.json`.
-- The video renderer expects one WAV per slide, named as `NN_slide_id.wav`.
-- Most scripts rely on repo-local dependencies in `.deps/`.
-- F5-TTS relies on additional packages in `.deps_f5/`.
-- Model downloads and caches are stored under `.cache/`.
-
 ## Troubleshooting
 
-### Beamer PDF is not generated
+### TTS dry-run fails
 
-Check that all of the following are available:
-- `latexmk`
-- `pdflatex`
-- `beamer.cls`
+Common causes:
 
-If you only want JSON and `.tex`, run:
+- the final narration markdown file is missing
+- one `Narration:` block is empty
+- slide numbering or slide ids no longer match the current deck
 
-```powershell
-python .\tools\generate_inverse_functions_demo.py --compile never
-```
+Use [`SCRIPT_README.md`](SCRIPT_README.md) for narration-structure rules.
+
+### Render dry-run fails because audio files are missing
+
+Common causes:
+
+- TTS has not been run yet
+- the audio directory belongs to an older deck version
+- the slide ids changed after regeneration, so the old WAV filenames are stale
+
+This is why `render_section_video.py --dry-run` exists: it catches the mismatch before a long ffmpeg run.
 
 ### XTTS run fails before synthesis
 
 Common causes:
+
 - `--coqui-tos-agreed` was not provided
 - the reference WAV is missing
-- CUDA was requested but not available
+- CUDA was requested but is not available
 
 ### Final MP4 render fails
 
 Common causes:
+
 - slide PDF missing
-- narration WAVs missing or named incorrectly
-- slide count in PDF does not match slide count in the deck JSON
-- ffmpeg executable could not be resolved through `imageio_ffmpeg`
+- narration WAVs missing or misnamed
+- PDF page count does not match the deck JSON
+- ffmpeg could not be resolved through `imageio_ffmpeg`
 
-## Suggested Maintenance Rule
+## Current Constraint
 
-Keep the separation clear:
+The slide and script workflow is now reusable, but the repository still only ships one checked-in practice deck.
 
-- `chapters/` is human-authored textbook content
-- `tools/` and `schemas/` are pipeline code
-- `inputs/` is reusable raw input
-- `artifacts/` is generated output
-
-That separation is enough to keep the repository understandable without a larger directory refactor.
+That means the audio and video scripts are now deck-id aware, yet your actual media outputs still depend on whether you have already generated a matching audio set for that deck version.

@@ -5,6 +5,7 @@ import json
 import subprocess
 from pathlib import Path
 
+from media_paths import DEFAULT_DECK_ID, audio_dir_path, deck_json_path, slide_pdf_path, video_output_path
 from runtime_bootstrap import REPO_ROOT, bootstrap_repo_deps, ensure_directory, require_path
 
 bootstrap_repo_deps()
@@ -14,25 +15,21 @@ import imageio_ffmpeg
 import soundfile as sf
 
 
-DEFAULT_DECK = REPO_ROOT / "artifacts" / "slide_spec" / "ch01_inverse_functions.json"
-DEFAULT_PDF = REPO_ROOT / "artifacts" / "slides" / "ch01_inverse_functions.pdf"
-DEFAULT_AUDIO_DIR = REPO_ROOT / "artifacts" / "audio" / "ch01_inverse_functions"
-DEFAULT_OUTPUT = REPO_ROOT / "artifacts" / "video" / "ch01_inverse_functions.mp4"
-
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Render a static-slide MP4 from the section PDF and per-slide narration WAV files."
     )
-    parser.add_argument("--deck-json", type=Path, default=DEFAULT_DECK)
-    parser.add_argument("--slides-pdf", type=Path, default=DEFAULT_PDF)
-    parser.add_argument("--audio-dir", type=Path, default=DEFAULT_AUDIO_DIR)
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--deck-id", default=DEFAULT_DECK_ID)
+    parser.add_argument("--deck-json", type=Path)
+    parser.add_argument("--slides-pdf", type=Path)
+    parser.add_argument("--audio-dir", type=Path)
+    parser.add_argument("--output", type=Path)
     parser.add_argument("--dpi-scale", type=float, default=4.0)
     parser.add_argument("--lead-in-seconds", type=float, default=1.0)
     parser.add_argument("--target-width", type=int, default=1920)
     parser.add_argument("--target-height", type=int, default=1080)
     parser.add_argument("--crf", type=int, default=18)
+    parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()
 
 
@@ -66,6 +63,47 @@ def audio_duration(path: Path) -> float:
     return info.frames / info.samplerate
 
 
+def resolve_audio_files(deck: dict, audio_dir: Path) -> list[Path]:
+    audio_files: list[Path] = []
+    missing: list[str] = []
+    for slide in deck["slides"]:
+        slide_number = int(slide["slide_number"])
+        slide_id = slide["slide_id"]
+        audio_path = (audio_dir / f"{slide_number:02d}_{slide_id}.wav").resolve()
+        if not audio_path.exists():
+            missing.append(audio_path.name)
+            continue
+        audio_files.append(audio_path)
+
+    if missing:
+        existing = sorted(path.name for path in audio_dir.glob("*.wav"))
+        detail = ""
+        if existing:
+            preview = ", ".join(existing[:4])
+            detail = (
+                f" Audio directory exists, but filenames do not match the current deck. "
+                f"Found examples: {preview}. This usually means the deck changed and you need to rerun TTS."
+            )
+        raise FileNotFoundError(
+            f"Missing {len(missing)} expected slide-audio file(s) in {audio_dir}. "
+            f"First missing file: {missing[0]}.{detail}"
+        )
+    return audio_files
+
+
+def validate_render_inputs(deck: dict, pdf_path: Path, audio_dir: Path) -> tuple[int, list[Path]]:
+    document = fitz.open(str(require_path(pdf_path.resolve(), "slide deck PDF")))
+    try:
+        if document.page_count != len(deck["slides"]):
+            raise ValueError(
+                f"PDF page count ({document.page_count}) does not match slide count ({len(deck['slides'])})."
+            )
+    finally:
+        document.close()
+    audio_files = resolve_audio_files(deck, audio_dir.resolve())
+    return len(deck["slides"]), audio_files
+
+
 def run_ffmpeg(command: list[str]) -> None:
     result = subprocess.run(command, capture_output=True, text=True, check=False)
     if result.returncode != 0:
@@ -94,6 +132,7 @@ def build_video(
         raise ValueError(f"target dimensions must be positive, got {target_width}x{target_height}.")
 
     output_path = output_path.resolve()
+    validate_render_inputs(deck, pdf_path, audio_dir)
     work_dir = ensure_directory(output_path.parent / output_path.stem)
     image_dir = ensure_directory(work_dir / "frames")
     segment_dir = ensure_directory(work_dir / "segments")
@@ -106,10 +145,7 @@ def build_video(
     for slide, image_path in zip(deck["slides"], images):
         slide_number = int(slide["slide_number"])
         slide_id = slide["slide_id"]
-        wav_path = require_path(
-            (audio_dir / f"{slide_number:02d}_{slide_id}.wav").resolve(),
-            f"audio for slide {slide_number}",
-        )
+        wav_path = require_path((audio_dir / f"{slide_number:02d}_{slide_id}.wav").resolve(), f"audio for slide {slide_number}")
         duration = audio_duration(wav_path)
         total_duration = duration + lead_in_seconds
         segment_path = segment_dir / f"{slide_number:02d}_{slide_id}.mp4"
@@ -178,12 +214,32 @@ def build_video(
 
 def main() -> int:
     args = parse_args()
-    deck = load_deck(args.deck_json)
+    deck_json = (args.deck_json or deck_json_path(REPO_ROOT, args.deck_id)).resolve()
+    deck = load_deck(deck_json)
+    resolved_deck_id = deck["deck_id"]
+    slides_pdf = (args.slides_pdf or slide_pdf_path(REPO_ROOT, resolved_deck_id)).resolve()
+    audio_dir = (args.audio_dir or audio_dir_path(REPO_ROOT, resolved_deck_id)).resolve()
+    output_path = (
+        args.output
+        or video_output_path(
+            REPO_ROOT,
+            Path(audio_dir).name if args.audio_dir else resolved_deck_id,
+        )
+    ).resolve()
+
+    if args.dry_run:
+        slide_count, audio_files = validate_render_inputs(deck, slides_pdf, audio_dir)
+        print(
+            f"Validated render inputs for deck '{resolved_deck_id}': "
+            f"{slide_count} slides, {len(audio_files)} audio files, PDF {slides_pdf.name}"
+        )
+        return 0
+
     build_video(
         deck=deck,
-        pdf_path=args.slides_pdf,
-        audio_dir=args.audio_dir.resolve(),
-        output_path=args.output,
+        pdf_path=slides_pdf,
+        audio_dir=audio_dir,
+        output_path=output_path,
         dpi_scale=args.dpi_scale,
         lead_in_seconds=args.lead_in_seconds,
         target_width=args.target_width,

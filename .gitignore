@@ -30,6 +30,15 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
+.ipynb_checkpoints/
+.python-version
 
 # Local environments and vendored dependencies
 .venv/
@@ -42,6 +51,14 @@ __pycache__/
 .pip-cache/
 .pip-cache-f5/
 .tmp/
+*.tmp
+*.bak
+*.orig
+
+# Editor and IDE metadata
+.vscode/
+.idea/
+*.code-workspace
 
 # OS metadata
 Thumbs.db
