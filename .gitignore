@@ -18,6 +18,7 @@
 
 # Generated media pipeline outputs
 /artifacts/
+/video_pipeline/output/
 
 # Local raw voice inputs
 /inputs/voice/*.wav
