@@ -23,6 +23,12 @@ Or, equivalently, by deck id:
 python .\tools\generate_section_media.py --deck-id ch01_inverse_functions
 ```
 
+The generated deck JSON can also be used to seed a storyboard-driven Manim lesson:
+
+```powershell
+python .\tools\seed_manim_storyboard.py --deck-id ch01_inverse_functions
+```
+
 ## Selector Pattern
 
 Selectors point to LaTeX environments inside one section:
@@ -51,3 +57,8 @@ Plans should stay slide-native:
 - formal definitions, theorems, assumptions, and final formulas remain mathematically exact
 - long explanations become bullets or narration, not slide paragraphs
 - figures should be selected explicitly instead of copied ad hoc into Python
+
+Manim note:
+
+- media plans and deck JSON can seed a storyboard draft
+- after seeding, the storyboard YAML becomes the runtime source of truth for the Manim path

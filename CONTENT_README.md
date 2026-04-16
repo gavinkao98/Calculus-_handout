@@ -10,7 +10,8 @@ It consolidates:
 The goal is that later chapters can follow this file directly.
 
 For the repository overview, see [`README.md`](README.md).
-For the slide, audio, and video generation workflow, see [`VIDEO_README.md`](VIDEO_README.md).
+For the storyboard-driven Manim workflow, see [`MANIM_README.md`](MANIM_README.md).
+For the slide/PDF audio and video workflow, see [`VIDEO_README.md`](VIDEO_README.md).
 
 ## Project Purpose
 

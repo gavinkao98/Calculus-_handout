@@ -1,12 +1,15 @@
 # Workflow Checklist
 
-This is the shortest operational checklist for the media pipeline.
+This is the shortest operational checklist for the slide/PDF media pipeline.
 
 Use the full guides when you need details:
 
+- [`MANIM_README.md`](MANIM_README.md)
 - [`SLIDES_README.md`](SLIDES_README.md)
 - [`SCRIPT_README.md`](SCRIPT_README.md)
 - [`VIDEO_README.md`](VIDEO_README.md)
+
+If you are using the storyboard-driven Manim path instead of the slide/PDF path, use [`MANIM_README.md`](MANIM_README.md) as the primary guide. In that path, the narration source of truth is each scene's `voiceover` field in `inputs/manim_storyboards/*.yml`, not `artifacts/scripts/*_final.md`.
 
 ## 1. Finalize The Lecture Notes
 

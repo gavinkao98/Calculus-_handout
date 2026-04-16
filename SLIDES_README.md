@@ -5,6 +5,7 @@ This file covers slide generation only.
 Use the other guides for adjacent work:
 
 - [`CONTENT_README.md`](CONTENT_README.md): textbook-writing rules
+- [`MANIM_README.md`](MANIM_README.md): storyboard-driven Manim workflow that can be seeded from a generated deck
 - [`SCRIPT_README.md`](SCRIPT_README.md): narration draft/final workflow
 - [`VIDEO_README.md`](VIDEO_README.md): audio synthesis and MP4 rendering
 - [`README.md`](README.md): repository overview
@@ -43,6 +44,7 @@ The generator is now plan-driven. The checked-in practice plan is:
 3. Run the generator.
 4. Inspect the generated deck JSON, Beamer source, and PDF.
 5. Hand off narration editing to [`SCRIPT_README.md`](SCRIPT_README.md).
+6. Optionally seed a Manim storyboard from the generated deck JSON if you want the animation path instead of the static-slide video path.
 
 Example:
 
@@ -54,6 +56,12 @@ If you only want JSON, `.tex`, and narration markdown:
 
 ```powershell
 python .\tools\generate_section_media.py --deck-id ch01_inverse_functions --compile never
+```
+
+If you want to branch into the Manim workflow after deck generation:
+
+```powershell
+python .\tools\seed_manim_storyboard.py --deck-id ch01_inverse_functions
 ```
 
 ## Plan Structure

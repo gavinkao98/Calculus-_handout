@@ -1,10 +1,11 @@
 # Script README
 
-This file covers narration drafting and editing only.
+This file covers narration drafting and editing for the slide/PDF workflow only.
 
 Use the other guides for adjacent work:
 
 - [`CONTENT_README.md`](CONTENT_README.md): textbook-writing rules
+- [`MANIM_README.md`](MANIM_README.md): storyboard-driven Manim workflow with scene-level `voiceover`
 - [`SLIDES_README.md`](SLIDES_README.md): slide generation and plan rules
 - [`VIDEO_README.md`](VIDEO_README.md): audio synthesis and MP4 rendering
 - [`README.md`](README.md): repository overview
@@ -19,6 +20,12 @@ Its job is to keep two things separate:
 - spoken narration that can be more conversational, pedagogical, or stylistically lively
 
 That means you are allowed to make the narration sound human, as long as the mathematics stays correct.
+
+Important scope note:
+
+- this file governs `artifacts/scripts/<deck_id>_final.md` for the slide/PDF path
+- it does not govern Manim storyboard narration
+- for Manim lessons, edit each scene's `voiceover` field in `inputs/manim_storyboards/*.yml`
 
 ## Relevant Paths
 
@@ -148,6 +155,7 @@ In practice:
 - if you want one joke in one section, edit the final narration file
 - if you want every freshly generated draft to start with a different tone, edit the plan file
 - if you want the markdown format itself to change, edit `tools/slide_script_workflow.py`
+- if you are working on a Manim lesson instead, do not edit the generated bridge markdown; edit the storyboard `voiceover` instead
 
 Version-control shortcut:
 

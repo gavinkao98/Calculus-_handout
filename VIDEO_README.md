@@ -1,10 +1,11 @@
 # Video README
 
-This file covers audio synthesis and MP4 rendering only.
+This file covers audio synthesis and MP4 rendering for the slide/PDF workflow only.
 
 Use the other guides for upstream stages:
 
 - [`CONTENT_README.md`](CONTENT_README.md): textbook-writing rules
+- [`MANIM_README.md`](MANIM_README.md): storyboard-driven Manim workflow, including scene-audio muxing
 - [`SLIDES_README.md`](SLIDES_README.md): slide generation and plan rules
 - [`SCRIPT_README.md`](SCRIPT_README.md): narration draft/final workflow
 - [`README.md`](README.md): repository overview
@@ -15,6 +16,8 @@ This stage starts after:
 
 - the slide deck has been generated
 - the final narration markdown has been edited and settled
+
+If you are rendering a storyboard-driven Manim lesson instead, use [`MANIM_README.md`](MANIM_README.md). The TTS scripts documented here can still be reused there through the bridge deck and bridge script files, but the narration source of truth is different.
 
 Its job is to:
 
@@ -101,6 +104,7 @@ Notes:
 - XTTS v2 requires explicit agreement to Coqui CPML terms
 - TTS reads the final narration file only
 - built-in voices can be routed to a custom output directory if you want to keep multiple audio variants
+- in the Manim path, these same TTS tools are used through exported bridge files; see [`MANIM_README.md`](MANIM_README.md)
 
 ## F5-TTS
 
