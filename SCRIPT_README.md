@@ -22,8 +22,8 @@ That means you are allowed to make the narration sound human, as long as the mat
 
 ## Relevant Paths
 
-- `artifacts/scripts/<deck_id>_draft.md`: regenerated draft narration
-- `artifacts/scripts/<deck_id>_final.md`: user-owned narration file
+- `artifacts/scripts/<deck_id>_draft.md`: regenerated draft narration, disposable, and normally ignored by Git
+- `artifacts/scripts/<deck_id>_final.md`: user-owned narration file and the version-control copy you should keep
 - `tools/slide_script_workflow.py`: markdown rendering and parsing rules
 - `tools/synthesize_section_audio.py`: Coqui TTS reads the final narration file
 - `tools/synthesize_section_audio_f5.py`: F5-TTS reads the final narration file
@@ -42,6 +42,7 @@ Important rule:
 
 - do not hand-edit the draft file
 - do hand-edit the final file
+- commit the final file when you want narration changes to remain in project history
 
 ## What You May Edit In The Final File
 
@@ -147,6 +148,11 @@ In practice:
 - if you want one joke in one section, edit the final narration file
 - if you want every freshly generated draft to start with a different tone, edit the plan file
 - if you want the markdown format itself to change, edit `tools/slide_script_workflow.py`
+
+Version-control shortcut:
+
+- `*_final.md` is the tracked narration artifact
+- `*_draft.md` remains regenerated working output
 
 ## Troubleshooting
 

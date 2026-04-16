@@ -45,6 +45,8 @@ Remember:
 
 - `*_draft.md` is disposable and regenerated
 - `*_final.md` is user-owned and preserved
+- commit `artifacts/slides/<deck_id>.tex` and `artifacts/scripts/<deck_id>_final.md` when you want those reviewable outputs in Git history
+- do not commit `*_draft.md`, slide PDFs, or LaTeX build artifacts
 
 ## 4. Edit Narration In The Right File
 

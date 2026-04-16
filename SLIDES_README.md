@@ -31,8 +31,8 @@ The generator is now plan-driven. The checked-in practice plan is:
 - `chapters/`: lecture-note LaTeX source
 - `inputs/media_plans/`: section media plans
 - `artifacts/slide_spec/`: generated deck JSON
-- `artifacts/slides/`: generated Beamer `.tex` and slide PDF
-- `artifacts/scripts/`: generated narration draft and final files
+- `artifacts/slides/`: generated Beamer `.tex` and slide PDF; the `.tex` file may be checked in, while the PDF remains generated output
+- `artifacts/scripts/`: generated narration draft and final files; the final file is the user-owned version-control copy
 - `tools/generate_section_media.py`: generator
 - `schemas/slide_deck.schema.json`: deck schema
 
@@ -133,6 +133,12 @@ Important behavior:
 - the generator validates plan structure and fails fast when a selector no longer matches the LaTeX section
 - the generator defaults to `--compile auto`
 - the compile command explicitly enables MiKTeX's installer
+
+Version-control note:
+
+- commit `artifacts/slides/<deck_id>.tex` when you want the generated Beamer source in Git history
+- commit `artifacts/scripts/<deck_id>_final.md` when narration edits for that deck should be preserved in Git history
+- keep `artifacts/slides/<deck_id>.pdf` and LaTeX build byproducts as generated outputs, not tracked sources
 
 Compile modes:
 
