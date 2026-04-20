@@ -19,6 +19,7 @@ Full references:
 - [`SCRIPT_README.md`](SCRIPT_README.md): narration draft/final workflow (slide/PDF path)
 - [`VIDEO_README.md`](VIDEO_README.md): audio synthesis and MP4 rendering (slide/PDF path)
 - [`MANIM_README.md`](MANIM_README.md): storyboard-driven Manim workflow
+- [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md): translation guide for turning a finalized chapter section into a Manim storyboard YAML
 
 ## Repository Layout
 
@@ -43,7 +44,8 @@ Media-plan note:
 
 Manim-storyboard note:
 - keep storyboard files under `inputs/manim_storyboards/`
-- use `tools/seed_manim_storyboard.py` to draft a storyboard from an existing deck JSON, then edit the YAML directly
+- **recommended workflow**: write the storyboard by hand directly from the finalized LaTeX source in `chapters/*.tex`, following the translation rules in [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md)
+- **legacy bootstrap**: `tools/seed_manim_storyboard.py` produces a first-draft YAML from an existing deck JSON (from the slide/PDF pipeline). Seeding is retained for one-off bootstrapping; it is not the designed path and a seeded draft still needs substantial manual revision to reach the quality bar described in `STORYBOARD_AUTHORING.md`
 - the storyboard owns Manim `voiceover` text and can optionally bridge back into the existing TTS scripts
 - `render_manim_lesson.py --with-audio` writes bridge files to `artifacts/manim/<deck_id>/narration.md` and `artifacts/manim/<deck_id>/tts_deck.json`
 - you can edit `narration.md` for proofreading, then run `sync_narration_back.py` to push changes back to the YAML
@@ -77,13 +79,25 @@ If you are generating media, first decide which pipeline:
 
 ## Current Scope
 
-The book source is general, and the slide generator is now plan-driven. At the moment, the checked-in practice plan is still centered on:
+The book source is general, and the slide generator is now plan-driven. At the moment, the checked-in practice material is still centered on:
 
-- `chapters/ch01_foundations.tex`
-- the section `Inverse Functions and One-to-One Functions`
-- the plan `inputs/media_plans/ch01_inverse_functions.json`
-- the storyboard `inputs/manim_storyboards/ch01_inverse_functions.yml`
-- generated and reviewable media assets under `artifacts/`
+- `chapters/ch01_foundations.tex` Section 1.1 ("Inverse Functions")
+- the storyboard [`inputs/manim_storyboards/ch01_inverse_functions.yml`](inputs/manim_storyboards/ch01_inverse_functions.yml) -- currently v2, hand-authored against `STORYBOARD_AUTHORING.md` v1.2 with 19 scenes including two `section_transition` interludes and three supplementary `graph_focus` visualizations not present in the book prose
+- the slide/PDF pipeline plan [`inputs/media_plans/ch01_inverse_functions.json`](inputs/media_plans/ch01_inverse_functions.json) -- still tracked for the slide path; the Manim path no longer depends on this plan
+- generated and reviewable media assets under `artifacts/` -- last preview render produced an 8:09 MP4 at 960x540 with Coqui Jenny builtin narration covering all 19 scenes; see *Known open items* below for the follow-up pacing issue
+
+### Known open items
+
+Project-level tracking of rules that are authoritative in [`CONTENT_README.md`](CONTENT_README.md) or [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md) but not yet fully realized in every in-scope chapter:
+
+- **End-of-section exercises.** Chapter 1 currently carries `% TODO: add \subsection*{Exercises} block ...` placeholders at the end of every section (1.1 through 1.6). The Exercise Policy in `CONTENT_README.md` is the target; the TODO markers are the audit trail. Replacing each TODO with a real exercise block is the remaining work.
+- **Manim scene pacing vs. narration.** The pipeline synchronizes only scene-total duration (`scene_exit: "hold"` + `minimum_duration_seconds` floor), not within-scene animation beats. In the current §1.1 render, `example_walkthrough` scenes with `decay_previous: true` (the default) can dim earlier `math_lines` before the TTS narration reaches its verbal reference to those lines. Fix path: audit each `example_walkthrough` whose voiceover calls back to an earlier step, set `data.decay_previous: false` for those scenes, and optionally slow `theme.transitions.context_decay` globally. No rule change needed -- `STORYBOARD_AUTHORING.md` v1.2 does not yet encode this as a SHOULD; a future revision should add it once the fix is validated.
+
+Entries in this list are not exceptions to the rules (per-chapter exceptions are documented under the Exception Protocol in `CONTENT_README.md`). They are known incomplete areas where the rule has been written before the content has been filled in. An item is removed from this list only when the corresponding rule is fully satisfied in every in-scope chapter.
+
+### Media scope: exercises are book-only
+
+End-of-section `\subsection*{Exercises}` blocks are for student self-practice on the printed/PDF book only. They are **not** included in any media pipeline — not in slide decks, narration scripts, Manim storyboards, synthesized audio, or rendered video. When planning a section media plan or Manim storyboard, ignore the exercise block of the source section and build the storyboard from the definitions, theorems, examples, and exposition prose. The book-level exercise TODOs under *Known open items* are therefore not a blocker for video readiness.
 
 ## Media Workflow Snapshot
 
@@ -97,7 +111,7 @@ The current media flow is intentionally staged:
 
 The Manim path now exists in parallel:
 
-1. seed `inputs/manim_storyboards/<deck_id>.yml` from an existing deck JSON
+1. hand-write `inputs/manim_storyboards/<deck_id>.yml` directly from the LaTeX chapter source, following [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md) (or, as a legacy bootstrap, run `tools/seed_manim_storyboard.py` against an existing deck JSON and then hand-revise the seeded YAML into compliance)
 2. edit storyboard scenes, `voiceover`, timings, and optional hooks directly
 3. preview one scene at a time until the animation feels right
 4. run `render_manim_lesson.py --with-audio` once to export the bridge narration files

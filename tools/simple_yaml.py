@@ -22,7 +22,10 @@ def load_yaml(text: str) -> Any:
     lines = text.splitlines()
 
     def skip_blank_lines(position: int) -> int:
-        while position < len(lines) and not lines[position].strip():
+        while position < len(lines):
+            stripped = lines[position].strip()
+            if stripped and not stripped.startswith("#"):
+                break
             position += 1
         return position
 

@@ -1,6 +1,6 @@
 # Calculus Textbook Project: Master Writing Guide
 
-**Version 2.0.4** — adds four structural rules codified from the Chapter 1 review and closes two rule-vs-manuscript gaps: the index policy is now backed by real build infrastructure (`imakeidx`, `\makeindex`, `\printindex`), and end-of-section exercise placeholders are formalized via TODO markers and Known Open Items tracking. Earlier foundations (rationale framework, shared counters for formal statements, two-tier exercise policy, cross-reference/typography/index/exception protocols) are retained from v2.0.
+**Version 2.0.4** — adds four structural rules codified from the Chapter 1 review and closes two rule-vs-manuscript gaps: the index policy is now backed by real build infrastructure (`imakeidx`, `\makeindex`, `\printindex`), and end-of-section exercise placeholders are formalized via TODO markers and Known Open Items tracking (maintained in [`README.md`](README.md)). Earlier foundations (rationale framework, shared counters for formal statements, two-tier exercise policy, cross-reference/typography/index/exception protocols) are retained from v2.0.
 
 This file is the authoritative writing context for future chapter drafting and revision in this project.
 It consolidates:
@@ -878,7 +878,7 @@ Individual chapters may occasionally need to deviate from a rule in this documen
 
 1. Document the exception in a comment at the top of the chapter file, immediately after the `\chapter{...}` command:
 
-   ```
+   ```latex
    % Exception: uses [htbp] placement for Figure 1.9 to avoid a full blank page.
    % Rule: Figure Placement Policy rule 1 (default [H]).
    % Reason: the four-panel figure is taller than the typical [H] budget,
@@ -959,14 +959,6 @@ Typography and index:
 Source hygiene:
 - no custom macros were introduced into chapter files
 - any deviation from the rules is documented under the Exception Protocol
-
-### Known open items
-
-Some rules in this document are authoritative for style but not yet fully realized in every chapter. The following gaps are tracked explicitly so that "rule written" is not confused with "book finished":
-
-- **End-of-section exercises.** Chapter 1 currently carries `% TODO: add \subsection*{Exercises} block ...` placeholders at the end of every section (1.1 through 1.6). The Exercise Policy is the target; the TODO markers are the audit trail. Replacing each TODO with a real exercise block is the remaining work.
-
-Entries in this list are not exceptions to the rules (exceptions go under the Exception Protocol). They are known incomplete areas where the rule has been written before the content has been filled in. An item is removed from this list only when the corresponding rule is fully satisfied in every in-scope chapter.
 
 ## One-Sentence House Rule
 

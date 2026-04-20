@@ -19,7 +19,9 @@ This pipeline adds a second video path alongside the existing slide/PDF renderer
 - optionally bridge the storyboard voiceover into the existing TTS scripts
 - concatenate scene videos into one lesson MP4
 
-The storyboard is the source of truth for Manim output. Existing `media plan` and `deck JSON` files are used only to seed a first draft.
+The storyboard is the source of truth for Manim output. The recommended workflow is to hand-write the storyboard directly from the LaTeX chapter source using [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md) as the translation playbook. `tools/seed_manim_storyboard.py` remains available as a legacy bootstrap path that produces a first-draft YAML from an existing deck JSON; a seeded draft still needs substantial hand-revision before it matches the quality bar.
+
+**Authoring a new storyboard from a chapter section?** This file is the *reference* layer — field contracts, template catalog, visual design system, render commands. For the *methodology* layer — how to decompose a section into scenes, map textbook environments to templates, rewrite prose as spoken narration, and handle book figures — see [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md).
 
 ## Design: Midnight Canvas
 
@@ -376,7 +378,7 @@ The `narration.md` file is a clean, readable transcript of all scene narrations 
 
 ## Commands
 
-Seed a storyboard from the existing deck JSON:
+Seed a storyboard from an existing deck JSON (legacy bootstrap path -- prefer hand-writing per [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md)):
 
 ```powershell
 python .\tools\seed_manim_storyboard.py --deck-id ch01_inverse_functions

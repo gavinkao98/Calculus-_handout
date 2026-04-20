@@ -75,6 +75,9 @@ htmlcov/
 .idea/
 *.code-workspace
 
+# Claude Code session state (scheduled tasks, internal bookkeeping)
+.claude/
+
 # OS metadata
 Thumbs.db
 Desktop.ini
