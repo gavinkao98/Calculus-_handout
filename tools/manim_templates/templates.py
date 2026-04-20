@@ -19,7 +19,6 @@ Colour semantics
 
 from __future__ import annotations
 
-import math
 from typing import Any
 
 from manim import (
@@ -36,6 +35,7 @@ from manim import (
     MathTex,
     RIGHT,
     Tex,
+    TransformMatchingTex,
     UP,
     VGroup,
     Write,
@@ -44,6 +44,7 @@ from manim import (
 from manim_storyboard_workflow import to_mathtex_body, to_tex_text
 
 from .helpers import parbox_tex, theme_color
+from .graph_utils import safe_eval_expression
 from .layout import SceneLayout
 
 
@@ -72,6 +73,7 @@ def _math_anim(entry) -> str:
 def _make_math(entry, theme, *, max_w: float = 8.0) -> MathTex:
     m = MathTex(
         to_mathtex_body(_math_text(entry)),
+        substrings_to_isolate=["="],
         color=theme_color(theme, "math"),
         font_size=float(theme["typography"]["math_size"]),
     )
@@ -80,19 +82,81 @@ def _make_math(entry, theme, *, max_w: float = 8.0) -> MathTex:
     return m
 
 
-def _play_math(scene, mob, anim: str, theme) -> None:
-    speed = float(theme["transitions"].get("write_speed", 0.8))
+def _pace(theme: dict[str, Any], band: str = "normal") -> float:
+    transitions = theme["transitions"]
+    if band == "quick":
+        return float(transitions.get("quick_step", 0.35))
+    if band == "hero":
+        return float(transitions.get("hero_write", 1.6))
+    if band == "decay":
+        return float(transitions.get("context_decay", 0.25))
+    return float(transitions.get("write_speed", 0.8))
+
+
+def _equals_anchor(mob: MathTex):
+    return mob.get_part_by_tex("=")
+
+
+def _resolve_math_layout(layout_mode: str, math_mobs: list[MathTex]) -> str:
+    if layout_mode != "auto":
+        return layout_mode
+    anchored = sum(1 for mob in math_mobs if _equals_anchor(mob) is not None)
+    return "equals_aligned" if anchored >= 2 else "left"
+
+
+def _arrange_math_stack(math_mobs: list[MathTex], *, buff: float, layout_mode: str) -> VGroup:
+    group = VGroup(*math_mobs).arrange(DOWN, aligned_edge=LEFT, buff=buff)
+    if _resolve_math_layout(layout_mode, math_mobs) != "equals_aligned":
+        return group
+
+    anchored = [(mob, _equals_anchor(mob)) for mob in math_mobs]
+    anchored = [(mob, anchor) for mob, anchor in anchored if anchor is not None]
+    if len(anchored) < 2:
+        return group
+
+    target_x = anchored[0][1].get_center()[0]
+    for mob, anchor in anchored[1:]:
+        mob.shift((target_x - anchor.get_center()[0]) * RIGHT)
+    return group
+
+
+def _dim_previous(scene, mobjects: list[Any], theme) -> None:
+    animations = []
+    context_color = theme["colors"].get("context", theme["colors"].get("muted_text"))
+    for mob in mobjects:
+        if mob is None:
+            continue
+        animations.append(mob.animate.set_color(context_color).set_opacity(0.55))
+    if animations:
+        scene.play(*animations, run_time=_pace(theme, "decay"))
+
+
+def _transform_from_previous(scene, previous_mob: MathTex, mob: MathTex, theme) -> None:
+    source = previous_mob.copy().set_color(theme_color(theme, "math")).set_opacity(1.0)
+    scene.add(source)
+    scene.play(
+        TransformMatchingTex(source, mob),
+        run_time=_pace(theme, "normal"),
+    )
+    scene.remove(source)
+
+
+def _play_math(scene, mob, anim: str, theme, *, previous_mob: MathTex | None = None) -> None:
+    speed = _pace(theme, "normal")
+    quick = _pace(theme, "quick")
     if anim == "highlight":
         if mob.width > 8.0:
-            scene.play(FadeIn(mob, shift=0.1 * UP), run_time=speed)
+            scene.play(FadeIn(mob, shift=0.1 * UP), run_time=_pace(theme, "hero"))
         else:
-            scene.play(Write(mob), run_time=speed)
+            scene.play(Write(mob), run_time=_pace(theme, "hero"))
         # Brief glow: flash the highlight colour, then settle
         mob_copy = mob.copy().set_color(theme_color(theme, "highlight"))
         scene.play(FadeIn(mob_copy, run_time=0.2))
         scene.play(FadeOut(mob_copy, run_time=0.3))
+    elif anim == "transform_from_previous" and previous_mob is not None:
+        _transform_from_previous(scene, previous_mob, mob, theme)
     elif anim == "fade":
-        scene.play(FadeIn(mob, shift=0.1 * UP), run_time=0.45)
+        scene.play(FadeIn(mob, shift=0.1 * UP), run_time=quick)
     else:  # "write"
         if mob.width > 8.0:
             scene.play(FadeIn(mob, shift=0.1 * UP), run_time=speed)
@@ -224,7 +288,8 @@ def render_definition_math(scene, spec: dict[str, Any], ctx: dict[str, Any]) -> 
     scene.wait(0.25)
 
     for i, m in enumerate(maths):
-        _play_math(scene, m, _math_anim(data["math_lines"][i]), theme)
+        previous_math = maths[i - 1] if i > 0 else None
+        _play_math(scene, m, _math_anim(data["math_lines"][i]), theme, previous_mob=previous_math)
         scene.wait(0.15)
 
     if support_group:
@@ -242,6 +307,7 @@ def render_example_walkthrough(scene, spec: dict[str, Any], ctx: dict[str, Any])
     lay = SceneLayout(theme)
     data = spec["data"]
     color = _ct_color_name(spec, ctx)
+    quick = _pace(theme, "quick")
 
     title = _title(spec["title"], theme, layout=lay)
     lbl = _label("EXAMPLE", theme, color_name=color, size_key="section_label_size")
@@ -277,7 +343,7 @@ def render_example_walkthrough(scene, spec: dict[str, Any], ctx: dict[str, Any])
     # Math on the right
     math_mobs = [_make_math(e, theme, max_w=5.0) for e in math_lines]
     if math_mobs:
-        mw = VGroup(*math_mobs).arrange(DOWN, aligned_edge=LEFT, buff=0.35)
+        mw = _arrange_math_stack(math_mobs, buff=0.35, layout_mode=data.get("math_layout", "auto"))
         mw.next_to(steps_group, RIGHT, buff=0.8)
         mw.align_to(steps_group, UP)
 
@@ -293,18 +359,50 @@ def render_example_walkthrough(scene, spec: dict[str, Any], ctx: dict[str, Any])
 
     # ── Animate ──
     scene.play(FadeIn(title, shift=0.15 * DOWN), run_time=0.5)
-    scene.play(FadeIn(lbl, shift=0.08 * LEFT), run_time=0.3)
-    scene.play(Create(rule), run_time=0.3)
+    scene.play(FadeIn(lbl, shift=0.08 * LEFT), run_time=quick)
+    scene.play(Create(rule), run_time=quick)
 
+    decay_previous = data.get("decay_previous", True)
+    active_step = None
+    active_math = None
     for i, row in enumerate(step_mobs):
-        scene.play(FadeIn(row, shift=0.1 * RIGHT), run_time=0.45)
+        current_anim = _math_anim(math_lines[i]) if i < len(math_mobs) else None
+        if decay_previous:
+            to_dim = [active_step]
+            if not (current_anim == "transform_from_previous" and active_math is not None):
+                to_dim.append(active_math)
+            _dim_previous(scene, to_dim, theme)
+        scene.play(FadeIn(row, shift=0.1 * RIGHT), run_time=quick)
+        previous_math = active_math
+        active_step = row
         if i < len(math_mobs):
-            _play_math(scene, math_mobs[i], _math_anim(math_lines[i]), theme)
+            _play_math(
+                scene,
+                math_mobs[i],
+                _math_anim(math_lines[i]),
+                theme,
+                previous_mob=previous_math,
+            )
+            active_math = math_mobs[i]
         scene.wait(0.1)
 
     # Remaining math
     for j in range(len(step_mobs), len(math_mobs)):
-        _play_math(scene, math_mobs[j], _math_anim(math_lines[j]), theme)
+        previous_math = active_math
+        current_anim = _math_anim(math_lines[j])
+        if decay_previous:
+            to_dim = []
+            if not (current_anim == "transform_from_previous" and active_math is not None):
+                to_dim.append(active_math)
+            _dim_previous(scene, to_dim, theme)
+        _play_math(
+            scene,
+            math_mobs[j],
+            _math_anim(math_lines[j]),
+            theme,
+            previous_mob=previous_math,
+        )
+        active_math = math_mobs[j]
 
     scene.play(FadeIn(takeaway, shift=0.08 * UP), run_time=0.4)
     scene.wait(float(theme["transitions"]["section_pause"]))
@@ -469,6 +567,7 @@ def render_procedure_steps(scene, spec: dict[str, Any], ctx: dict[str, Any]) -> 
     lay = SceneLayout(theme)
     data = spec["data"]
     color = _ct_color_name(spec, ctx)
+    quick = _pace(theme, "quick")
 
     title = _title(spec["title"], theme, layout=lay)
     rule = _thin_rule(lay.usable_width() * 0.85, theme, color)
@@ -499,20 +598,22 @@ def render_procedure_steps(scene, spec: dict[str, Any], ctx: dict[str, Any]) -> 
     math_mobs = [_make_math(e, theme, max_w=8.0) for e in eqs]
     eq_group = None
     if math_mobs:
-        eq_group = VGroup(*math_mobs).arrange(DOWN, buff=0.4)
+        eq_group = _arrange_math_stack(math_mobs, buff=0.4, layout_mode=data.get("math_layout", "auto"))
         eq_group.next_to(step_group, DOWN, buff=0.55)
+        eq_group.align_to(step_group, LEFT)
 
     # ── Animate ──
     scene.play(FadeIn(title, shift=0.15 * DOWN), run_time=0.5)
-    scene.play(Create(rule), run_time=0.3)
+    scene.play(Create(rule), run_time=quick)
 
     for row in step_mobs:
-        scene.play(FadeIn(row, shift=0.1 * RIGHT), run_time=0.5)
+        scene.play(FadeIn(row, shift=0.1 * RIGHT), run_time=quick)
 
     if math_mobs:
         scene.wait(0.2)
         for j, m in enumerate(math_mobs):
-            _play_math(scene, m, _math_anim(eqs[j]), theme)
+            previous_math = math_mobs[j - 1] if j > 0 else None
+            _play_math(scene, m, _math_anim(eqs[j]), theme, previous_mob=previous_math)
             scene.wait(0.1)
 
     scene.wait(float(theme["transitions"]["section_pause"]))
@@ -773,17 +874,3 @@ def render_comparison(scene, spec: dict[str, Any], ctx: dict[str, Any]) -> None:
 # Expression evaluator (graph_focus)
 # ═══════════════════════════════════════════════════════════════════════════
 
-def _cbrt(x: float) -> float:
-    """Cube root that handles negative inputs correctly."""
-    return math.copysign(abs(x) ** (1.0 / 3.0), x)
-
-
-def safe_eval_expression(expression: str, x: float) -> float:
-    ns = {
-        "x": x, "math": math,
-        "sin": math.sin, "cos": math.cos, "tan": math.tan,
-        "sqrt": math.sqrt, "exp": math.exp, "log": math.log,
-        "cbrt": _cbrt,
-        "pi": math.pi, "e": math.e, "abs": abs,
-    }
-    return float(eval(expression, {"__builtins__": {}}, ns))

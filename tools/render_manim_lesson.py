@@ -11,7 +11,7 @@ from manim_storyboard_workflow import (
     load_render_manifest,
     load_storyboard,
     resolve_storyboard_path,
-    scene_fingerprint,
+    scene_visual_fingerprint,
     write_render_manifest,
 )
 from media_paths import (
@@ -57,12 +57,13 @@ def main() -> int:
 
     for scene in scenes:
         output_path = manim_scene_output_path(REPO_ROOT, storyboard["deck_id"], scene["scene_number"], scene["scene_id"]).resolve()
-        fingerprint = scene_fingerprint(storyboard, scene, args.quality)
+        fingerprint = scene_visual_fingerprint(storyboard, scene, args.quality)
         cached = manifest.setdefault("scenes", {}).get(scene["scene_id"], {})
+        cached_fingerprint = cached.get("visual_fingerprint") or cached.get("fingerprint")
         if (
             not args.force
             and output_path.exists()
-            and cached.get("fingerprint") == fingerprint
+            and cached_fingerprint == fingerprint
             and cached.get("quality") == args.quality
         ):
             rendered_scene_paths.append(output_path)
@@ -75,6 +76,7 @@ def main() -> int:
         rendered = render_storyboard_scene(storyboard_path, storyboard, scene, output_path, args.quality)
         manifest["scenes"][scene["scene_id"]] = {
             "fingerprint": fingerprint,
+            "visual_fingerprint": fingerprint,
             "quality": args.quality,
             "output_file": str(rendered),
         }

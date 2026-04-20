@@ -7,6 +7,7 @@ from typing import Any
 
 
 SCALAR_NUMBER_RE = re.compile(r"^-?(?:0|[1-9]\d*)(?:\.\d+)?$")
+BLOCK_SCALAR_RE = re.compile(r"^(?P<style>[|>])(?P<chomp>[-+]?)$")
 
 
 class SimpleYamlError(ValueError):
@@ -44,6 +45,56 @@ def load_yaml(text: str) -> Any:
         if SCALAR_NUMBER_RE.match(token):
             return float(token) if "." in token else int(token)
         return token
+
+    def parse_block_scalar(header: str, parent_indent: int, position: int) -> tuple[str, int]:
+        match = BLOCK_SCALAR_RE.match(header.strip())
+        if match is None:
+            raise SimpleYamlError(f"Unsupported block scalar header: {header}")
+
+        content_indent = parent_indent + 2
+        content_lines: list[str] = []
+
+        while position < len(lines):
+            line = lines[position]
+            if not line.strip():
+                content_lines.append("")
+                position += 1
+                continue
+
+            current_indent = indentation_of(line)
+            if current_indent < content_indent:
+                break
+
+            content_lines.append(line[content_indent:])
+            position += 1
+
+        if match.group("style") == "|":
+            text = "\n".join(content_lines)
+        else:
+            text = fold_block_scalar(content_lines)
+
+        if content_lines and match.group("chomp") != "-":
+            text += "\n"
+
+        return text, position
+
+    def fold_block_scalar(content_lines: list[str]) -> str:
+        folded_parts: list[str] = []
+        current_paragraph: list[str] = []
+
+        for line in content_lines:
+            if line == "":
+                if current_paragraph:
+                    folded_parts.append(" ".join(current_paragraph))
+                    current_paragraph = []
+                folded_parts.append("")
+                continue
+            current_paragraph.append(line)
+
+        if current_paragraph:
+            folded_parts.append(" ".join(current_paragraph))
+
+        return "\n".join(folded_parts)
 
     def parse_block(expected_indent: int, position: int) -> tuple[Any, int]:
         position = skip_blank_lines(position)
@@ -101,6 +152,9 @@ def load_yaml(text: str) -> Any:
                 value, position = parse_block(expected_indent + 2, position)
                 if value is None:
                     value = {}
+            elif BLOCK_SCALAR_RE.match(remainder):
+                position += 1
+                value, position = parse_block_scalar(remainder, expected_indent, position)
             else:
                 value = parse_scalar(remainder)
                 position += 1
@@ -138,6 +192,12 @@ def load_yaml(text: str) -> Any:
                 items.append(value)
                 continue
 
+            if BLOCK_SCALAR_RE.match(remainder):
+                position += 1
+                value, position = parse_block_scalar(remainder, expected_indent, position)
+                items.append(value)
+                continue
+
             items.append(parse_scalar(remainder))
             position += 1
 
@@ -163,7 +223,10 @@ def render_yaml(value: Any, indent: int = 0) -> str:
         for key, item in value.items():
             if not isinstance(key, str):
                 raise SimpleYamlError(f"Only string keys are supported, got {type(key)!r}.")
-            if is_scalar(item):
+            if isinstance(item, str) and "\n" in item:
+                parts.append(f"{prefix}{key}: |-\n")
+                parts.append(render_block_scalar(item, indent + 2))
+            elif is_scalar(item):
                 parts.append(f"{prefix}{key}: {render_scalar(item)}\n")
             else:
                 parts.append(f"{prefix}{key}:\n{render_yaml(item, indent + 2)}")
@@ -174,7 +237,10 @@ def render_yaml(value: Any, indent: int = 0) -> str:
             return prefix + "[]\n"
         parts = []
         for item in value:
-            if is_scalar(item):
+            if isinstance(item, str) and "\n" in item:
+                parts.append(f"{prefix}- |-\n")
+                parts.append(render_block_scalar(item, indent + 2))
+            elif is_scalar(item):
                 parts.append(f"{prefix}- {render_scalar(item)}\n")
             else:
                 parts.append(f"{prefix}-\n{render_yaml(item, indent + 2)}")
@@ -187,6 +253,16 @@ def is_scalar(value: Any) -> bool:
     if value is None or isinstance(value, (bool, int, float, str)):
         return True
     return value == [] or value == {}
+
+
+def render_block_scalar(value: str, indent: int) -> str:
+    prefix = " " * indent
+    lines = value.split("\n")
+    if lines and lines[-1] == "":
+        lines = lines[:-1]
+    if not lines:
+        return prefix + "\n"
+    return "".join(f"{prefix}{line}\n" for line in lines)
 
 
 def render_scalar(value: Any) -> str:

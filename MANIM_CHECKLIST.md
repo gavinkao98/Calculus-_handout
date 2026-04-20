@@ -12,6 +12,7 @@ Related docs: [`MANIM_README.md`](MANIM_README.md) (full reference), [`CONTENT_R
 python -c "import manim; print(manim.__version__)"          # >= 0.20.1
 ffmpeg -version                                               # any recent version
 python -c "import torch; print(torch.cuda.is_available())"   # True preferred (GPU TTS)
+python -c "import matplotlib; print(matplotlib.__version__)" # optional graph_focus debug preview
 ```
 
 Optional (TTS only):
@@ -55,6 +56,7 @@ The storyboard YAML is the **single source of truth**. Edit per scene:
 - One teaching idea per scene
 - One spoken paragraph per `voiceover`
 - `voiceover` and `data` complement each other, never duplicate
+- Use YAML block scalars (`|` / `>`) when narration paragraphs or LaTeX blocks become hard to read as one escaped line
 
 ### Template Selection Guide
 
@@ -62,9 +64,9 @@ The storyboard YAML is the **single source of truth**. Edit per scene:
 |----------|-------------|---------------|
 | `title_bullets` | Opening or overview | `bullets` |
 | `definition_math` | Formal definition or proposition | `statement`, `math_lines` |
-| `example_walkthrough` | Worked example with steps | `steps`, `takeaway`, `math_lines` (opt) |
+| `example_walkthrough` | Worked example with steps | `steps`, `takeaway`, `math_lines` (opt), `math_layout` (opt), `decay_previous` (opt) |
 | `graph_focus` | Showing a graph/plot | `axes`, `plots`, `annotations` |
-| `procedure_steps` | Step-by-step algorithm | `steps`, `worked_equations` |
+| `procedure_steps` | Step-by-step algorithm | `steps`, `worked_equations`, `math_layout` (opt) |
 | `recap_cards` | End-of-section summary | `points`, `identities` |
 | `section_transition` | Topic change interlude | `subtitle` (opt), `upcoming` (opt) |
 | `theorem_proof` | Theorem + proof | `theorem_statement`, `proof_steps` |
@@ -94,6 +96,12 @@ Force re-render after code changes:
 python .\tools\preview_manim_scene.py --deck-id <DECK_ID> --scene-id <SCENE_ID> --force
 ```
 
+For `graph_focus` scenes, use the fast Matplotlib preview when you only need to tune a curve or `label_x`:
+
+```powershell
+python .\tools\preview_graph_focus.py --deck-id <DECK_ID> --scene-id <SCENE_ID>
+```
+
 Repeat until every scene looks right.
 
 ---
@@ -116,6 +124,8 @@ Watch `artifacts/video/<DECK_ID>_manim.mp4`. Check:
 - [ ] All scenes present in correct order
 - [ ] LaTeX renders without errors
 - [ ] Midnight Canvas aesthetic intact
+- [ ] Active equation stays visually dominant; old context dims cleanly
+- [ ] Algebra derivations with multiple `=` lines feel stable rather than jumpy
 - [ ] Transitions smooth
 
 ---
@@ -175,6 +185,7 @@ Output: `artifacts/audio/<DECK_ID>_manim/01_<scene_id>.wav` through `NN_<scene_i
 ### 5c. Listen and verify
 
 Play individual WAV files. If a scene sounds wrong, adjust `voiceover` in the YAML, re-export bridge files (repeat 5a), and re-run TTS for that scene with `--max-slides N`.
+Narration-only edits now reuse the cached silent Manim scene video, so you should not need to re-render the visuals unless the scene's visual data changed.
 
 ---
 
@@ -214,6 +225,7 @@ Checklist:
 ```
 inputs/manim_storyboards/<DECK_ID>.yml     <- source of truth (edit this)
 artifacts/manim/<DECK_ID>/scenes/          <- cached scene MP4s
+artifacts/manim/<DECK_ID>/graph_previews/  <- fast graph debug PNGs
 artifacts/manim/<DECK_ID>/segments/        <- muxed scene+audio MP4s
 artifacts/manim/<DECK_ID>/tts_deck.json    <- TTS bridge deck
 artifacts/manim/<DECK_ID>/narration.md     <- Manim narration (proofread here, sync back to YAML)
@@ -229,10 +241,11 @@ artifacts/video/<DECK_ID>_manim.mp4        <- final output
 |---------|-----|
 | `ModuleNotFoundError: manim` | `pip install manim` |
 | `FFmpeg is not available` | Install ffmpeg or `pip install imageio-ffmpeg` |
+| `matplotlib is not installed` | Install `matplotlib` if you want to use `preview_graph_focus.py` |
 | `Missing voice reference WAV` | Provide `artifacts/voice/reference_30s.wav` or use `--voice-mode builtin` / `--reference-mode example` |
 | `XTTS v2 requires explicit agreement` | Add `--coqui-tos-agreed` |
 | Scene not re-rendering after edits | Use `--force` (fingerprint may have matched) |
-| `Hook could not be resolved` | Check the `hook` field points to an existing function in `tools/manim_templates/hooks.py` |
+| `Hook could not be resolved` | Check the `hook` field points to an existing callable, preferably under `tools/manim_hooks/` |
 | Audio too fast / robotic | Adjust `--speed` (default 1.03), `--max-chars-per-chunk` (default 220), `--inter-chunk-pause-ms` (default 120) |
 | Video-audio sync drift | Increase `minimum_duration_seconds` in scene timing |
 | MiKTeX download prompts | Run `miktex-console` and update packages |

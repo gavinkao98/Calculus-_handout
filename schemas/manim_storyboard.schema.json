@@ -261,6 +261,13 @@
                     },
                     "takeaway": {
                       "type": "string"
+                    },
+                    "math_layout": {
+                      "type": "string",
+                      "enum": ["auto", "left", "equals_aligned"]
+                    },
+                    "decay_previous": {
+                      "type": "boolean"
                     }
                   }
                 }
@@ -346,6 +353,10 @@
                           }
                         ]
                       }
+                    },
+                    "math_layout": {
+                      "type": "string",
+                      "enum": ["auto", "left", "equals_aligned"]
                     }
                   }
                 }

@@ -67,6 +67,7 @@ DEFAULT_THEME = {
         "accent": "#f9a825",
         "text": "#c8c8d8",
         "muted_text": "#6e6e82",
+        "context": "#505060",
         "math": "#7df9ff",
         "warning": "#ff6b6b",
         "grid": "#2a2a3e",
@@ -91,8 +92,11 @@ DEFAULT_THEME = {
     "transitions": {
         "element_fade": 0.4,
         "bullet_lag": 0.22,
+        "quick_step": 0.35,
         "section_pause": 0.6,
         "write_speed": 0.8,
+        "hero_write": 1.6,
+        "context_decay": 0.25,
         "reveal_pause": 0.4,
         "exit_fade": 0.5,
     },
@@ -234,8 +238,17 @@ def normalize_theme(value: Any, label: str) -> dict[str, Any]:
     for layout_name in ("top_y", "side_margin", "content_width"):
         require_number(layout.get(layout_name), f"{label}.layout.{layout_name}")
     transitions = require_mapping(theme.get("transitions"), f"{label}.transitions")
-    for name in ("element_fade", "bullet_lag", "section_pause",
-                  "write_speed", "reveal_pause", "exit_fade"):
+    for name in (
+        "element_fade",
+        "bullet_lag",
+        "quick_step",
+        "section_pause",
+        "write_speed",
+        "hero_write",
+        "context_decay",
+        "reveal_pause",
+        "exit_fade",
+    ):
         require_number(transitions.get(name), f"{label}.transitions.{name}")
     return theme
 
@@ -276,6 +289,8 @@ def normalize_scene_data(template: str, value: Any, label: str) -> dict[str, Any
         data["steps"] = require_string_list(data.get("steps"), f"{label}.steps")
         data["takeaway"] = require_text(data.get("takeaway"), f"{label}.takeaway")
         data["math_lines"] = normalize_math_lines_optional(data.get("math_lines"), f"{label}.math_lines")
+        data["math_layout"] = normalize_math_layout(data.get("math_layout"), f"{label}.math_layout")
+        data["decay_previous"] = require_optional_bool(data.get("decay_previous"), f"{label}.decay_previous", True)
         return data
     if template == "graph_focus":
         data["axes"] = normalize_axes(data.get("axes"), f"{label}.axes")
@@ -287,6 +302,7 @@ def normalize_scene_data(template: str, value: Any, label: str) -> dict[str, Any
     if template == "procedure_steps":
         data["steps"] = require_string_list(data.get("steps"), f"{label}.steps")
         data["worked_equations"] = normalize_math_lines(data.get("worked_equations"), f"{label}.worked_equations")
+        data["math_layout"] = normalize_math_layout(data.get("math_layout"), f"{label}.math_layout")
         return data
     if template == "recap_cards":
         data["points"] = require_string_list(data.get("points"), f"{label}.points")
@@ -443,6 +459,15 @@ def normalize_math_lines_optional(value: Any, label: str) -> list[dict[str, Any]
     if value is None or (isinstance(value, list) and len(value) == 0):
         return []
     return normalize_math_lines(value, label)
+
+
+def normalize_math_layout(value: Any, label: str) -> str:
+    if value is None:
+        return "auto"
+    layout = require_text(value, label)
+    if layout not in {"auto", "left", "equals_aligned"}:
+        raise ValueError(f"{label} must be one of: auto, left, equals_aligned.")
+    return layout
 
 
 def deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
@@ -690,7 +715,7 @@ def storyboard_to_bridge_deck(storyboard: dict[str, Any], storyboard_path: Path)
                 "bullets": [],
                 "math_blocks": [],
                 "tikz_code": None,
-                "script_draft": scene["voiceover"],
+                "script_draft": normalize_narration_text(scene["voiceover"]),
                 "render_hints": DEFAULT_BRIDGE_RENDER_HINTS,
             }
         )
@@ -703,6 +728,14 @@ def storyboard_to_bridge_deck(storyboard: dict[str, Any], storyboard_path: Path)
     }
 
 
+def normalize_narration_text(text: str) -> str:
+    return str(text).replace("\r\n", "\n").strip()
+
+
+def voiceover_content_hash(text: str) -> str:
+    return hashlib.sha256(normalize_narration_text(text).encode("utf-8")).hexdigest()
+
+
 def render_storyboard_script_markdown(storyboard: dict[str, Any], storyboard_path: Path) -> str:
     sections = [
         f"# {storyboard['deck_id']} Final Narration",
@@ -711,6 +744,7 @@ def render_storyboard_script_markdown(storyboard: dict[str, Any], storyboard_pat
         f"Deck ID: `{storyboard['deck_id']}`",
         "",
         "You may edit the narration text below each **Narration:** heading.",
+        "Do NOT change the hidden hash comment lines either — they are used for stale-file conflict detection.",
         "Do NOT change the Slide ID lines — they are used to match edits back to the correct scene.",
         "After editing, run `python tools/sync_narration_back.py --deck-id "
         + storyboard["deck_id"]
@@ -723,11 +757,12 @@ def render_storyboard_script_markdown(storyboard: dict[str, Any], storyboard_pat
                 f"## Slide {scene['scene_number']}: {scene['title']}",
                 "",
                 f"Slide ID: `{scene['scene_id']}`",
+                f"<!-- voiceover-hash: {voiceover_content_hash(scene['voiceover'])} -->",
                 f"Scene template: `{scene['template']}`",
                 "",
                 "Narration:",
                 "",
-                scene["voiceover"].strip(),
+                normalize_narration_text(scene["voiceover"]),
                 "",
             ]
         )
@@ -752,10 +787,15 @@ def export_storyboard_bridge_files(
     return {"script_path": resolved_script_path, "deck_path": resolved_deck_path}
 
 
-def scene_fingerprint(storyboard: dict[str, Any], scene: dict[str, Any], quality: str) -> str:
+def scene_visual_fingerprint(storyboard: dict[str, Any], scene: dict[str, Any], quality: str) -> str:
+    """Fingerprint only the rendered visual payload for scene-cache reuse.
+
+    Narration and mux timing are intentionally excluded because they affect the
+    bridge/audio pipeline, not the silent Manim scene render itself.
+    """
     payload = {
         "deck_id": storyboard["deck_id"],
-        "scene": strip_runtime_scene(scene),
+        "scene": strip_visual_scene(scene),
         "theme": storyboard["theme"],
         "video": storyboard["video"],
         "quality": quality,
@@ -764,23 +804,24 @@ def scene_fingerprint(storyboard: dict[str, Any], scene: dict[str, Any], quality
     return hashlib.sha256(canonical_json(payload).encode("utf-8")).hexdigest()
 
 
-def strip_runtime_scene(scene: dict[str, Any]) -> dict[str, Any]:
+def strip_visual_scene(scene: dict[str, Any]) -> dict[str, Any]:
     cleaned = {
         "scene_id": scene["scene_id"],
         "template": scene["template"],
         "content_type": scene.get("content_type", "definition"),
         "scene_exit": scene.get("scene_exit", "fade"),
         "title": scene["title"],
-        "voiceover": scene["voiceover"],
         "data": scene["data"],
-        "timing": scene["timing"],
-        "disabled": scene.get("disabled", False),
     }
     if scene.get("reveal_groups"):
         cleaned["reveal_groups"] = scene["reveal_groups"]
     if scene.get("hook"):
         cleaned["hook"] = scene["hook"]
     return cleaned
+
+
+scene_fingerprint = scene_visual_fingerprint
+strip_runtime_scene = strip_visual_scene
 
 
 def canonical_json(value: Any) -> str:

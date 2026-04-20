@@ -150,7 +150,7 @@ scenes:
   -
     scene_id: "horizontal_line_test_figure"
     template: "graph_focus"
-    hook: "tools.manim_templates.hooks.horizontal_line_test_comparison"
+    hook: "tools.manim_hooks.ch01_inverse_functions.horizontal_line_test_comparison"
     scene_exit: "hold"
     title: "Horizontal Line Test in Action"
     voiceover: "On the left is a straight line: every horizontal level crosses it exactly once. That graph passes the horizontal line test. On the right is a parabola. A horizontal line at the right height crosses it twice, once on each side of the axis of symmetry. That graph fails the test. Whenever you see a graph, this sweep is the fastest way to check whether an inverse can exist."
@@ -312,9 +312,12 @@ scenes:
         - "Swap: \\(f^{-1}(x) = \\sqrt[3]{\\,x - 2\\,}\\)."
         - "Verify: \\(f(f^{-1}(x)) = (\\sqrt[3]{x-2})^3 + 2 = x\\). \\(\\checkmark\\)"
       takeaway: "Always verify the cancellation equation after finding the inverse."
+      math_layout: "equals_aligned"
       math_lines:
         - "\\[y = x^3 + 2\\]"
-        - "\\[x = \\sqrt[3]{\\,y - 2\\,}\\]"
+        -
+          text: "\\[x = \\sqrt[3]{\\,y - 2\\,}\\]"
+          animation: "transform_from_previous"
         -
           text: "\\[f^{-1}(x) = \\sqrt[3]{\\,x - 2\\,}\\]"
           animation: "highlight"
@@ -381,8 +384,12 @@ scenes:
         - "Write \\(y = x^2\\), \\(x \\ge 0\\). Solve: \\(x = \\sqrt{y}\\)."
         - "Swap: \\(f^{-1}(x) = \\sqrt{x}\\), \\(x \\ge 0\\)."
       takeaway: "A function that fails the one-to-one test globally may still be invertible after restricting its domain."
+      math_layout: "equals_aligned"
       math_lines:
-        - "\\[f(x) = x^2, \\quad x \\ge 0\\]"
+        - "\\[y = x^2, \\quad x \\ge 0\\]"
+        -
+          text: "\\[x = \\sqrt{y}\\]"
+          animation: "transform_from_previous"
         -
           text: "\\[f^{-1}(x) = \\sqrt{x}, \\quad x \\ge 0\\]"
           animation: "highlight"

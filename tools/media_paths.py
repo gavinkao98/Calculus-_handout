@@ -47,6 +47,10 @@ def manim_segment_dir(repo_root: Path, deck_id: str) -> Path:
     return manim_artifact_dir(repo_root, deck_id) / "segments"
 
 
+def manim_graph_preview_dir(repo_root: Path, deck_id: str) -> Path:
+    return manim_artifact_dir(repo_root, deck_id) / "graph_previews"
+
+
 def manim_render_manifest_path(repo_root: Path, deck_id: str) -> Path:
     return manim_artifact_dir(repo_root, deck_id) / "render_manifest.json"
 
@@ -65,3 +69,7 @@ def manim_scene_output_path(repo_root: Path, deck_id: str, scene_number: int, sc
 
 def manim_segment_output_path(repo_root: Path, deck_id: str, scene_number: int, scene_id: str) -> Path:
     return manim_segment_dir(repo_root, deck_id) / f"{scene_number:02d}_{scene_id}.mp4"
+
+
+def manim_graph_preview_path(repo_root: Path, deck_id: str, scene_id: str) -> Path:
+    return manim_graph_preview_dir(repo_root, deck_id) / f"{scene_id}.png"

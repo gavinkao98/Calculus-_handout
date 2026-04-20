@@ -1,77 +1,90 @@
 #!/usr/bin/env python3
-"""Sync edited narration from a _final.md file back into the storyboard YAML.
+"""Sync edited narration from narration.md back into the storyboard YAML.
 
 Usage
 -----
     python tools/sync_narration_back.py --deck-id ch01_inverse_functions
 
 Workflow
--------
-1. Run ``render_manim_lesson.py`` (or the export step) to produce ``_final.md``.
-2. Open ``_final.md`` and edit the narration text under each scene's
-   ``Narration:`` heading.  Do **not** change the ``Slide ID`` lines — they are
-   used to match edits back to the correct scene.
-3. Run this script.  It reads the edited ``_final.md``, compares each scene's
-   narration with the storyboard YAML, and writes back any changes.
-4. A summary is printed showing which scenes were updated.
+--------
+1. Run ``render_manim_lesson.py --with-audio`` (or the export step) to produce
+   ``artifacts/manim/<deck_id>/narration.md``.
+2. Edit the narration text under each scene's ``Narration:`` heading.
+3. Run this script to push changed narration back into the storyboard YAML.
 
 The script is intentionally conservative:
 
-- It never touches ``data``, ``timing``, ``template``, or any field other than
-  ``voiceover``.
-- It refuses to run if a scene ID in the markdown cannot be found in the YAML.
+- It only updates ``voiceover`` fields.
+- It refuses to run if a scene ID in the markdown is not found in the YAML.
+- It detects stale narration exports by comparing hidden voiceover hashes.
 - It creates a ``.bak`` copy of the YAML before writing.
 """
+
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import shutil
 import sys
 from pathlib import Path
+from typing import Any
 
 # ---- bootstrap so sibling modules are importable ----
 _TOOLS_DIR = Path(__file__).resolve().parent
 if str(_TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(_TOOLS_DIR))
 
+from manim_storyboard_workflow import normalize_narration_text, voiceover_content_hash
 from media_paths import manim_narration_path, manim_storyboard_path
 from runtime_bootstrap import REPO_ROOT
 
-# ---------------------------------------------------------------------------
-# Markdown parser — extracts (scene_id, narration) pairs from _final.md
-# ---------------------------------------------------------------------------
 
 _SLIDE_HEADER_RE = re.compile(r"^## Slide \d+:\s+.+$")
 _SLIDE_ID_RE = re.compile(r"^Slide ID:\s*`([^`]+)`")
+_VOICEOVER_HASH_RE = re.compile(r"^<!--\s*voiceover-hash:\s*([0-9a-f]{64})\s*-->$")
 
 
-def parse_narration_md(text: str) -> dict[str, str]:
-    """Return ``{scene_id: narration_text}`` from a ``_final.md`` file."""
+ParsedNarration = dict[str, dict[str, str | None]]
+
+
+def parse_narration_md(text: str) -> ParsedNarration:
+    """Return ``{scene_id: {narration, source_hash}}`` from narration markdown."""
     lines = text.splitlines()
-    scenes: dict[str, str] = {}
+    scenes: ParsedNarration = {}
     current_id: str | None = None
+    current_hash: str | None = None
     collecting = False
     narration_lines: list[str] = []
 
+    def flush_current_scene() -> None:
+        nonlocal current_id, current_hash, narration_lines
+        if current_id is None:
+            return
+        scenes[current_id] = {
+            "narration": normalize_narration_text("\n".join(narration_lines)),
+            "source_hash": current_hash,
+        }
+
     for line in lines:
-        # Detect a new slide header — flush previous scene if any.
         if _SLIDE_HEADER_RE.match(line):
-            if current_id is not None:
-                scenes[current_id] = "\n".join(narration_lines).strip()
+            flush_current_scene()
             current_id = None
+            current_hash = None
             collecting = False
             narration_lines = []
             continue
 
-        # Detect the Slide ID line.
         id_match = _SLIDE_ID_RE.match(line)
         if id_match:
             current_id = id_match.group(1)
             continue
 
-        # Detect the "Narration:" marker — everything after this belongs to
-        # the voiceover until the next slide header.
+        hash_match = _VOICEOVER_HASH_RE.match(line.strip())
+        if hash_match and current_id is not None and not collecting:
+            current_hash = hash_match.group(1)
+            continue
+
         if line.strip() == "Narration:":
             collecting = True
             continue
@@ -79,36 +92,43 @@ def parse_narration_md(text: str) -> dict[str, str]:
         if collecting:
             narration_lines.append(line)
 
-    # Flush the last scene.
-    if current_id is not None:
-        scenes[current_id] = "\n".join(narration_lines).strip()
-
+    flush_current_scene()
     return scenes
 
 
-# ---------------------------------------------------------------------------
-# YAML updater — surgically replaces voiceover values in the raw YAML text
-# ---------------------------------------------------------------------------
+def render_voiceover_scalar(text: str, indent: str) -> list[str]:
+    normalized = normalize_narration_text(text)
+    if "\n" not in normalized:
+        return [f"{indent}voiceover: {json.dumps(normalized, ensure_ascii=False)}\n"]
 
-import json  # noqa: E402 — keep imports grouped logically
+    rendered = [f"{indent}voiceover: |-\n"]
+    for line in normalized.split("\n"):
+        rendered.append(f"{indent}  {line}\n")
+    return rendered
 
 
-def _yaml_escaped(text: str) -> str:
-    """Return *text* as a JSON-encoded string (which is valid YAML scalar)."""
-    return json.dumps(text, ensure_ascii=False)
+def skip_existing_scalar(lines: list[str], start_index: int, key_indent: int) -> int:
+    stripped = lines[start_index].lstrip()
+    remainder = stripped.split(":", 1)[1].lstrip()
+    next_index = start_index + 1
+    if not remainder.startswith(("|", ">")):
+        return next_index
+
+    block_indent = key_indent + 2
+    while next_index < len(lines):
+        candidate = lines[next_index]
+        if not candidate.strip():
+            next_index += 1
+            continue
+        candidate_indent = len(candidate) - len(candidate.lstrip(" "))
+        if candidate_indent < block_indent:
+            break
+        next_index += 1
+    return next_index
 
 
 def update_voiceovers_in_yaml(yaml_text: str, updates: dict[str, str]) -> str:
-    """Return *yaml_text* with voiceover values replaced for the given scene IDs.
-
-    The strategy:
-    1. Walk through the YAML line by line.
-    2. Track the most-recently-seen ``scene_id``.
-    3. When a ``voiceover:`` key is encountered and the current scene_id is in
-       *updates*, replace the value.
-
-    This keeps all other formatting, comments, and field order intact.
-    """
+    """Return *yaml_text* with voiceover values replaced for the given scene IDs."""
     lines = yaml_text.splitlines(keepends=True)
     result: list[str] = []
     current_scene_id: str | None = None
@@ -119,7 +139,6 @@ def update_voiceovers_in_yaml(yaml_text: str, updates: dict[str, str]) -> str:
         line = lines[i]
         stripped = line.lstrip()
 
-        # Detect scene_id
         if stripped.startswith("scene_id:"):
             value = stripped.split(":", 1)[1].strip().strip('"').strip("'")
             current_scene_id = value
@@ -127,12 +146,11 @@ def update_voiceovers_in_yaml(yaml_text: str, updates: dict[str, str]) -> str:
             i += 1
             continue
 
-        # Detect voiceover line for a scene we want to update.
         if stripped.startswith("voiceover:") and current_scene_id in remaining:
             indent = line[: len(line) - len(stripped)]
-            new_vo = remaining.pop(current_scene_id)
-            result.append(f"{indent}voiceover: {_yaml_escaped(new_vo)}\n")
-            i += 1
+            new_voiceover = remaining.pop(current_scene_id)
+            result.extend(render_voiceover_scalar(new_voiceover, indent))
+            i = skip_existing_scalar(lines, i, len(indent))
             continue
 
         result.append(line)
@@ -141,14 +159,30 @@ def update_voiceovers_in_yaml(yaml_text: str, updates: dict[str, str]) -> str:
     return "".join(result)
 
 
-# ---------------------------------------------------------------------------
-# CLI entry point
-# ---------------------------------------------------------------------------
+def extract_current_voiceovers(yaml_text: str) -> dict[str, str]:
+    from simple_yaml import load_yaml
+
+    current_storyboard = load_yaml(yaml_text)
+    current_voiceovers: dict[str, str] = {}
+    for scene in current_storyboard.get("scenes", []):
+        scene_id = str(scene.get("scene_id", ""))
+        voiceover = normalize_narration_text(scene.get("voiceover", ""))
+        current_voiceovers[scene_id] = voiceover
+    return current_voiceovers
+
+
+def print_change_summary(scene_id: str, old_text: str, new_text: str) -> None:
+    old_preview = old_text[:60].replace("\n", " ")
+    new_preview = new_text[:60].replace("\n", " ")
+    print(f"  [{scene_id}]")
+    print(f"    old: {old_preview}...")
+    print(f"    new: {new_preview}...")
+    print()
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Sync edited narration from _final.md back into the storyboard YAML."
+        description="Sync edited narration from narration.md back into the storyboard YAML."
     )
     parser.add_argument(
         "--deck-id",
@@ -161,10 +195,15 @@ def main() -> None:
         help="Show what would change without writing the YAML.",
     )
     parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Overwrite YAML voiceover changes even if the narration export is stale.",
+    )
+    parser.add_argument(
         "--script-file",
         type=Path,
         default=None,
-        help="Override the path to the edited _final.md.",
+        help="Override the path to the edited narration.md file.",
     )
     parser.add_argument(
         "--storyboard-file",
@@ -185,64 +224,88 @@ def main() -> None:
         print(f"ERROR: storyboard not found: {storyboard_path}", file=sys.stderr)
         sys.exit(1)
 
-    # --- Parse the edited markdown ---
     md_text = script_path.read_text(encoding="utf-8")
     md_narrations = parse_narration_md(md_text)
-
     if not md_narrations:
         print("No narration sections found in the markdown file.")
         sys.exit(0)
 
-    # --- Read the current YAML ---
     yaml_text = storyboard_path.read_text(encoding="utf-8")
+    current_voiceovers = extract_current_voiceovers(yaml_text)
 
-    # --- Determine which scenes actually changed ---
-    # Quick extraction of current voiceovers from the YAML for comparison.
-    from simple_yaml import load_yaml  # noqa: E402
-
-    current_storyboard = load_yaml(yaml_text)
-    current_voiceovers: dict[str, str] = {}
-    for scene in current_storyboard.get("scenes", []):
-        sid = scene.get("scene_id", "")
-        vo = scene.get("voiceover", "")
-        current_voiceovers[sid] = vo
-
-    # Validate: every scene_id from markdown must exist in the YAML.
     unknown_ids = set(md_narrations) - set(current_voiceovers)
     if unknown_ids:
         print(
-            f"ERROR: the following scene IDs in the markdown are not in the storyboard: "
-            f"{', '.join(sorted(unknown_ids))}",
+            "ERROR: the following scene IDs in the markdown are not in the storyboard: "
+            + ", ".join(sorted(unknown_ids)),
             file=sys.stderr,
         )
         sys.exit(1)
 
-    # Find actual changes.
+    legacy_ids = [scene_id for scene_id, entry in md_narrations.items() if entry.get("source_hash") is None]
+    if legacy_ids:
+        print(
+            "Warning: some narration sections do not contain hidden voiceover hashes. "
+            "Stale-file conflict detection is disabled for: "
+            + ", ".join(sorted(legacy_ids))
+        )
+
     changes: dict[str, str] = {}
-    for scene_id, new_text in md_narrations.items():
-        old_text = current_voiceovers.get(scene_id, "")
-        if new_text != old_text:
-            changes[scene_id] = new_text
+    conflicts: list[dict[str, Any]] = []
+    for scene_id, entry in md_narrations.items():
+        new_text = normalize_narration_text(entry["narration"] or "")
+        current_text = current_voiceovers.get(scene_id, "")
+        if not new_text:
+            print(f"ERROR: narration for scene '{scene_id}' is empty after editing.", file=sys.stderr)
+            sys.exit(1)
+        if new_text == current_text:
+            continue
+
+        source_hash = entry.get("source_hash")
+        current_hash = voiceover_content_hash(current_text)
+        if source_hash is not None and source_hash != current_hash:
+            conflicts.append(
+                {
+                    "scene_id": scene_id,
+                    "expected_hash": source_hash,
+                    "current_hash": current_hash,
+                    "current_preview": current_text[:60].replace("\n", " "),
+                    "edited_preview": new_text[:60].replace("\n", " "),
+                }
+            )
+            continue
+
+        changes[scene_id] = new_text
+
+    if conflicts and not args.force:
+        print("ERROR: narration sync aborted because the storyboard changed after narration.md was exported.", file=sys.stderr)
+        print("Re-export narration.md or rerun with --force if you want to overwrite the YAML anyway.\n", file=sys.stderr)
+        for conflict in conflicts:
+            print(f"  [{conflict['scene_id']}]", file=sys.stderr)
+            print(f"    YAML now: {conflict['current_preview']}...", file=sys.stderr)
+            print(f"    markdown: {conflict['edited_preview']}...", file=sys.stderr)
+            print(file=sys.stderr)
+        sys.exit(1)
+
+    if conflicts and args.force:
+        print("Force mode enabled: overwriting YAML voiceovers despite stale narration hashes.\n")
+        for conflict in conflicts:
+            changes[conflict["scene_id"]] = normalize_narration_text(
+                md_narrations[conflict["scene_id"]]["narration"] or ""
+            )
 
     if not changes:
         print("No narration changes detected. Storyboard is already up to date.")
         sys.exit(0)
 
-    # --- Report ---
     print(f"Detected {len(changes)} narration change(s):\n")
-    for scene_id in changes:
-        old_preview = current_voiceovers[scene_id][:60].replace("\n", " ")
-        new_preview = changes[scene_id][:60].replace("\n", " ")
-        print(f"  [{scene_id}]")
-        print(f"    old: {old_preview}...")
-        print(f"    new: {new_preview}...")
-        print()
+    for scene_id, new_text in changes.items():
+        print_change_summary(scene_id, current_voiceovers.get(scene_id, ""), new_text)
 
     if args.dry_run:
         print("Dry run — no files modified.")
         sys.exit(0)
 
-    # --- Write back ---
     backup_path = storyboard_path.with_suffix(".yml.bak")
     shutil.copy2(storyboard_path, backup_path)
     print(f"Backup saved: {backup_path.name}")

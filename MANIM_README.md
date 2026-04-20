@@ -37,6 +37,7 @@ The visual system follows a **dark canvas, luminous math, zero chrome** philosop
 | Counterexamples / warnings | `#ff6b6b` coral red | "Watch out" |
 | Verified / QED | `#06d6a0` emerald | Correct, complete |
 | Body text | `#c8c8d8` light grey | Readable without glare |
+| Faded context | `#505060` slate grey | Earlier steps remain visible without competing |
 
 ### Layout principles
 
@@ -51,6 +52,8 @@ The visual system follows a **dark canvas, luminous math, zero chrome** philosop
 - Math equations **write on** (`Write`) like chalk on a blackboard
 - Graph curves **trace out** (`Create`) from left to right
 - Key results **flash gold** (highlight animation) to grab attention
+- Older steps and equations **decay into slate** once the focus moves on
+- Algebra workspaces **align on the equals sign** when multiple lines support it
 - Steps appear **one at a time** — every moment has exactly one focal point
 - Scenes end with a unified `FadeOut` — clean exit into darkness
 
@@ -61,9 +64,9 @@ Templates are distinguished by **animation rhythm and content structure**, not b
 | Template | Feel | How it differs |
 |----------|------|----------------|
 | `definition_math` | Measured | Statement first, then math writes on slowly |
-| `example_walkthrough` | Interactive | Steps and math alternate, left text / right equations |
+| `example_walkthrough` | Interactive | Steps and math alternate, old context dims, derivations can align on `=` |
 | `graph_focus` | Visual star | Full-width graph, curves trace out, labels float in |
-| `procedure_steps` | Sequential | Large coloured numbers lead each step, equations below |
+| `procedure_steps` | Sequential | Large coloured numbers lead each step, equations below with optional `=` alignment |
 | `section_transition` | Cinematic | Centred title, gold rule, brief and elegant |
 | `recap_cards` | Gathering | Coloured dot bullets, identities write on with presence |
 | `theorem_proof` | Formal | Italic statement, "Proof." label, steps build, QED symbol |
@@ -80,9 +83,12 @@ tools/manim_templates/
   animations.py         animation utilities (write_math, scene_exit, reveal_groups)
   templates.py          9 scene template renderers ("Midnight Canvas" design)
   helpers.py            base building blocks (titles, bullet lists, math stacks, cards)
-  hooks.py              custom per-scene animation overrides
+  hooks.py              compatibility re-exports for legacy hook paths
   registry.py           template dispatch + hook resolution
   scene_player.py       StoryboardTemplateScene + scene exit
+tools/manim_hooks/
+  __init__.py           chapter-scoped hook namespace
+  ch01_inverse_functions.py
 ```
 
 ## Relevant Paths
@@ -91,10 +97,13 @@ tools/manim_templates/
 - `schemas/manim_storyboard.schema.json`: storyboard contract reference
 - `tools/seed_manim_storyboard.py`: seed a storyboard from an existing deck JSON
 - `tools/preview_manim_scene.py`: render one scene only
+- `tools/preview_graph_focus.py`: fast Matplotlib debug preview for `graph_focus` scenes
 - `tools/render_manim_lesson.py`: render the full lesson with scene caching
 - `tools/sync_narration_back.py`: sync edited `narration.md` back into the storyboard YAML
-- `tools/manim_templates/`: reusable scene templates plus optional hooks
+- `tools/manim_templates/`: reusable scene templates plus legacy hook compatibility
+- `tools/manim_hooks/`: recommended home for chapter/topic-specific custom hooks
 - `artifacts/manim/<deck_id>/`: cached scene videos, muxed segments, bridge deck JSON, render manifest
+- `artifacts/manim/<deck_id>/graph_previews/`: lightweight graph debug PNGs
 - `artifacts/manim/<deck_id>/narration.md`: Manim narration file (proofread and sync back to YAML)
 - `artifacts/audio/<deck_id>_manim/`: one WAV per scene when you use the audio bridge
 - `artifacts/video/<deck_id>_manim.mp4`: final Manim lesson output
@@ -105,6 +114,7 @@ The runtime scripts need local tools that are separate from this repo:
 
 - `manim` in the active Python environment
 - either standalone `ffmpeg` on `PATH`, or the Python package `imageio-ffmpeg`
+- optional: `matplotlib` if you want to use `preview_graph_focus.py`
 
 Without them, the scripts still support validation and seeding, but actual scene rendering will stop with a clear prerequisite error.
 
@@ -141,9 +151,9 @@ Optional scene fields:
 |----------|--------------|-------------|
 | `title_bullets` | `bullets` | Opening or overview scene |
 | `definition_math` | `statement`, `math_lines` | Formal definitions and theorems |
-| `example_walkthrough` | `steps`, `takeaway` | Worked examples with math workspace |
+| `example_walkthrough` | `steps`, `takeaway` | Worked examples with math workspace; optional `math_layout`, `decay_previous` |
 | `graph_focus` | `axes`, `plots`, `annotations` | Full-width graph with floating labels |
-| `procedure_steps` | `steps`, `worked_equations` | Numbered step-by-step procedures |
+| `procedure_steps` | `steps`, `worked_equations` | Numbered step-by-step procedures; optional `math_layout` |
 | `recap_cards` | `points`, `identities` | Summary with coloured bullet points |
 | `section_transition` | (optional `subtitle`, `upcoming`) | Cinematic topic-change interlude |
 | `theorem_proof` | `theorem_statement`, `proof_steps` | Theorem + step-by-step proof + QED |
@@ -161,6 +171,47 @@ math_lines:
   - text: "\\[f^{-1}(x)=\\sqrt{x}\\]"
     animation: "highlight"  # write | fade | highlight | transform_from_previous
 ```
+
+`transform_from_previous` is useful for algebra scenes where one displayed equation should visibly evolve into the next.
+
+### Math workspace controls
+
+`example_walkthrough` and `procedure_steps` support an optional `math_layout` field:
+
+```yaml
+data:
+  math_layout: "equals_aligned"   # auto | left | equals_aligned
+  decay_previous: true            # example_walkthrough only; defaults to true
+  math_lines:
+    - "\\[y = x^3 + 2\\]"
+    - text: "\\[x = \\sqrt[3]{y - 2}\\]"
+      animation: "transform_from_previous"
+    - text: "\\[f^{-1}(x) = \\sqrt[3]{x - 2}\\]"
+      animation: "highlight"
+```
+
+Guidance:
+
+- use `auto` when you want the template to align only scenes that clearly behave like algebra derivations
+- use `equals_aligned` when multiple lines should share a fixed `=` anchor
+- use `left` for mixed text-heavy formulas where alignment by `=` would feel forced
+
+### YAML multiline strings
+
+When a narration paragraph or LaTeX block becomes hard to read as one escaped line, you may use YAML block scalars:
+
+```yaml
+voiceover: >
+  Start with y = x^3 + 2.
+  Solve for x, then swap x and y.
+
+data:
+  statement: |
+    A function \(f\) is one-to-one if different inputs
+    always produce different outputs.
+```
+
+The local YAML loader supports both `|` and `>` forms, and `sync_narration_back.py` can now write block scalars back into the storyboard when a narration becomes multi-line.
 
 ### Graph authoring rules (`graph_focus`)
 
@@ -205,6 +256,14 @@ plots:
     label_x: 4.0         # label near the right end, away from y=x
 ```
 
+If you only want to debug curve placement or `label_x`, use the fast preview tool instead of running Manim:
+
+```powershell
+python .\tools\preview_graph_focus.py `
+  --deck-id ch01_inverse_functions `
+  --scene-id cubic_graph_reflection
+```
+
 **Domain restriction**
 
 When illustrating a restricted domain, set `x_range` on the plot to exactly the restricted interval. Do not rely on the axes range to clip the curve:
@@ -230,13 +289,17 @@ theme:
   colors:
     background: "#0b0c10"
     math: "#7df9ff"
+    context: "#505060"
     # ... any subset; unspecified keys use defaults
   typography:
     title_size: 44
     body_size: 30
     math_size: 38
   transitions:
-    write_speed: 0.8      # seconds for Write animation
+    quick_step: 0.35      # small step / FadeIn beats
+    write_speed: 0.8      # normal equation reveal
+    hero_write: 1.6       # major highlighted result
+    context_decay: 0.25   # dim old context into slate
     section_pause: 0.6    # hold at end of scene
     exit_fade: 0.5        # FadeOut duration
   content_type_colors:
@@ -252,7 +315,7 @@ Use these ownership rules to keep the workflow easy to maintain:
 - edit scene narration either in the YAML `voiceover` field **or** in `artifacts/manim/<deck_id>/narration.md` (see Narration Proofreading below)
 - edit the visual content in `data`
 - edit pacing in `timing`
-- reserve `hook` for the small number of scenes that genuinely need custom Python
+- reserve `hook` for the small number of scenes that genuinely need custom Python; default rhythm, context decay, and equation alignment now live in the shared templates
 
 Title convention:
 
@@ -268,8 +331,8 @@ Recommended habit:
 
 Current behavior note:
 
-- changing `voiceover` or `timing` currently invalidates that scene's cache entry, so the scene will be rendered again before the final mux step
-- this keeps the implementation simple and correct, but it means narration-only edits are not yet audio-only rebuilds
+- scene caching is now based on the visual payload only: template, title, data, theme, hook, and related render code
+- changing `voiceover` or `timing` no longer forces a Manim re-render; narration-only edits reuse the cached silent scene video and only rebuild bridge/audio outputs as needed
 
 ## Narration Proofreading
 
@@ -280,10 +343,14 @@ The `narration.md` file is a clean, readable transcript of all scene narrations 
 1. Export the narration file (this happens automatically when rendering):
 
     ```powershell
-    python .\tools\render_manim_lesson.py --deck-id ch01_inverse_functions --dry-run
+    python .\tools\render_manim_lesson.py --deck-id ch01_inverse_functions --quality preview --with-audio
     ```
 
+    If scene WAV files do not exist yet, the command still writes `narration.md` and `tts_deck.json`, then stops with ready-to-run TTS instructions.
+
 2. Open `artifacts/manim/ch01_inverse_functions/narration.md` and edit the narration text. Fix wording, add jokes, correct errors — anything under a `Narration:` heading is fair game. **Do not change the `Slide ID` lines.**
+
+   Also leave the hidden `voiceover-hash` comment lines untouched so the sync step can detect stale narration exports.
 
 3. Preview what changed:
 
@@ -298,12 +365,14 @@ The `narration.md` file is a clean, readable transcript of all scene narrations 
     ```
 
     The script creates a `.yml.bak` backup before writing.
+    If the YAML narration changed after `narration.md` was exported, the sync step now stops with a stale-file conflict warning. Re-export the narration file, or use `--force` only when you intentionally want the markdown edits to win.
 
 ### What the sync script does and does not touch
 
 - **Touches**: only the `voiceover` field of scenes whose narration changed.
 - **Does not touch**: `data`, `timing`, `template`, `hook`, or any other field.
 - **Safety**: refuses to run if a scene ID in the markdown is not found in the YAML.
+- **Conflict protection**: compares each hidden `voiceover-hash` comment against the current YAML before writing, so simultaneous YAML + markdown narration edits do not silently overwrite each other.
 
 ## Commands
 
@@ -328,6 +397,14 @@ python .\tools\preview_manim_scene.py `
   --deck-id ch01_inverse_functions `
   --scene-id horizontal_line_test_figure `
   --dry-run
+```
+
+Preview a `graph_focus` scene with Matplotlib for fast `label_x` / curve debugging:
+
+```powershell
+python .\tools\preview_graph_focus.py `
+  --deck-id ch01_inverse_functions `
+  --scene-id cubic_graph_reflection
 ```
 
 Render the whole lesson:
@@ -433,9 +510,15 @@ The hook runs after the template renderer, so a hook can:
 - add a small flourish on top of the template scene
 - or call `scene.clear()` and build that one scene from scratch
 
+Recommended convention:
+
+- put reusable chapter/topic hooks under `tools/manim_hooks/`
+- use dotted import paths like `tools.manim_hooks.ch01_inverse_functions.horizontal_line_test_comparison`
+- keep `tools/manim_templates/hooks.py` only as a backwards-compatible shim for older paths
+
 Example hook path:
 
-- `tools.manim_templates.hooks.horizontal_line_test_comparison`
+- `tools.manim_hooks.ch01_inverse_functions.horizontal_line_test_comparison`
 
 ## Workflow: LaTeX to Video
 
