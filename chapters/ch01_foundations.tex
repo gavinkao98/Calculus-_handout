@@ -6,7 +6,7 @@ The second theme is the limit of a function. Many quantities of interest in calc
 
 \section{Inverse Functions}
 
-In many situations, a function describes a process that sends an input \(x\) to an output \(y=f(x)\). We are often interested in reversing this process and recovering the original input from the output. This leads to the ideas of one-to-one functions and inverse functions. For example, if a formula converts temperature from Celsius to Fahrenheit, then the inverse formula converts Fahrenheit back to Celsius. In the same way, many scientific formulas describe a process in one direction, and an inverse function allows us to recover the original quantity.
+Not every function can be reversed. If two different inputs produce the same output, then the original input cannot be uniquely recovered from that output. For this reason, the existence of an inverse function depends on a special property called one-to-one. In this section, we study one-to-one functions and then introduce inverse functions.
 
 \subsection{One-to-one functions}
 
@@ -24,55 +24,48 @@ f(x_1)=f(x_2) \implies x_1=x_2.
 \]
 \end{definition}
 
+\begin{workedexample}
 \begin{example}
 Consider the following functions defined on a group of students:
-\[
-f(\text{student})=\text{Student ID number}
-\]
-and
-\[
-g(\text{student})=\text{Blood type}.
-\]
+\begin{aligneddisplay}
+f(\text{student}) &= \text{Student ID number},\\
+g(\text{student}) &= \text{Blood type}.
+\end{aligneddisplay}
 Determine which of these real-world functions are one-to-one.
 \end{example}
 
 \begin{solution}
-The function \(f\) is one-to-one because every student gets a unique ID number. Distinct inputs always give distinct outputs, so each ID number corresponds to exactly one student.
+The function \(f\) is one-to-one because each student has a unique ID number, so different students always produce different outputs.
 
-The function \(g\) is not one-to-one because different students can share the same blood type. For instance, if Alice and Bob are both Type O, then
-\[
-g(\text{Alice})=\text{Type O}
-\qquad \text{and} \qquad
-g(\text{Bob})=\text{Type O}.
-\]
-Since two different inputs produce the same output, \(g\) is not one-to-one.
+The function \(g\) is not one-to-one because different students can share the same blood type. For example, if Alice and Bob are both Type O, then
+\pairdisplay{g(\text{Alice})=\text{Type O},}{g(\text{Bob})=\text{Type O}.}
+Since two different inputs give the same output, \(g\) is not one-to-one.
 \end{solution}
+\end{workedexample}
 
 Now let us consider some mathematical examples.
 
+\begin{workedexample}
 \begin{example}
 Consider the functions
-\[
-f(x)=x, \qquad 0\le x\le 1,
-\]
-and
-\[
-g(x)=x^2, \qquad -1\le x\le 1.
-\]
+\begin{conditiondisplay}
+f(x) &= x, \qquad & 0\le x\le 1,\\
+g(x) &= x^2, \qquad & -1\le x\le 1.
+\end{conditiondisplay}
 Determine which of these functions are one-to-one.
 \end{example}
 
 \begin{solution}
-The function \(f(x)=x\) is one-to-one on \([0,1]\) because distinct inputs always produce distinct outputs.
+The function \(f(x)=x\) is one-to-one on \([0,1]\) because different inputs always produce different outputs.
 
 The function \(g(x)=x^2\) is not one-to-one on \([-1,1]\) because
-\[
-g\left(\frac12\right)=\left(\frac12\right)^2=\frac14
-\qquad \text{and} \qquad
-g\left(-\frac12\right)=\left(-\frac12\right)^2=\frac14.
-\]
-Thus two different inputs produce the same output, so \(g\) is not one-to-one.
+\begin{aligneddisplay}
+g\left(\frac12\right) &= \left(\frac12\right)^2=\frac14,\\
+g\left(-\frac12\right) &= \left(-\frac12\right)^2=\frac14.
+\end{aligneddisplay}
+Thus two different inputs give the same output, so \(g\) is not one-to-one.
 \end{solution}
+\end{workedexample}
 
 Not every function has an inverse. A function can have an inverse only if each output corresponds to exactly one input; in other words, the function must be one-to-one. For \(g(x)=x^2\) on \([-1,1]\), the value \(\frac14\) comes from both \(\frac12\) and \(-\frac12\). Therefore \(g^{-1}\!\left(\frac14\right)\) is not well defined.
 
@@ -133,12 +126,7 @@ Suppose that \(f\) is a one-to-one function. If \(f\) maps \(x\) to \(y\), then 
 
 \begin{definition}
 Let \(f\) be a one-to-one function with domain \(A\) and range \(B\). Then the \emph{inverse function}\index{inverse function}\index{inverse function@$f^{-1}$} of \(f\), denoted by \(f^{-1}\), has domain \(B\) and range \(A\), and is defined by
-\[
-f^{-1}(y)=x
-\quad \Longleftrightarrow \quad
-f(x)=y,
-\qquad y\in B.
-\]
+\iffwithconditions{f^{-1}(y)=x}{f(x)=y,}{y\in B.}
 \end{definition}
 
 When we focus on the inverse function, it is common to use \(x\) as the independent variable. In that case we may write
@@ -162,6 +150,7 @@ so \(x_1=x_2\). Hence \(f\) is one-to-one.
 Conversely, suppose that \(f\) is one-to-one with domain \(A\) and range \(B\). For each \(y\in B\), there is some \(x\in A\) such that \(f(x)=y\), and the one-to-one property guarantees that this \(x\) is unique. Therefore the correspondence \(y\mapsto x\) defines an inverse function \(f^{-1}:B\to A\).
 \end{proof}
 
+\begin{workedexample}
 \begin{example}
 Find the inverse of each function.
 \begin{enumerate}
@@ -171,38 +160,18 @@ Find the inverse of each function.
 \end{example}
 
 \begin{solution}
+\solutionbreak
 \begin{enumerate}
-    \item  Since \(f(x)=x\) leaves every input unchanged, its inverse is also
-    \[
-    f^{-1}(x)=x.
-    \]
+    \item Since \(f(x)=x\) leaves every input unchanged, it is its own inverse, so \(f^{-1}(x)=x\).
 
-    \item Let
-    \[
-    y=x^3.
-    \]
-    Solving for \(x\), we obtain
-    \[
-    x=\sqrt[3]{y}.
-    \]
-    Interchanging \(x\) and \(y\), we get
-    \[
-    g^{-1}(x)=\sqrt[3]{x}.
-    \]
+    \item To find the inverse of \(g\), let \(y=x^3\). Solving for \(x\) gives \(x=\sqrt[3]{y}\). Interchanging \(x\) and \(y\) then gives \(g^{-1}(x)=\sqrt[3]{x}\).
 \end{enumerate}
 \end{solution}
+\end{workedexample}
 
 \begin{proposition}
 Let \(f\) be a one-to-one function with domain \(A\) and range \(B\). Then
-\[
-f^{-1}(f(x))=x
-\qquad \text{for every } x\in A,
-\]
-and
-\[
-f(f^{-1}(x))=x
-\qquad \text{for every } x\in B.
-\]
+\pairdisplay{f^{-1}(f(x))=x,\quad \text{for every } x\in A,}{f(f^{-1}(x))=x,\quad \text{for every } x\in B.}
 \end{proposition}
 
 \Cref{fig:inverse-composition} illustrates these two composition identities.
@@ -251,68 +220,46 @@ When \(f\) is one-to-one, the following procedure is often useful for finding \(
     \item Interchange \(x\) and \(y\). The resulting equation gives \(f^{-1}(x)\).
 \end{enumerate}
 
+\begin{workedexample}
 \begin{example}
-Find the inverse of
-\(
-f(x)=x^3+2.
-\)
+Find the inverse of \(f(x)=x^3+2\).
 \end{example}
 
 \begin{solution}
-Let
-\[
-y=x^3+2.
-\]
-Then
-\[
-x^3=y-2,
-\]
-so
-\[
-x=\sqrt[3]{\,y-2\,}.
-\]
-Interchanging \(x\) and \(y\), we obtain
-\[
-f^{-1}(x)=\sqrt[3]{\,x-2\,}.
-\]
-We check this by composition:
-\[
+Let \(y=x^3+2\). Solving for \(x\) gives
+\begin{aligneddisplay}
+x^3 &= y-2,\\
+x &= \sqrt[3]{\,y-2\,}.
+\end{aligneddisplay}
+Interchanging \(x\) and \(y\) gives \(f^{-1}(x)=\sqrt[3]{\,x-2\,}\).
+To verify this, compute
+\begin{aligneddisplay}
 f\bigl(f^{-1}(x)\bigr)
-=
-\left(\sqrt[3]{\,x-2\,}\right)^3+2
-=
-x-2+2
-=
+&=
+\left(\sqrt[3]{\,x-2\,}\right)^3+2\\
+&=
+x-2+2\\
+&=
 x.
-\]
+\end{aligneddisplay}
 Thus the inverse is correct.
 \end{solution}
+\end{workedexample}
 
+\begin{workedexample}
 \begin{example}
-Find the inverse of
-\[
-f(x)=x^2,
-\qquad x\ge 0.
-\]
+Find the inverse of \(f(x)=x^2\) for \(x\ge 0\).
 \end{example}
 
 \begin{solution}
-On the domain \([0,\infty)\), the function \(f(x)=x^2\) is one-to-one. Let
-\[
-y=x^2,
-\qquad x\ge 0.
-\]
-Solving for \(x\), we obtain
-\[
-x=\sqrt{y}.
-\]
-We choose the nonnegative square root because the original domain requires \(x\ge 0\). Interchanging \(x\) and \(y\), we obtain
-\[
-f^{-1}(x)=\sqrt{x},
-\qquad x\ge 0.
-\]
+On the domain \([0,\infty)\), the function \(f(x)=x^2\) is one-to-one, so an inverse exists. Let \(y=x^2\) with \(x\ge 0\).
+Solving for \(x\) gives \(x=\sqrt{y}\). Because the original domain requires \(x\ge 0\), we take the nonnegative square root. Interchanging \(x\) and \(y\) then gives
+\begin{conditiondisplay}
+f^{-1}(x) &= \sqrt{x}, \qquad & x\ge 0.
+\end{conditiondisplay}
 This example shows that a function that is not one-to-one on all of \(\mathbb{R}\) may still have an inverse after its domain is restricted appropriately.
 \end{solution}
+\end{workedexample}
 
 % TODO: add \subsection*{Exercises} block with end-of-section problems for Section 1.1.
 
@@ -400,13 +347,7 @@ clip=false
 
 \begin{definition}
 The \emph{inverse sine function}\index{inverse sine function}\index{arcsine@$\arcsin$}, denoted by \(\arcsin x\), is defined by
-\[
-\arcsin x=y
-\quad \Longleftrightarrow \quad
-\sin y=x
-\quad \text{and} \quad
--\frac{\pi}{2}\le y\le \frac{\pi}{2}.
-\]
+\iffwithconditions{\arcsin x=y}{\sin y=x,}{-\frac{\pi}{2}\le y\le \frac{\pi}{2}.}
 \end{definition}
 
 The domain of \(\arcsin x\) is \([-1,1]\), and its range is \(\left[-\frac{\pi}{2},\frac{\pi}{2}\right]\).
@@ -416,14 +357,10 @@ The notation \(\sin^{-1}x\) is also used for \(\arcsin x\), but it does not mean
 \end{remark}
 
 \begin{proposition}
-For \(-1\le x\le 1\),
-\[
-\sin(\arcsin x)=x.
-\]
-For \(-\frac{\pi}{2}\le x\le \frac{\pi}{2}\),
-\[
-\arcsin(\sin x)=x.
-\]
+\begin{conditiondisplay}
+\sin(\arcsin x) &= x, \qquad & -1\le x\le 1,\\
+\arcsin(\sin x) &= x, \qquad & -\frac{\pi}{2}\le x\le \frac{\pi}{2}.
+\end{conditiondisplay}
 \end{proposition}
 
 \begin{remark}
@@ -434,6 +371,7 @@ The identity \(\arcsin(\sin x)=x\) holds only when \(x\) lies in the principal i
 This is because \(\arcsin x\) always returns a value in \(\left[-\frac{\pi}{2},\frac{\pi}{2}\right]\).
 \end{remark}
 
+\begin{workedexample}
 \begin{example}
 Evaluate the following expressions.
 \begin{enumerate}
@@ -443,35 +381,15 @@ Evaluate the following expressions.
 \end{example}
 
 \begin{solution}
+\solutionbreak
 \begin{enumerate}
-    \item We seek the number \(y\) in the interval
-    \[
-    -\frac{\pi}{2}\le y\le \frac{\pi}{2}
-    \]
-    such that
-    \[
-    \sin y=\frac{1}{2}.
-    \]
-    Since
-    \[
-    \sin\left(\frac{\pi}{6}\right)=\frac{1}{2},
-    \]
-    it follows that
-    \[
-    \arcsin\left(\frac{1}{2}\right)=\frac{\pi}{6}.
-    \]
+    \item We need the angle \(y\) in the interval \(\left[-\frac{\pi}{2},\frac{\pi}{2}\right]\) such that \(\sin y=\frac{1}{2}\). Since \(\sin\left(\frac{\pi}{6}\right)=\frac{1}{2}\), it follows that \(\arcsin\left(\frac{1}{2}\right)=\frac{\pi}{6}\).
 
-    \item Let
-    \[
-    \theta=\arcsin\left(\frac{1}{3}\right).
-    \]
-    Then
-    \[
-    \sin\theta=\frac{1}{3},
-    \qquad
-    -\frac{\pi}{2}\le \theta\le \frac{\pi}{2}.
-    \]
-    Since \(\sin\theta>0\), we take \(\theta\) in the first quadrant. Draw the right triangle with hypotenuse \(3\) and opposite side \(1\), and let \(a\) denote the adjacent side.
+    \item Let \(\theta=\arcsin\left(\frac{1}{3}\right)\). Then
+    \begin{conditiondisplay}
+    \sin\theta &= \frac{1}{3}, \qquad & -\frac{\pi}{2}\le \theta\le \frac{\pi}{2}.
+    \end{conditiondisplay}
+    Since \(\sin\theta>0\), the angle \(\theta\) lies in the first quadrant. A right triangle with hypotenuse \(3\) and opposite side \(1\) therefore has adjacent side \(a\).
 
     \begin{center}
     \begin{tikzpicture}[scale=1.1]
@@ -491,16 +409,10 @@ Evaluate the following expressions.
     \[
     a=\sqrt{3^{2}-1^{2}}=\sqrt{8}=2\sqrt{2}.
     \]
-    Therefore,
-    \[
-    \tan\theta=\frac{1}{a}=\frac{1}{2\sqrt{2}}.
-    \]
-    Hence
-    \[
-    \tan\left(\arcsin\left(\frac{1}{3}\right)\right)=\frac{1}{2\sqrt{2}}.
-    \]
+    Therefore, \(\tan\left(\arcsin\left(\frac{1}{3}\right)\right)=\tan\theta=\frac{1}{a}=\frac{1}{2\sqrt{2}}\).
 \end{enumerate}
 \end{solution}
+\end{workedexample}
 
 \subsection{The inverse cosine function}
 
@@ -540,26 +452,16 @@ clip=false
 
 \begin{definition}
 The \emph{inverse cosine function}\index{inverse cosine function}\index{arccosine@$\arccos$}, denoted by \(\arccos x\), is defined by
-\[
-\arccos x=y
-\quad \Longleftrightarrow \quad
-\cos y=x
-\quad \text{and} \quad
-0\le y\le \pi.
-\]
+\iffwithconditions{\arccos x=y}{\cos y=x,}{0\le y\le \pi.}
 \end{definition}
 
 The domain of \(\arccos x\) is \([-1,1]\), and its range is \([0,\pi]\).
 
 \begin{proposition}
-For \(-1\le x\le 1\),
-\[
-\cos(\arccos x)=x.
-\]
-For \(0\le x\le \pi\),
-\[
-\arccos(\cos x)=x.
-\]
+\begin{conditiondisplay}
+\cos(\arccos x) &= x, \qquad & -1\le x\le 1,\\
+\arccos(\cos x) &= x, \qquad & 0\le x\le \pi.
+\end{conditiondisplay}
 \end{proposition}
 
 \subsection{The inverse tangent function}
@@ -601,60 +503,34 @@ clip=false
 
 \begin{definition}
 The \emph{inverse tangent function}\index{inverse tangent function}\index{arctangent@$\arctan$}, denoted by \(\arctan x\), is defined by
-\[
-\arctan x=y
-\quad \Longleftrightarrow \quad
-\tan y=x
-\quad \text{and} \quad
--\frac{\pi}{2}<y<\frac{\pi}{2}.
-\]
+\iffwithconditions{\arctan x=y}{\tan y=x,}{-\frac{\pi}{2}<y<\frac{\pi}{2}.}
 \end{definition}
 
 The domain of \(\arctan x\) is \(\mathbb{R}\), and its range is \(\left(-\frac{\pi}{2},\frac{\pi}{2}\right)\).
 
 \begin{proposition}
-For \(x\in\mathbb{R}\),
-\[
-\tan(\arctan x)=x.
-\]
-For \(-\frac{\pi}{2}<x<\frac{\pi}{2}\),
-\[
-\arctan(\tan x)=x.
-\]
+\begin{conditiondisplay}
+\tan(\arctan x) &= x, \qquad & x\in\mathbb{R},\\
+\arctan(\tan x) &= x, \qquad & -\frac{\pi}{2}<x<\frac{\pi}{2}.
+\end{conditiondisplay}
 \end{proposition}
 
+\begin{workedexample}
 \begin{example}
 Simplify \(\cos(\arctan x)\).
 \end{example}
 
 \begin{solution}
-Let
+Let \(y=\arctan x\). Then
+\begin{conditiondisplay}
+\tan y &= x, \qquad & -\frac{\pi}{2}<y<\frac{\pi}{2}.
+\end{conditiondisplay}
+We want to find \(\cos y\). Using \(1+\tan^{2}y=\sec^{2}y\), we get \(\sec^{2}y=1+x^{2}\). Since \(-\frac{\pi}{2}<y<\frac{\pi}{2}\), we have \(\cos y>0\) and hence \(\sec y>0\). Therefore \(\sec y=\sqrt{1+x^{2}}\), and so
 \[
-y=\arctan x.
-\]
-Then
-\[
-\tan y=x,
-\qquad
--\frac{\pi}{2}<y<\frac{\pi}{2}.
-\]
-We want to find \(\cos y\). Using the identity
-\[
-1+\tan^{2}y=\sec^{2}y,
-\]
-we obtain \(\sec^{2}y=1+x^{2}\). Since \(-\frac{\pi}{2}<y<\frac{\pi}{2}\), we have \(\cos y>0\) and hence \(\sec y>0\). Therefore,
-\[
-\sec y=\sqrt{1+x^{2}}.
-\]
-It follows that
-\[
-\cos y=\frac{1}{\sec y}=\frac{1}{\sqrt{1+x^{2}}}.
-\]
-Thus
-\[
-\cos(\arctan x)=\frac{1}{\sqrt{1+x^{2}}}.
+\cos(\arctan x)=\cos y=\frac{1}{\sec y}=\frac{1}{\sqrt{1+x^{2}}}.
 \]
 \end{solution}
+\end{workedexample}
 
 \subsection{The remaining inverse trigonometric functions}
 
@@ -662,35 +538,17 @@ The remaining inverse trigonometric functions are used less frequently, but they
 
 \begin{definition}
 The \emph{inverse cosecant function}\index{inverse cosecant function}\index{arccosecant@$\arccsc$}, denoted by \(\arccsc x\), is defined by
-\[
-\arccsc x=y
-\quad \Longleftrightarrow \quad
-\csc y=x
-\quad \text{and} \quad
-y\in \left(0,\frac{\pi}{2}\right]\cup\left(\pi,\frac{3\pi}{2}\right].
-\]
+\iffwithconditions{\arccsc x=y}{\csc y=x,}{y\in \left(0,\frac{\pi}{2}\right]\cup\left(\pi,\frac{3\pi}{2}\right].}
 \end{definition}
 
 \begin{definition}
 The \emph{inverse secant function}\index{inverse secant function}\index{arcsecant@$\arcsec$}, denoted by \(\arcsec x\), is defined by
-\[
-\arcsec x=y
-\quad \Longleftrightarrow \quad
-\sec y=x
-\quad \text{and} \quad
-y\in \left[0,\frac{\pi}{2}\right)\cup\left[\pi,\frac{3\pi}{2}\right).
-\]
+\iffwithconditions{\arcsec x=y}{\sec y=x,}{y\in \left[0,\frac{\pi}{2}\right)\cup\left[\pi,\frac{3\pi}{2}\right).}
 \end{definition}
 
 \begin{definition}
 The \emph{inverse cotangent function}\index{inverse cotangent function}\index{arccotangent@$\arccot$}, denoted by \(\arccot x\), is defined by
-\[
-\arccot x=y
-\quad \Longleftrightarrow \quad
-\cot y=x
-\quad \text{and} \quad
-y\in (0,\pi).
-\]
+\iffwithconditions{\arccot x=y}{\cot y=x,}{y\in (0,\pi).}
 \end{definition}
 
 The domains of \(\arccsc x\) and \(\arcsec x\) are \((-\infty,-1]\cup[1,\infty)\), while the domain of \(\arccot x\) is \(\mathbb{R}\). The principal ranges are the intervals specified in the definitions above.
@@ -862,6 +720,7 @@ f(x)\to L \qquad \text{as } x\to a,
 \]
 read ``\(f(x)\) tends to \(L\) as \(x\) tends to \(a\).''
 
+\begin{workedexample}
 \begin{example}
 Guess the value of
 \[
@@ -880,16 +739,14 @@ x & 0.9 & 0.99 & 0.999 & 1.001 & 1.01 & 1.1 \\
 \bottomrule
 \end{array}
 \]
-These values suggest that
-\[
-\frac{x-1}{x^{2}-1}
-\]
-gets close to \(\frac{1}{2}\) as \(x\) approaches \(1\). Thus we guess that
+The table suggests that \(\frac{x-1}{x^{2}-1}\) gets close to \(\frac{1}{2}\) as \(x\) approaches \(1\). Thus we guess that
 \[
 \lim_{x\to 1}\frac{x-1}{x^{2}-1}=\frac{1}{2}.
 \]
 \end{solution}
+\end{workedexample}
 
+\begin{workedexample}
 \begin{example}
 Guess the value of
 \[
@@ -908,15 +765,12 @@ t & -0.1 & -0.01 & 0.01 & 0.1 \\
 \bottomrule
 \end{array}
 \]
-These values are close to
-\[
-\frac{1}{6}=0.166666\cdots
-\]
-so we guess that
+These values are close to \(\frac{1}{6}=0.166666\cdots\), so we guess that
 \[
 \lim_{t\to 0}\frac{\sqrt{t^{2}+9}-3}{t^{2}}=\frac{1}{6}.
 \]
 \end{solution}
+\end{workedexample}
 
 The examples above show that the value of a limit can often be guessed by looking at function values near the point of interest. In the following sections, we will develop systematic methods for evaluating limits and study more subtle situations, such as one-sided limits and infinite limits.
 
@@ -975,19 +829,12 @@ clip=false
 \Cref{fig:one-sided-limits} illustrates that the left-hand limit and the right-hand limit at a point need not be the same. The filled dot indicates the actual value \(f(a)\), which is different from both one-sided limits.
 
 \begin{proposition}[Criterion for a Two-Sided Limit]
-\[
-\lim_{x\to a}f(x)=L
-\]
-if and only if
-\[
-\lim_{x\to a^-}f(x)=L
-\qquad \text{and} \qquad
-\lim_{x\to a^+}f(x)=L.
-\]
+\iffstackeddisplay{\lim_{x\to a}f(x)=L}{\lim_{x\to a^-}f(x)=L,}{\lim_{x\to a^+}f(x)=L.}
 \end{proposition}
 
 If the left-hand limit and the right-hand limit are different, then the two-sided limit does not exist.
 
+\begin{workedexample}
 \begin{example}
 Let
 \[
@@ -1001,22 +848,13 @@ Evaluate \(\lim_{x\to 2^-}f(x)\), \(\lim_{x\to 2^+}f(x)\), and determine whether
 \end{example}
 
 \begin{solution}
-If \(x\to 2^{-}\), then we use the branch \(f(x)=x+1\). Therefore,
-\[
-\lim_{x\to 2^-}f(x)=\lim_{x\to 2^-}(x+1)=3.
-\]
+From the left, we use the branch \(f(x)=x+1\), so \(\lim_{x\to 2^-}f(x)=3\).
 
-If \(x\to 2^{+}\), then we use the branch \(f(x)=4-x\). Therefore,
-\[
-\lim_{x\to 2^+}f(x)=\lim_{x\to 2^+}(4-x)=2.
-\]
+From the right, we use the branch \(f(x)=4-x\), so \(\lim_{x\to 2^+}f(x)=2\).
 
-Since the left-hand limit and the right-hand limit are different, the two-sided limit does not exist. Hence
-\[
-\lim_{x\to 2}f(x)
-\]
-does not exist.
+Since the left-hand limit and the right-hand limit are different, \(\lim_{x\to 2}f(x)\) does not exist.
 \end{solution}
+\end{workedexample}
 
 \subsection{Infinite limits}
 
@@ -1177,43 +1015,32 @@ clip=false
 \label{fig:one-sided-infinite-limits}
 \end{figure}
 
+\begin{workedexample}
 \begin{example}
 Consider the function
-\(
-f(x)=\dfrac{1}{x^2}.
-\)
-Guess the value of
-\[
-\lim_{x\to 0}\frac{1}{x^2}.
-\]
+\(f(x)=\frac{1}{x^2}\). Guess the value of \(\lim_{x\to 0}\frac{1}{x^2}\).
 \end{example}
 
 \begin{solution}
-If \(x\) is close to \(0\), then \(x^2\) is a very small positive number. Therefore \(\dfrac{1}{x^2}\) becomes very large. For example,
+If \(x\) is close to \(0\), then \(x^2\) is a very small positive number, so \(\frac{1}{x^2}\) becomes very large. For example,
 \[
 \frac{1}{(0.1)^2}=100,
 \qquad
 \frac{1}{(0.01)^2}=10000.
 \]
-Thus the values of \(\dfrac{1}{x^2}\) increase without bound as \(x\to 0\). Hence
-\[
-\lim_{x\to 0}\frac{1}{x^2}=\infty.
-\]
+Thus the values of \(\frac{1}{x^2}\) increase without bound as \(x\to 0\). Hence \(\lim_{x\to 0}\frac{1}{x^2}=\infty\).
 \end{solution}
+\end{workedexample}
 
+\begin{workedexample}
 \begin{example}
-Guess the value of
-\[
-\lim_{x\to 0}\left(-\frac{1}{x^2}\right).
-\]
+Guess the value of \(\lim_{x\to 0}\left(-\frac{1}{x^2}\right)\).
 \end{example}
 
 \begin{solution}
-Since \(\dfrac{1}{x^2}\) becomes arbitrarily large positive as \(x\to 0\), the quantity \(-\dfrac{1}{x^2}\) becomes arbitrarily large negative. Therefore
-\[
-\lim_{x\to 0}\left(-\frac{1}{x^2}\right)=-\infty.
-\]
+Since \(\frac{1}{x^2}\) increases without bound as \(x\to 0\), the quantity \(-\frac{1}{x^2}\) decreases without bound. Therefore \(\lim_{x\to 0}\left(-\frac{1}{x^2}\right)=-\infty\).
 \end{solution}
+\end{workedexample}
 
 \subsection{Vertical asymptotes}
 
@@ -1234,51 +1061,35 @@ The vertical line \(x=a\) is called a \emph{vertical asymptote}\index{vertical a
 
 If \(x=a\) is a vertical asymptote, then the function values become arbitrarily large positive or arbitrarily large negative as \(x\) approaches \(a\) from at least one side.
 
+\begin{workedexample}
 \begin{example}
-Evaluate
-\[
-\lim_{x\to 0^-}\frac{1}{x},
-\qquad
-\lim_{x\to 0^+}\frac{1}{x},
-\]
-determine whether
-\[
-\lim_{x\to 0}\frac{1}{x}
-\]
-exists, and decide whether \(x=0\) is a vertical asymptote of the graph of \(y=\dfrac{1}{x}\).
+Evaluate \(\lim_{x\to 0^-}\frac{1}{x}\) and \(\lim_{x\to 0^+}\frac{1}{x}\), determine whether \(\lim_{x\to 0}\frac{1}{x}\) exists, and decide whether \(x=0\) is a vertical asymptote of the graph of \(y=\frac{1}{x}\).
 \end{example}
 
 \begin{solution}
-If \(x\to 0^{-}\), then \(x\) is negative and very close to \(0\), so \(\dfrac{1}{x}\) is a large negative number. Hence
-\[
-\lim_{x\to 0^-}\frac{1}{x}=-\infty.
-\]
+As \(x\to 0^{-}\), the values of \(x\) are negative and very close to \(0\), so \(\frac{1}{x}\) is a large negative number. Hence \(\lim_{x\to 0^-}\frac{1}{x}=-\infty\).
 
-If \(x\to 0^{+}\), then \(x\) is positive and very close to \(0\), so \(\dfrac{1}{x}\) is a large positive number. Hence
-\[
-\lim_{x\to 0^+}\frac{1}{x}=\infty.
-\]
+As \(x\to 0^{+}\), the values of \(x\) are positive and very close to \(0\), so \(\frac{1}{x}\) is a large positive number. Hence \(\lim_{x\to 0^+}\frac{1}{x}=\infty\).
 
-Since the left-hand and right-hand limits are different, the two-sided limit \(\lim_{x\to 0}\dfrac{1}{x}\) does not exist. However, at least one one-sided infinite limit occurs, so the line \(x=0\) is a vertical asymptote of the graph of \(y=\dfrac{1}{x}\).
+Since the left-hand and right-hand limits are different, the two-sided limit \(\lim_{x\to 0}\frac{1}{x}\) does not exist. However, at least one one-sided infinite limit occurs, so the line \(x=0\) is a vertical asymptote of the graph of \(y=\frac{1}{x}\).
 \end{solution}
+\end{workedexample}
 
+\begin{workedexample}
 \begin{example}
-Does the curve \(y=\dfrac{2x}{x-3}\) have a vertical asymptote?
+Does the curve \(y=\frac{2x}{x-3}\) have a vertical asymptote?
 \end{example}
 
 \begin{solution}
 The denominator is zero when \(x=3\), so \(x=3\) is the only possible vertical asymptote.
 
-If \(x\) is close to \(3\) and \(x>3\), then \(x-3\) is a small positive number and \(2x\) is close to \(6\). Therefore \(\dfrac{2x}{x-3}\) is a large positive number, and hence
-\[
-\lim_{x\to 3^+}\frac{2x}{x-3}=\infty.
-\]
-If \(x\) is close to \(3\) and \(x<3\), then \(x-3\) is a small negative number while \(2x\) is still close to \(6\). Therefore \(\dfrac{2x}{x-3}\) is a large negative number, and hence
-\[
-\lim_{x\to 3^-}\frac{2x}{x-3}=-\infty.
-\]
+As \(x\to 3^{+}\), the denominator \(x-3\) is a small positive number while \(2x\) is close to \(6\). Therefore \(\frac{2x}{x-3}\) becomes arbitrarily large positive, so \(\lim_{x\to 3^+}\frac{2x}{x-3}=\infty\).
+
+As \(x\to 3^{-}\), the denominator \(x-3\) is a small negative number while \(2x\) is still close to \(6\). Therefore \(\frac{2x}{x-3}\) becomes arbitrarily large negative, so \(\lim_{x\to 3^-}\frac{2x}{x-3}=-\infty\).
+
 Therefore the line \(x=3\) is a vertical asymptote of the curve, as shown in \cref{fig:vertical-asymptote-example}.
 \end{solution}
+\end{workedexample}
 
 \begin{figure}[H]
 \centering
@@ -1304,28 +1115,19 @@ clip=false
 \addplot[thick, blue, domain=3.1:6.8] {2*x/(x-3)};
 \end{axis}
 \end{tikzpicture}
-\caption{The graph of \(y=\dfrac{2x}{x-3}\) has a vertical asymptote at \(x=3\).}
+\caption{The graph of \(y=\frac{2x}{x-3}\) has a vertical asymptote at \(x=3\).}
 \label{fig:vertical-asymptote-example}
 \end{figure}
 
+\begin{workedexample}
 \begin{example}
-Guess the value of
-\[
-\lim_{x\to 0^+}\ln x.
-\]
+Guess the value of \(\lim_{x\to 0^+}\ln x\).
 \end{example}
 
 \begin{solution}
-As \(x\) approaches \(0\) through positive values, \(\ln x\) decreases without bound. Therefore
-\[
-\lim_{x\to 0^+}\ln x=-\infty.
-\]
-Hence the line
-\[
-x=0
-\]
-is a vertical asymptote of the graph of \(y=\ln x\).
+As \(x\to 0^{+}\), \(\ln x\) decreases without bound, so \(\lim_{x\to 0^+}\ln x=-\infty\). Therefore \(x=0\) is a vertical asymptote of the graph of \(y=\ln x\).
 \end{solution}
+\end{workedexample}
 
 A two-sided infinite limit such as \(\lim_{x\to a}f(x)=\infty\) requires the function to approach \(\infty\) from both sides. If the behavior from the left and from the right is different, then the two-sided limit does not exist, even though \(x=a\) may still be a vertical asymptote.
 
@@ -1338,40 +1140,26 @@ In the previous sections, we used tables and graphs to guess the values of limit
 \subsection{The limit laws}
 
 \begin{theorem}[Limit laws]\index{limit laws}
-Suppose that \(c\) is a constant and that
-\[
-\lim_{x\to a}f(x)
-\qquad \text{and} \qquad
-\lim_{x\to a}g(x)
-\]
-both exist. Then:
-\[
+Suppose that \(c\) is a constant and that both \(\lim_{x\to a}f(x)\) and \(\lim_{x\to a}g(x)\) exist. Then:
+\begin{aligneddisplay}
 \lim_{x\to a}\bigl(f(x)+g(x)\bigr)
-=
-\lim_{x\to a}f(x)+\lim_{x\to a}g(x),
-\]
-\[
+&=
+\lim_{x\to a}f(x)+\lim_{x\to a}g(x),\\
 \lim_{x\to a}\bigl(f(x)-g(x)\bigr)
-=
-\lim_{x\to a}f(x)-\lim_{x\to a}g(x),
-\]
-\[
+&=
+\lim_{x\to a}f(x)-\lim_{x\to a}g(x),\\
 \lim_{x\to a}\bigl(c f(x)\bigr)
-=
-c\lim_{x\to a}f(x),
-\]
-\[
+&=
+c\lim_{x\to a}f(x),\\
 \lim_{x\to a}\bigl(f(x)g(x)\bigr)
-=
-\left(\lim_{x\to a}f(x)\right)\left(\lim_{x\to a}g(x)\right),
-\]
-and
+&=
+\left(\lim_{x\to a}f(x)\right)\left(\lim_{x\to a}g(x)\right).
+\end{aligneddisplay}
+If \(\lim_{x\to a}g(x)\ne 0\), then
 \[
 \lim_{x\to a}\frac{f(x)}{g(x)}
 =
-\frac{\lim_{x\to a}f(x)}{\lim_{x\to a}g(x)},
-\qquad
-\text{provided that } \lim_{x\to a}g(x)\ne 0.
+\frac{\lim_{x\to a}f(x)}{\lim_{x\to a}g(x)}.
 \]
 \end{theorem}
 
@@ -1394,11 +1182,10 @@ The limit laws imply several useful consequences.
 
 \begin{proposition}
 Let \(n\) be a positive integer. Then
-\[
-\lim_{x\to a}x=a
-\qquad \text{and} \qquad
-\lim_{x\to a}x^{n}=a^{n}.
-\]
+\begin{aligneddisplay}
+\lim_{x\to a}x &= a,\\
+\lim_{x\to a}x^{n} &= a^{n}.
+\end{aligneddisplay}
 Consequently, if \(p(x)\) is a polynomial, then
 \[
 \lim_{x\to a}p(x)=p(a).
@@ -1415,6 +1202,7 @@ So for polynomials and rational functions, the first step is usually direct subs
 
 Sometimes direct substitution does not work because it leads to an expression such as \(\frac{0}{0}\). In that case, we try to simplify the expression first.
 
+\begin{workedexample}
 \begin{example}
 Evaluate
 \[
@@ -1427,29 +1215,20 @@ Direct substitution gives
 \[
 \frac{1-1}{1^{2}-1}=\frac{0}{0},
 \]
-so we first simplify the expression. Since
-\[
-x^{2}-1=(x-1)(x+1),
-\]
-we have
-\[
+so we first simplify the expression:
+\begin{aligneddisplay}
 \frac{x-1}{x^{2}-1}
-=
-\frac{x-1}{(x-1)(x+1)}
-=
+&=
+\frac{x-1}{(x-1)(x+1)}\\
+&=
 \frac{1}{x+1},
 \qquad x\ne 1.
-\]
-Therefore,
-\[
-\lim_{x\to 1}\frac{x-1}{x^{2}-1}
-=
-\lim_{x\to 1}\frac{1}{x+1}
-=
-\frac{1}{2}.
-\]
+\end{aligneddisplay}
+Therefore, \(\lim_{x\to 1}\frac{x-1}{x^{2}-1}=\lim_{x\to 1}\frac{1}{x+1}=\frac{1}{2}\).
 \end{solution}
+\end{workedexample}
 
+\begin{workedexample}
 \begin{example}
 Evaluate
 \[
@@ -1458,44 +1237,32 @@ Evaluate
 \end{example}
 
 \begin{solution}
-Direct substitution again gives the indeterminate form \(\frac{0}{0}\). We rationalize the numerator:
-\[
+Direct substitution gives the indeterminate form \(\frac{0}{0}\), so we rationalize the numerator:
+\begin{aligneddisplay}
 \frac{\sqrt{t^{2}+9}-3}{t^{2}}
 \cdot
 \frac{\sqrt{t^{2}+9}+3}{\sqrt{t^{2}+9}+3}
-=
-\frac{t^{2}+9-9}{t^{2}\bigl(\sqrt{t^{2}+9}+3\bigr)}.
-\]
-Thus
-\[
-\frac{\sqrt{t^{2}+9}-3}{t^{2}}
-=
+&=
+\frac{t^{2}+9-9}{t^{2}\bigl(\sqrt{t^{2}+9}+3\bigr)}\\
+&=
 \frac{1}{\sqrt{t^{2}+9}+3},
 \qquad t\ne 0.
-\]
-Now we may take the limit directly:
-\[
-\lim_{t\to 0}\frac{\sqrt{t^{2}+9}-3}{t^{2}}
-=
-\lim_{t\to 0}\frac{1}{\sqrt{t^{2}+9}+3}
-=
-\frac{1}{6}.
-\]
+\end{aligneddisplay}
+Now we may take the limit directly and obtain \(\lim_{t\to 0}\frac{\sqrt{t^{2}+9}-3}{t^{2}}=\lim_{t\to 0}\frac{1}{\sqrt{t^{2}+9}+3}=\frac{1}{6}\).
 \end{solution}
+\end{workedexample}
 
 \subsection{Limits of piecewise-defined functions}
 
 Not all limits can be evaluated by direct substitution alone. Sometimes we must use the definition of the function more carefully.
 
+\begin{workedexample}
 \begin{example}
-Evaluate
-\[
-\lim_{x\to 0}|x|.
-\]
+Evaluate \(\lim_{x\to 0}|x|\).
 \end{example}
 
 \begin{solution}
-Recall that
+Using
 \[
 |x|=
 \begin{cases}
@@ -1503,46 +1270,23 @@ x, & x\ge 0,\\[4pt]
 -x, & x<0.
 \end{cases}
 \]
-If \(x\to 0^{+}\), then \(|x|=x\to 0\). If \(x\to 0^{-}\), then \(|x|=-x\to 0\). Therefore,
-\[
-\lim_{x\to 0}|x|=0.
-\]
+we see that if \(x\to 0^{+}\), then \(|x|=x\to 0\), while if \(x\to 0^{-}\), then \(|x|=-x\to 0\). Therefore, \(\lim_{x\to 0}|x|=0\).
 \end{solution}
+\end{workedexample}
 
+\begin{workedexample}
 \begin{example}
-The greatest integer function, also called the floor function, is denoted by \(\lfloor x \rfloor\) and defined to be the largest integer less than or equal to \(x\). Evaluate
-\[
-\lim_{x\to 3^{+}}\lfloor x \rfloor
-\qquad \text{and} \qquad
-\lim_{x\to 3^{-}}\lfloor x \rfloor.
-\]
+The greatest integer function, also called the floor function, is denoted by \(\lfloor x \rfloor\) and defined to be the largest integer less than or equal to \(x\). Evaluate \(\lim_{x\to 3^{+}}\lfloor x \rfloor\) and \(\lim_{x\to 3^{-}}\lfloor x \rfloor\).
 \end{example}
 
 \begin{solution}
-If \(x\to 3^{+}\), then \(x\) is slightly greater than \(3\), so
-\[
-\lfloor x \rfloor=3.
-\]
-Hence
-\[
-\lim_{x\to 3^{+}}\lfloor x \rfloor=3.
-\]
+As \(x\to 3^{+}\), we have \(\lfloor x \rfloor=3\), so \(\lim_{x\to 3^{+}}\lfloor x \rfloor=3\).
 
-If \(x\to 3^{-}\), then \(x\) is slightly less than \(3\), so
-\[
-\lfloor x \rfloor=2.
-\]
-Hence
-\[
-\lim_{x\to 3^{-}}\lfloor x \rfloor=2.
-\]
+As \(x\to 3^{-}\), we have \(\lfloor x \rfloor=2\), so \(\lim_{x\to 3^{-}}\lfloor x \rfloor=2\).
 
-Since the left-hand and right-hand limits are different, we conclude that
-\(
-\lim_{x\to 3}\lfloor x \rfloor
-\)
-does not exist.
+Since the left-hand and right-hand limits are different, we conclude that \(\lim_{x\to 3}\lfloor x \rfloor\) does not exist.
 \end{solution}
+\end{workedexample}
 
 \subsection{The squeeze theorem}
 
@@ -1554,17 +1298,14 @@ Suppose that
 g(x)\le f(x)\le h(x)
 \]
 for all \(x\) near \(a\), except possibly at \(x=a\). If
-\[
-\lim_{x\to a}g(x)=L
-\qquad \text{and} \qquad
-\lim_{x\to a}h(x)=L,
-\]
+\pairdisplay{\lim_{x\to a}g(x)=L,}{\lim_{x\to a}h(x)=L,}
 then
 \[
 \lim_{x\to a}f(x)=L.
 \]
 \end{theorem}
 
+\begin{workedexample}
 \begin{example}
 Evaluate
 \[
@@ -1573,7 +1314,7 @@ Evaluate
 \end{example}
 
 \begin{solution}
-Since
+Because
 \[
 -1\le \sin\left(\frac{1}{x}\right)\le 1,
 \]
@@ -1581,18 +1322,16 @@ for all \(x\ne 0\), we may multiply all parts by \(x^{2}\ge 0\) to obtain
 \[
 -x^{2}\le x^{2}\sin\left(\frac{1}{x}\right)\le x^{2}.
 \]
-This inequality holds for all \(x\ne 0\). Now,
-\[
-\lim_{x\to 0}(-x^{2})=0
-\qquad \text{and} \qquad
-\lim_{x\to 0}x^{2}=0.
-\]
+Also,
+\pairdisplay{\lim_{x\to 0}(-x^{2})=0,}{\lim_{x\to 0}x^{2}=0.}
 Therefore, by the squeeze theorem,
 \[
 \lim_{x\to 0}x^{2}\sin\left(\frac{1}{x}\right)=0.
 \]
 \end{solution}
+\end{workedexample}
 
+\begin{workedexample}
 \begin{example}
 Evaluate
 \[
@@ -1601,7 +1340,7 @@ Evaluate
 \end{example}
 
 \begin{solution}
-Since
+Because
 \[
 \left|\cos\left(\frac{1}{x}\right)\right|\le 1,
 \]
@@ -1614,17 +1353,14 @@ Equivalently,
 \[
 -|x|\le x\cos\left(\frac{1}{x}\right)\le |x|.
 \]
-This inequality also holds for all \(x\ne 0\). Now
-\[
-\lim_{x\to 0}(-|x|)=0
-\qquad \text{and} \qquad
-\lim_{x\to 0}|x|=0.
-\]
+Also,
+\pairdisplay{\lim_{x\to 0}(-|x|)=0,}{\lim_{x\to 0}|x|=0.}
 Therefore, by the squeeze theorem,
 \[
 \lim_{x\to 0}x\cos\left(\frac{1}{x}\right)=0.
 \]
 \end{solution}
+\end{workedexample}
 
 The limit laws and the techniques of factoring, rationalization, and squeezing allow us to evaluate many limits. In the next section, we will give the precise definition of a limit.
 
@@ -1649,6 +1385,7 @@ When \(x\) is close to \(3\), but \(x\ne 3\), the value of \(f(x)=2x-1\) is clos
 \lim_{x\to 3} f(x)=5.
 \)
 
+\begin{workedexample}
 \begin{example}
 For the function
 \[
@@ -1662,59 +1399,24 @@ how close must \(x\) be to \(3\) in order to guarantee that \(f(x)\) differs fro
 \end{example}
 
 \begin{solution}
-We want
-\[
-|f(x)-5|<0.1.
-\]
-Since \(f(x)=2x-1\) for \(x\ne 3\), we have
-\[
+We want \(|f(x)-5|<0.1\). For \(x\ne 3\), we have \(f(x)=2x-1\), so
+\begin{aligneddisplay}
 |f(x)-5|
-=
-|(2x-1)-5|
-=
-|2x-6|
-=
+&=
+|(2x-1)-5|\\
+&=
+|2x-6|\\
+&=
 2|x-3|.
-\]
-Therefore, to ensure that
-\[
-|f(x)-5|<0.1,
-\]
-it is enough to require that
-\[
-2|x-3|<0.1.
-\]
-This gives
-\[
-|x-3|<0.05.
-\]
-So if \(x\) is within \(0.05\) of \(3\), but \(x\ne 3\), then \(f(x)\) is within \(0.1\) of \(5\).
+\end{aligneddisplay}
+Thus it is enough to require \(2|x-3|<0.1\), which is equivalent to \(|x-3|<0.05\). Therefore, if \(0<|x-3|<0.05\), then \(f(x)\) is within \(0.1\) of \(5\).
 \end{solution}
+\end{workedexample}
 
-If we replace \(0.1\) by the smaller number \(0.01\), then the same reasoning shows that
-\[
-|f(x)-5|<0.01
-\qquad \text{whenever} \qquad
-0<|x-3|<0.005.
-\]
+If we replace \(0.1\) by the smaller number \(0.01\), then the same reasoning shows that \(|f(x)-5|<0.01\) whenever \(0<|x-3|<0.005\).
 Thus, when we ask for \(f(x)\) to be closer to \(5\), we must require \(x\) to be closer to \(3\).
 
-More generally, if we want
-\[
-|f(x)-5|<\varepsilon
-\]
-for some \(\varepsilon>0\), then it is enough to require that
-\[
-2|x-3|<\varepsilon,
-\]
-that is,
-\[
-|x-3|<\frac{\varepsilon}{2}.
-\]
-Thus for this example we may choose
-\[
-\delta=\frac{\varepsilon}{2}.
-\]
+More generally, if we want \(|f(x)-5|<\varepsilon\) for some \(\varepsilon>0\), then it is enough to require \(2|x-3|<\varepsilon\), equivalently \(|x-3|<\frac{\varepsilon}{2}\). Thus for this example we may choose \(\delta=\frac{\varepsilon}{2}\).
 
 The previous discussion shows the basic idea. We want to control the distance between \(f(x)\) and the limit \(L\) by controlling the distance between \(x\) and the point \(a\).
 
@@ -1818,11 +1520,10 @@ If \(\lim_{x\to a} f(x)\) exists, then it is unique.
 
 \begin{proof}
 Suppose that
-\[
-\lim_{x\to a} f(x)=L
-\qquad \text{and} \qquad
-\lim_{x\to a} f(x)=M.
-\]
+\begin{aligneddisplay}
+\lim_{x\to a} f(x) &= L,\\
+\lim_{x\to a} f(x) &= M.
+\end{aligneddisplay}
 If \(L\ne M\), let
 \[
 \varepsilon=\frac{|L-M|}{2}.
@@ -1840,25 +1541,23 @@ and
 0<|x-a|<\delta_2.
 \]
 If \(0<|x-a|<\min\{\delta_1,\delta_2\}\), then both inequalities hold. By the triangle inequality,
-\[
+\begin{aligneddisplay}
 |L-M|
-=
-|L-f(x)+f(x)-M|
-\le
-|L-f(x)|+|f(x)-M|
-<
-2\varepsilon
-=
+&=
+|L-f(x)+f(x)-M|\\
+&\le
+|L-f(x)|+|f(x)-M|\\
+&<
+2\varepsilon\\
+&=
 |L-M|,
-\]
+\end{aligneddisplay}
 which is impossible. Therefore \(L=M\).
 \end{proof}
 
+\begin{workedexample}
 \begin{example}
-Show from the definition that
-\[
-\lim_{x\to 3} (4x-5)=7.
-\]
+Show from the definition that \(\lim_{x\to 3} (4x-5)=7\).
 \end{example}
 
 \begin{solution}
@@ -1868,39 +1567,32 @@ Given \(\varepsilon>0\), we want to find \(\delta>0\) such that
 \qquad \text{whenever} \qquad
 0<|x-3|<\delta.
 \]
-Now
-\[
+Since
+\begin{aligneddisplay}
 |(4x-5)-7|
-=
-|4x-12|
-=
+&=
+|4x-12|\\
+&=
 4|x-3|.
-\]
-So if we require \(4|x-3|<\varepsilon\), it is enough to have \(|x-3|<\dfrac{\varepsilon}{4}\). Hence we may choose
-\[
-\delta=\frac{\varepsilon}{4}.
-\]
+\end{aligneddisplay}
+Thus it is enough to require \(4|x-3|<\varepsilon\), which holds whenever \(|x-3|<\dfrac{\varepsilon}{4}\). We therefore choose \(\delta=\frac{\varepsilon}{4}\).
 Then, whenever \(0<|x-3|<\delta\), we have
-\[
+\begin{aligneddisplay}
 |(4x-5)-7|
-=
-4|x-3|
-<
-4\left(\frac{\varepsilon}{4}\right)
-=
+&=
+4|x-3|\\
+&<
+4\left(\frac{\varepsilon}{4}\right)\\
+&=
 \varepsilon.
-\]
-Therefore,
-\[
-\lim_{x\to 3} (4x-5)=7.
-\]
+\end{aligneddisplay}
+Therefore, \(\lim_{x\to 3} (4x-5)=7\).
 \end{solution}
+\end{workedexample}
 
+\begin{workedexample}
 \begin{example}
-Show from the definition that
-\[
-\lim_{x\to 1} (x^{2}-5x+6)=2.
-\]
+Show from the definition that \(\lim_{x\to 1} (x^{2}-5x+6)=2\).
 \end{example}
 
 \begin{solution}
@@ -1911,13 +1603,13 @@ Given \(\varepsilon>0\), we want to find \(\delta>0\) such that
 0<|x-1|<\delta.
 \]
 First we simplify:
-\[
+\begin{aligneddisplay}
 |(x^{2}-5x+6)-2|
-=
-|x^{2}-5x+4|
-=
+&=
+|x^{2}-5x+4|\\
+&=
 |(x-1)(x-4)|.
-\]
+\end{aligneddisplay}
 The difficulty is that the factor \(|x-4|\) also depends on \(x\). To control it, we first assume \(|x-1|<1\). Then
 \begin{align*}
 |x-1|<1
@@ -1930,27 +1622,25 @@ Thus, whenever \(|x-1|<1\), we have
 \[
 |(x-1)(x-4)|<4|x-1|.
 \]
-So to guarantee that \(|(x-1)(x-4)|<\varepsilon\), it is enough to require \(4|x-1|<\varepsilon\), that is, \(|x-1|<\dfrac{\varepsilon}{4}\). Therefore we choose
+To guarantee that \(|(x-1)(x-4)|<\varepsilon\), it is therefore enough to require both \(|x-1|<1\) and \(4|x-1|<\varepsilon\). We choose
 \[
 \delta=\min\left\{1,\frac{\varepsilon}{4}\right\}.
 \]
 Then, whenever \(0<|x-1|<\delta\), we have both \(|x-1|<1\) and \(|x-1|<\dfrac{\varepsilon}{4}\), so \(|x-4|<4\) and
-\[
+\begin{aligneddisplay}
 |(x^{2}-5x+6)-2|
-=
-|(x-1)(x-4)|
-<
-4|x-1|
-<
-4\left(\frac{\varepsilon}{4}\right)
-=
+&=
+|(x-1)(x-4)|\\
+&<
+4|x-1|\\
+&<
+4\left(\frac{\varepsilon}{4}\right)\\
+&=
 \varepsilon.
-\]
-Therefore,
-\[
-\lim_{x\to 1} (x^{2}-5x+6)=2.
-\]
+\end{aligneddisplay}
+Therefore, \(\lim_{x\to 1} (x^{2}-5x+6)=2\).
 \end{solution}
+\end{workedexample}
 
 \begin{definition}
 We write

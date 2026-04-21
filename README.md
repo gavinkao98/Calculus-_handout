@@ -25,12 +25,17 @@ Full references:
 
 - `main.tex`: main LaTeX entry point for the book
 - `chapters/`: chapter source files
+- `chapters/_chapter_template.tex`: starter skeleton for drafting a new chapter in the house style
 - `preamble/`: shared LaTeX setup
 - `refs/`: bibliography data
 - `tools/`: media-generation scripts
 - `schemas/`: JSON schema files for generated deck data
 - `inputs/`: reusable raw inputs such as source voice recordings, section media plans, and Manim storyboards
 - `artifacts/`: mostly generated slides, narration, audio, and video outputs; the tracked exceptions are `artifacts/scripts/*_final.md`, `artifacts/slides/*.tex`, and `artifacts/manim/*/narration.md`
+
+Authoring note:
+- `workedexample` is the canonical semantic wrapper for exactly one `example` + `solution` pair; it is not just a page-break trick or visual macro
+- keep `\footnote`, `\marginpar`, and manual `\hypertarget` outside `workedexample`
 
 Voice-reference note:
 - keep new voice reference inputs under `inputs/voice/` as `.wav` files
@@ -56,15 +61,37 @@ Manim-storyboard note:
 The `preamble/` directory is split by responsibility so layout and template behavior can be found quickly:
 
 - `preamble/packages.tex`: shared package loading for math (`amsmath`, `amsthm`, `mathtools`), figures (`graphicx`, `tikz`, `pgfplots`), float handling (`float`, `flafter`), page-break control (`needspace`), lists (`enumitem`), page geometry, headers, and cross-references (`hyperref`, `cleveref`)
-- `preamble/layout.tex`: paragraph indentation and spacing, list spacing, float placement parameters, running headers and footers, and chapter-title spacing
-- `preamble/theorem_setup.tex`: theorem-like environment definitions, chapter-based counters for those environments, the `solution` environment, stronger page-bottom protection for formal result blocks, and lighter page-flow protection for examples, exercises, remarks, and proofs
+- `preamble/layout.tex`: paragraph indentation and spacing, list spacing, float placement parameters, running headers and footers, chapter-title spacing, `\Needspace` hooks on `\section` and `\subsection`, shared short-formula display helpers such as `aligneddisplay`, `conditiondisplay`, `\pairdisplay`, `\iffwithconditions`, and `\iffstackeddisplay`, and the `\newdisplayenv{name}{begin}{end}` helper used to declare any new environment that wraps `\[...\]` so `\parindent` is correctly suppressed on the following paragraph
+- `preamble/theorem_setup.tex`: theorem-like environment definitions, chapter-based counters for those environments, the `solution` environment, stronger page-bottom protection for formal result blocks, lighter page-flow protection for examples, exercises, remarks, and proofs, and the `workedexample` semantic wrapper that measures and reserves space for an `example`+`solution` pair as one unit
 - `preamble/numbering.tex`: equation numbering by chapter
 - `preamble/bibliography.tex`: bibliography backend and bibliography source file
 
 Template pagination note:
 - formal result blocks such as `theorem`, `lemma`, `proposition`, `corollary`, and `definition` reserve more vertical space before they start
 - `example`, `exercise`, `solution`, and `proof` use lighter protection and may span pages naturally
+- `\section` and `\subsection` headings reserve a few baselines of the following body text, so a heading cannot be stranded alone at the bottom of a page
+- `workedexample` measures the combined `example`+`solution` height once (capped at 16 baselines) and reserves that much space, so short pairs stay together without forcing a break for near-page-height units
 - do not add manual `\newpage`, `\pagebreak`, or `\clearpage` in chapter files just to keep these blocks together unless a task explicitly calls for a local exception
+
+## Formula Display Strategy
+
+Use this as the quick authoring rule for how formulas should appear on the page:
+
+- keep short formulas inline when they belong naturally to the sentence
+- in `solution`, keep `Solution.` inline when the body begins with prose
+- if a `solution` begins with `enumerate`, `itemize`, or display math, place `\solutionbreak` before the first block
+- within one local math unit, prefer one display grammar instead of mixing centered displays, aligned blocks, and prose-side conditions for the same step
+- keep one-off conditions such as `provided that ...` in prose when they apply to only one formula
+- use ordinary display math for visually central formulas or multi-step calculations
+- use `aligneddisplay` for short related formulas that should be read top-to-bottom
+- use `conditiondisplay` when formulas carry trailing domain/range/branch conditions that need explicit spacing
+- use `\pairdisplay{...}{...}` only when exactly two short formulas are meant to be compared left-to-right; it auto-stacks if either side gets too wide
+- do not use `aligneddisplay` just to line up unrelated factual statements; if two short facts are being compared, prefer `\pairdisplay{...}{...}` or ordinary display math
+- use `\iffwithconditions{...}{...}{...}` when the brace itself means one grouped restriction or condition set
+- use `\iffstackeddisplay{...}{...}{...}` when one formal statement is equivalent to two equal-status stacked conditions
+- in displayed formal equivalences, prefer `\Longleftrightarrow` over a separate text line saying `if and only if`
+
+For the full decision rules and examples, see the `## Formula Display Policy` section in [`CONTENT_README.md`](CONTENT_README.md).
 
 ## Which File To Read
 

@@ -1,10 +1,21 @@
 % Reserve more space for formal result blocks and less for worked material that may flow naturally.
-\newcommand{\formalblockneedspace}{10\baselineskip}
+\newcommand{\formalblockneedspace}{8\baselineskip}
 \newcommand{\supportingblockneedspace}{7\baselineskip}
-\newcommand{\workedblockneedspace}{4\baselineskip}
+\newcommand{\exampleblockneedspace}{6\baselineskip}
+\newcommand{\exerciseblockneedspace}{4\baselineskip}
+\newcommand{\solutionblockneedspace}{5\baselineskip}
 \newcommand{\proofblockneedspace}{3\baselineskip}
+% All block-level "reserve space first" checks funnel through this wrapper.
+% In normal typesetting it uses Needspace's exact page-remaining test. During
+% workedexample measurement we temporarily suppress it so the measured vbox
+% reflects only real content height, not extra penalties/vfil from nested
+% needspace checks.
+\newif\ifmeasuringworkedexample
+\newcommand{\blockneedspace}[1]{%
+  \ifmeasuringworkedexample\else\Needspace{#1}\fi
+}
 \newcommand{\reserveblockspace}[2]{%
-  \AddToHook{env/#1/before}{\Needspace{#2}}%
+  \AddToHook{env/#1/before}{\blockneedspace{#2}}%
 }
 
 % ---------------------------------------------------------------------------
@@ -54,8 +65,8 @@
 \reserveblockspace{lemma}{\formalblockneedspace}
 \reserveblockspace{corollary}{\formalblockneedspace}
 \reserveblockspace{definition}{\formalblockneedspace}
-\reserveblockspace{example}{\workedblockneedspace}
-\reserveblockspace{exercise}{\workedblockneedspace}
+\reserveblockspace{example}{\exampleblockneedspace}
+\reserveblockspace{exercise}{\exerciseblockneedspace}
 \reserveblockspace{remark}{\supportingblockneedspace}
 
 % ---------------------------------------------------------------------------
@@ -64,17 +75,72 @@
 % Proof Policy, rule 11): bold "Solution." label, upright body text, and a
 % filled QED box at the end (proof uses italic "Proof." with an open box).
 % Optional argument overrides the label, e.g. \begin{solution}[Alternative solution].
+% Style policy: keep "Solution." inline when the body opens with prose; if the
+% first real content is a block such as enumerate/itemize/display math, start
+% the body on the next line with \solutionbreak instead of forcing every
+% solution onto a new line.
 % ---------------------------------------------------------------------------
 \newenvironment{solution}[1][Solution]{%
-  \par\needspace{\workedblockneedspace}%
+  \par\blockneedspace{\solutionblockneedspace}%
   \pushQED{\qed}%
   \renewcommand{\qedsymbol}{\ensuremath{\blacksquare}}%
   \medskip\noindent\textbf{#1.}\enspace\ignorespaces
 }{%
   \popQED\par\medskip
 }
+\newcommand{\solutionbreak}{\unskip\par\nobreak\smallskip\ignorespaces}
 
 \reserveblockspace{proof}{\proofblockneedspace}
+
+% ---------------------------------------------------------------------------
+% workedexample: semantic wrapper for an example + solution pair.
+%
+% Needspace alone cannot keep a short example together with its solution: it
+% protects only the beginning of an environment, so a short example can fit
+% at a page bottom while its solution gets pushed to the next page.
+%
+% This environment captures its body into a vbox once, measures the combined
+% height, reserves that much space, then unvboxes so the content stays
+% breakable if it exceeds one page. While the body is being collected, the
+% example/solution hooks must not run Needspace: those checks insert break
+% penalties and stretch that can make the measured box look taller than the
+% actual content, or even leak an unwanted split when the box is unboxed.
+% Because the body is first boxed for measurement, keep page-anchored commands
+% such as \footnote, \marginpar, and manual \hypertarget outside this wrapper.
+% Implementation note: this relies on \NewEnviron's one-shot capture of \BODY.
+% The inner example/solution environments are consumed during measurement and
+% then replayed only via the stored box; if this wrapper is later rewritten as
+% a normal \newenvironment, the pagination assumptions here will no longer hold.
+% ---------------------------------------------------------------------------
+\newbox\workedexamplebox
+\newlength\workedexampleheight
+% Cap: for worked examples taller than this, reserve only this much. Without
+% the cap, a near-page-height unit forces a break on almost any page and
+% leaves a near-empty trailing half-page behind. With the cap, such units
+% are allowed to split naturally; short/medium units (the common case) are
+% still protected in full because their measured height stays under the cap.
+\newcommand{\workedexamplemaxreserve}{16\baselineskip}
+
+\NewEnviron{workedexample}{%
+  \ifmeasuringworkedexample
+    \PackageError{workedexample}{Nested workedexample not allowed}{}%
+  \fi
+  \par
+  % Measure the pair without nested Needspace interference; the outer wrapper
+  % will do the single real reservation pass after the height is known.
+  \measuringworkedexampletrue
+  \setbox\workedexamplebox=\vbox{\hsize=\linewidth\BODY}%
+  \measuringworkedexamplefalse
+  \setlength\workedexampleheight{\dimexpr\ht\workedexamplebox+\dp\workedexamplebox\relax}%
+  \ifdim\workedexampleheight>\workedexamplemaxreserve
+    \setlength\workedexampleheight{\workedexamplemaxreserve}%
+  \fi
+  % Reserve the measured combined height on the actual page, then typeset the
+  % body normally so overlong worked examples can still split if needed.
+  \Needspace{\workedexampleheight}%
+  \unvbox\workedexamplebox
+  \par
+}
 
 % ---------------------------------------------------------------------------
 % cleveref name bindings.

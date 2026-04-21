@@ -1,0 +1,138 @@
+% Copy this file when starting a new chapter.
+% Replace the placeholders with real content; do not \include this file directly.
+% If a chapter needs an explicit exception under CONTENT_README.md, record it
+% immediately below \chapter{...} as a comment.
+% DELETE ALL "% Layout note:" and "% Pattern note:" blocks before committing a
+% real chapter file copied from this template.
+
+\chapter{Chapter Title}
+
+This chapter develops the main ideas of the chapter in one or two opening
+paragraphs. The overview should identify the mathematical territory, connect
+the chapter to earlier material, and preview the central results students
+should look forward to.
+
+Use the opening overview for motivation and orientation only. Do not introduce
+new notation here unless it is unavoidable.
+
+\section{Section Title}
+
+Open the section with a short paragraph that explains what problem this
+section addresses and why it matters.
+
+% Layout note:
+% - section and subsection headings now reserve space automatically, so avoid
+%   manual \newpage/\pagebreak just to keep a heading with its first lines
+% - long titles may wrap naturally; the shared heading style will align them
+
+\subsection{Subsection title}
+
+Continue with textbook-style prose before the first formal environment.
+
+\begin{definition}
+State the new concept cleanly and without examples or side remarks.
+\end{definition}
+
+\begin{remark}
+Use a remark for interpretation, contrast, or a brief warning if it helps.
+\end{remark}
+
+\begin{workedexample}
+\begin{example}
+Evaluate \(\lim_{x\to a^-}f(x)\), \(\lim_{x\to a^+}f(x)\), and determine
+whether \(\lim_{x\to a}f(x)\) exists.
+\end{example}
+
+\begin{solution}
+If \(x\to a^{-}\), then the relevant branch or sign information gives
+\(\lim_{x\to a^-}f(x)=L_-\).
+
+If \(x\to a^{+}\), then the relevant branch or sign information gives
+\(\lim_{x\to a^+}f(x)=L_+\).
+
+Since \(L_- \ne L_+\), \(\lim_{x\to a}f(x)\) does not exist.
+\end{solution}
+\end{workedexample}
+
+% Pattern note:
+% - keep `Solution.` inline unless the body opens with a block; then start with
+%   `\solutionbreak`
+% - use one local display grammar per algebraic unit instead of mixing centered
+%   displays, aligned blocks, and prose-side notes
+% - `aligneddisplay`: short top-to-bottom peers or derivation lines
+% - `conditiondisplay`: formula plus a domain/range/branch condition
+% - `\pairdisplay{...}{...}`: exactly two short formulas meant to be compared
+% - `\iffwithconditions{...}{...}{...}`: equivalence plus one grouped
+%   restriction set (brace is semantic)
+% - `\iffstackeddisplay{...}{...}{...}`: equivalence plus two equal-status
+%   stacked criteria
+% - if an example has no worked solution, use `example` alone rather than
+%   `workedexample`
+% - see CONTENT_README.md for the full policy before committing
+
+\begin{aligneddisplay}
+u(x) &= x^2-1,\\
+v(x) &= \sqrt{x+3}.
+\end{aligneddisplay}
+
+\begin{conditiondisplay}
+f(x) &= x, \qquad & 0 \le x \le 1,\\
+g(x) &= x^2, \qquad & -1 \le x \le 1.
+\end{conditiondisplay}
+
+\pairdisplay{\lim_{x\to a^-}f(x)=L,}{\lim_{x\to a^+}f(x)=L.}
+
+\iffwithconditions{f^{-1}(y)=x}{f(x)=y,}{y\in B.}
+
+\iffstackeddisplay{\lim_{x\to a}f(x)=L}{\lim_{x\to a^-}f(x)=L,}{\lim_{x\to a^+}f(x)=L.}
+
+\begin{aligneddisplay}
+f(x+y) &= f(x)+f(y),\\
+f(cx) &= cf(x).
+\end{aligneddisplay}
+
+\begin{workedexample}
+\begin{example}
+Evaluate
+\[
+\lim_{x\to a}\frac{\sqrt{x+b}-c}{x-a}.
+\]
+\end{example}
+
+\begin{solution}
+Direct substitution gives the indeterminate form \(\frac{0}{0}\), so we
+rationalize:
+\[
+\frac{\sqrt{x+b}-c}{x-a}
+\cdot
+\frac{\sqrt{x+b}+c}{\sqrt{x+b}+c}
+=
+\frac{x+b-c^2}{(x-a)\bigl(\sqrt{x+b}+c\bigr)}.
+\]
+After simplification, we obtain
+\[
+\frac{1}{\sqrt{x+b}+c}.
+\]
+Therefore,
+\[
+\lim_{x\to a}\frac{\sqrt{x+b}-c}{x-a}
+=
+\frac{1}{2c}.
+\]
+\end{solution}
+\end{workedexample}
+
+\begin{example}
+State a brief illustrative example here when no worked solution follows.
+\end{example}
+
+\begin{theorem}
+State a formal result here when the section needs one.
+\end{theorem}
+
+\begin{proof}
+Give a genuine proof only when the book's level and the manuscript warrant it.
+\end{proof}
+
+% TODO: add \subsection*{Exercises} block with end-of-section problems for
+% this section, following CONTENT_README.md.

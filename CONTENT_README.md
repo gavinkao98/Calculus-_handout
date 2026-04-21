@@ -1,6 +1,6 @@
 # Calculus Textbook Project: Master Writing Guide
 
-**Version 2.0.4** — adds four structural rules codified from the Chapter 1 review and closes two rule-vs-manuscript gaps: the index policy is now backed by real build infrastructure (`imakeidx`, `\makeindex`, `\printindex`), and end-of-section exercise placeholders are formalized via TODO markers and Known Open Items tracking (maintained in [`README.md`](README.md)). Earlier foundations (rationale framework, shared counters for formal statements, two-tier exercise policy, cross-reference/typography/index/exception protocols) are retained from v2.0.
+**Version 2.0.9** — adds the `\newdisplayenv` helper and a matching LaTeX Source Policy rule so that any environment wrapping `\[...\]` automatically propagates amsmath's `\@endpe` flag and does not strand a `\parindent` on the continuation paragraph. Earlier structural, numbering, exercise, and formula-display policies are retained.
 
 This file is the authoritative writing context for future chapter drafting and revision in this project.
 It consolidates:
@@ -124,6 +124,20 @@ The overview is prose, not a definition, theorem, or remark. It does not itself 
 Chapters may end with an optional short summary under `\section*{Summary}`. If included, the summary is at most one page, does not appear in the numbered section sequence, and may list key definitions and theorems without reproducing full statements. Do not use a summary to introduce new results.
 
 Rationale: a fixed opening template gives multi-author contributions a common rhythm and makes later review easier. Chapter-opening motivation is one of the most visible style markers in a textbook, and unifying it has outsized impact on perceived voice.
+
+## Authoring Template
+
+When starting a new chapter file, use [`chapters/_chapter_template.tex`](chapters/_chapter_template.tex) as the drafting skeleton. Copy it to the new chapter file and replace the placeholders with real content.
+
+The template encodes the house defaults for:
+- the chapter-opening overview paragraphs
+- the standard section and subsection rhythm
+- `workedexample` + `example` + `solution` pairing
+- compact formula placement in example prompts and solutions
+- reusable short-formula templates for stacked displays, formula-plus-condition layouts, paired comparisons, formal displayed equivalences, and equivalence-with-condition statements
+- the end-of-section exercise TODO marker
+
+Do not `\include` the template file directly in the book. It is a starting point and checklist, not a compiled chapter.
 
 ## Approved Environment Set
 
@@ -283,14 +297,20 @@ This rule is mandatory.
 7. If a theorem or proposition appears without a proof in the manuscript, it may remain without a proof unless a proof is clearly needed.
 8. Do not add proofs to every theorem-like statement automatically.
 9. An `example` should be followed by a `solution` if a worked-out answer is included.
-10. `exercise` environments should normally appear without solutions unless the user explicitly asks for a solutions version.
-11. The `solution` environment has its own visual style distinct from `proof`: a bold "Solution." label (not italic), upright body text, and a trailing QED box. Do not implement `solution` as an alias for `proof`.
+10. When an `example` is paired with a `solution`, wrap the pair in a `workedexample` environment. This is a semantic grouping: `workedexample` reserves enough page space for the whole pair so that a short example cannot be stranded at a page bottom while its solution is pushed to the next page. `example` without a `solution` (rare) does not need the wrapper.
+11. Each `workedexample` must contain exactly one `example` followed by one `solution`. Do not nest `workedexample` environments, and do not bundle multiple example-solution pairs into a single wrapper.
+12. `exercise` environments should normally appear without solutions unless the user explicitly asks for a solutions version.
+13. The `solution` environment has its own visual style distinct from `proof`: a bold "Solution." label (not italic), upright body text, and a trailing QED box. Do not implement `solution` as an alias for `proof`.
+14. In a `solution`, keep `Solution.` inline when the body begins with prose. If the first real content is a block such as `enumerate`, `itemize`, or display math, start the body on the next line with `\solutionbreak` instead of forcing every solution to use the same opening layout.
+15. Do not place `\footnote`, `\marginpar`, or manual `\hypertarget` commands inside a `workedexample`. Its body is measured in a box before final placement, so page-anchored material may not relocate correctly.
 
 In short:
 - theorem-like statements -> `proof` when warranted
 - worked examples -> `solution`, visually distinct from `proof`
 
 Rationale: students scan textbook pages for cues that tell them "this is how to work a problem" versus "this is how to justify a theorem." If `solution` and `proof` look identical, that affordance is lost. The visual distinction is cheap to set once in the template and high-value for every subsequent reader.
+
+Maintainer note: `workedexample` depends on a one-shot capture of its body. Do not replace it with a wrapper that re-expands the example/solution body, or counters and pagination assumptions will drift out of sync.
 
 ## Example Selection Policy
 
@@ -461,6 +481,8 @@ Typical uses:
 - short intervals
 - short limits
 - short derivative notation
+- short conclusions inside `example` and `solution` prose
+- short comma-separated target expressions in example prompts
 
 Examples:
 - `\(f\) is continuous at \(a\)`
@@ -477,10 +499,95 @@ Typical uses:
 - multi-step calculations
 - long fractions
 - identities to be emphasized
-- expressions in example prompts such as "Evaluate" or "Show that"
+- long or visually central expressions in example prompts such as "Evaluate" or "Show that"
 - piecewise definitions
 
 If the reader should stop and look carefully at the formula, prefer display math.
+
+### Worked Examples and Solutions
+
+In `example` and `solution` environments, prefer a compact sentence-first layout.
+
+Keep `Solution.` inline when the body begins with ordinary prose. If the first real content is a block such as `enumerate`, `itemize`, or display math, place `\solutionbreak` at the start of the solution body so the label stands on its own line.
+
+Use inline math for:
+- short target expressions in an example prompt when they fit comfortably in the sentence
+- short final conclusions after words such as "Hence," "Therefore," or "So"
+- brief declarations such as `\(x=0\)` or `\(\lim_{x\to a}f(x)=L\)`
+
+Use display math there only when:
+- the prompt centers on a long or structurally dense expression
+- the solution contains a multi-step derivation, simplification, or alignment the reader should scan vertically
+- the formula uses `cases`, `aligned`, `align*`, or a comparable display structure
+- the formula is the visual focus of the paragraph rather than part of the sentence flow
+
+Avoid splitting a sentence around a short formula just to center it.
+
+Prefer:
+
+```latex
+If \(x\to 0^{-}\), then ... Hence \(\lim_{x\to 0^-}\frac{1}{x}=-\infty\).
+```
+
+Avoid:
+
+```latex
+If \(x\to 0^{-}\), then ... Hence
+\[
+\lim_{x\to 0^-}\frac{1}{x}=-\infty.
+\]
+```
+
+### Paired Display Strategy
+
+When exactly two short formulas form a comparison, use the shared `\pairdisplay{...}{...}` template from `preamble/layout.tex`.
+
+Use `\pairdisplay` for:
+- left-hand versus right-hand limits
+- two inverse-composition identities
+- paired squeeze-theorem hypotheses or boundary limits
+- two short endpoint computations when the comparison itself is the point
+
+`\pairdisplay` is intentionally guarded: if either side grows past roughly `0.45\linewidth`, the template stacks the formulas automatically. Do not treat that fallback as a license to feed long statements into the macro; if the content is not genuinely short, choose a vertical layout directly in the source.
+
+### Display Block Cohesion
+
+Within one local mathematical unit, choose one display grammar and stay with it.
+
+Use this rule to avoid the common visual failure mode where one centered display, one aligned block, and one prose-style condition all compete for different horizontal anchors inside the same theorem or solution.
+
+Follow these constraints:
+- if several formulas are peers in one law list, derivation, or verification, group them in one `aligneddisplay` instead of scattering them across separate `\[...\]` blocks
+- if a short follow-up formula reads naturally after prose, keep it inline instead of placing it in its own centered display
+- do not mix an `aligneddisplay` with a separate centered display for the same immediate algebraic move unless the second display is genuinely a new idea
+- do not attach a note such as `provided that ...` as an extra alignment column unless every row in that display has the same structural slot; if the condition applies only to one formula, move it into prose before or after the display
+- do not use `aligneddisplay` merely to line up unrelated factual statements; if two short facts are being compared rather than algebraically aligned, prefer `\pairdisplay{...}{...}` or ordinary display math
+
+Use `aligneddisplay` instead when:
+- there are more than two items
+- the two formulas form a list, progression, hypothesis set, or special-case/general-case pair rather than a true side-by-side comparison
+- the formulas should be scanned in order from top to bottom
+- the content is short but not meaningfully comparative
+- either side carries a long branch or range condition
+- either side contains a `cases` block or another tall structure
+
+Use `conditiondisplay` instead when:
+- a formula is followed by a domain, range, interval, or branch condition
+- you need explicit control of the gap between the main formula and its trailing condition
+- the pattern would otherwise require a third alignment column inside `aligneddisplay`
+
+Use `\iffwithconditions{...}{...}{...}` instead when:
+- one main statement is equivalent to a formula plus a branch, range, domain, or similar restriction
+- the brace is meant to signal one grouped condition set or conjunctive restriction rather than two equal-status stacked lines
+
+Use `\iffstackeddisplay{...}{...}{...}` instead when:
+- one main formal statement is equivalent to two stacked conditions
+- the right-hand side is not a branch restriction but a pair of equal-status criteria
+- a standalone text line reading `if and only if` would otherwise float awkwardly between two displays
+
+In displayed formal equivalences, prefer `\Longleftrightarrow` to a separate text line saying `if and only if`.
+
+Do not force a side-by-side layout just to save vertical space. If either side starts to feel cramped, stack the formulas.
 
 ### Inline Math with `\displaystyle`
 
@@ -499,14 +606,16 @@ If a formula is important enough to stand out, it usually should be moved to dis
 
 ### Inline Fractions: `\frac` vs `\dfrac`
 
-When a fraction appears in inline math, `\frac` produces a smaller, cramped version. If the same fraction also appears nearby in display math, the size jump is visually jarring. Use `\dfrac` in inline math for substantive fractions whose display-size counterpart appears nearby.
+When a fraction appears in inline math, prefer `\frac` by default. Use `\dfrac` only when the smaller inline form becomes genuinely hard to read or when matching a nearby display formula materially helps the reader track the same expression.
 
 Use `\dfrac` for:
-- fractions with expressions in the numerator or denominator, such as `\(\dfrac{1}{x^2}\)`, `\(\dfrac{2x}{x-3}\)`, `\(\dfrac{\varepsilon}{4}\)`
-- fractions in example statements, figure captions, or prose that also appear in adjacent display equations
+- fractions with substantial structure in the numerator or denominator, such as `\(\dfrac{f(x+h)-f(x)}{h}\)` or `\(\dfrac{2x^2-3x+1}{x-1}\)`
+- inline fractions that are being visually tracked against an adjacent display equation
+- occasional epsilon-delta bounds such as `\(\dfrac{\varepsilon}{4}\)` when the fraction itself is the object being discussed
 
 Keep `\frac` for:
-- simple well-known constants in interval notation, such as `\(\frac{\pi}{2}\)`, `\(\frac{3\pi}{2}\)` — using `\dfrac` inside `\left[...\right]` brackets would make them disproportionately tall
+- short running-prose fractions such as `\(\frac{1}{x}\)`, `\(\frac{1}{x^2}\)`, and `\(\frac{2x}{x-3}\)` when they are not the visual focus
+- simple well-known constants in interval notation, such as `\(\frac{\pi}{2}\)` and `\(\frac{3\pi}{2}\)`; using `\dfrac` inside `\left[...\right]` brackets would make them disproportionately tall
 - symbolic indeterminate-form notation such as `\(\frac{0}{0}\)`
 - any fraction already inside display math (display math renders `\frac` at full size automatically)
 
@@ -519,6 +628,11 @@ This helps keep table rows compact and visually even.
 
 - short formula inside a sentence -> inline math
 - main formula or visually central expression -> display math
+- formula plus a trailing domain/range/branch condition -> `conditiondisplay`
+- exactly two short comparable formulas -> `\pairdisplay{...}{...}`
+- two or more short formulas that should read as a list -> `aligneddisplay`
+- one main statement equivalent to two stacked conditions -> `\iffstackeddisplay{...}{...}{...}`
+- equivalence plus a branch/range condition -> `\iffwithconditions{...}{...}{...}`
 - inline formula with large operators only when the sentence must remain unbroken -> inline math with `\displaystyle`
 
 Avoid scattering large `\displaystyle` expressions through prose when ordinary inline or display math would be clearer.
@@ -847,6 +961,9 @@ Rules:
 7. Do not insert manual `\newpage`, `\pagebreak`, or `\clearpage` in chapter files just to keep theorem-like blocks, remarks, examples, solutions, or proofs together.
 8. The template already handles that pagination in `preamble/theorem_setup.tex`, with stronger protection for formal result blocks and lighter flow for examples, solutions, and proofs; if a split still looks bad, fix the template or the local content structure deliberately instead of adding ad hoc page breaks.
 9. Narrow exception: a manual `\newpage` is permitted to resolve a specific figure-placement or block-split issue that the template cannot handle, but only when documented under the Exception Protocol.
+10. For recurring short-formula layouts, use the shared helpers from `preamble/layout.tex` (`aligneddisplay`, `conditiondisplay`, `\pairdisplay`, `\iffstackeddisplay`, and `\iffwithconditions`) instead of ad hoc spacing patterns.
+11. Choose those helpers by semantics, not by visual improvisation: one local math unit should normally use one display grammar, and conditions that apply to only one formula should stay in prose instead of becoming stray alignment columns.
+12. When declaring a new environment that wraps `\[...\]` (or any display-math construct), use the `\newdisplayenv{name}{begin}{end}` helper from `preamble/layout.tex`, never plain `\newenvironment`. The helper re-invokes LaTeX's `\@doendpe` hook via `\aftergroup` so the suppressed-`\parindent` behavior (including the `\everypar` rewrite that eats the indent box) survives past the environment's implicit group boundary. Without this, amsmath propagates its no-indent hook past its own display group but not past a second outer group, and continuation prose after the display is spuriously indented by `\parindent`. `aligneddisplay` and `conditiondisplay` are already declared via `\newdisplayenv`; any future display-math wrapper must follow the same pattern.
 
 Preferred style:
 
@@ -863,6 +980,7 @@ Preferred style:
 ...
 \end{proof}
 
+\begin{workedexample}
 \begin{example}
 ...
 \end{example}
@@ -870,6 +988,7 @@ Preferred style:
 \begin{solution}
 ...
 \end{solution}
+\end{workedexample}
 ```
 
 ## Exception Protocol
@@ -966,6 +1085,11 @@ Write each chapter as clean, explicit, textbook-style LaTeX content based primar
 
 ## Changelog
 
+- **v2.0.9** — fixed an unwanted `\parindent` on continuation prose after `aligneddisplay` and `conditiondisplay`: a plain `\newenvironment` wrapping `\[...\]` introduces an extra group, and amsmath's no-indent hook (LaTeX's `\@doendpe`, which rewrites `\par` and `\everypar` so the next paragraph eats its own indent box) survives amsmath's own display group but not the user env's outer group. Introduced the `\newdisplayenv{name}{begin}{end}` helper in `preamble/layout.tex` that re-invokes `\@doendpe` via `\aftergroup` after the env's implicit group closes, reinstalling the hook in the outer scope. Codified this as LaTeX Source Policy rule 12 so every future display-math-wrapping environment inherits the fix by default instead of relying on per-site patches.
+- **v2.0.8** — added a dedicated displayed-equivalence template for the common pattern “main statement iff two stacked criteria” and codified `\Longleftrightarrow` as the house style inside formal display math instead of a separate text line reading `if and only if`. Also added rule 15 under Example, Solution, and Proof Policy prohibiting `\footnote`, `\marginpar`, and manual `\hypertarget` inside `workedexample` (its body is measured in a box before final placement), tightened Display Block Cohesion to forbid using `aligneddisplay` merely to line up unrelated factual statements, and documented the `workedexample` one-shot-capture invariant as a maintainer note.
+- **v2.0.7** — refined the shared formula-display layer by adding a dedicated `conditiondisplay` pattern, guarding `\pairdisplay{...}{...}` against overwide side-by-side content, and tightening the rule for when a short pair is a true comparison versus just a vertical list in disguise. Also documented the expanded helper set in the source-policy section.
+- **v2.0.6** — added the shared `\pairdisplay{...}{...}` template for exactly two short comparable formulas and wrote down the decision rule for when to compare left-to-right versus stack top-to-bottom. Also updated the authoring template and source-policy wording so later chapters reuse the same pattern instead of ad hoc spacing.
+- **v2.0.5** — added a reusable chapter drafting skeleton at `chapters/_chapter_template.tex` and tightened the Formula Display Policy for worked material. The rules now distinguish short inline targets and short inline conclusions from genuinely display-worthy formulas, and the inline-fraction guidance now treats `\frac` as the default with `\dfrac` reserved for selectively larger inline fractions.
 - **v2.0.4** — closed two rule-vs-manuscript gaps exposed by the Chapter 1 review. Added a Build chain subsection under Index Policy describing the `imakeidx` wiring (`\usepackage{imakeidx}`, `\makeindex[columns=2,title=Index,intoc]`, `\printindex`) and the three-pass compile chain, so the index rule is backed by real build infrastructure. Added an explicit TODO-placeholder convention and rationale to End-of-section exercises, and introduced a Known Open Items subsection under Consistency Check to track rules that are authoritative for style but not yet fully realized in every chapter. No existing rules weakened.
 - **v2.0.3** — codified four rules that emerged from the Chapter 1 structural review: section titles must not duplicate the parent chapter title (Document Structure); subsection titles should name the unifying theme rather than enumerate ingredients (Heading capitalization); figures in worked examples must not pre-label the quantity the derivation is about to produce (Figure Policy); and `\begin{definition}` must not be used for terms the chapter will neither use nor develop (Environment Classification Rules → Definition).
 - **v2.0.2** — rewrote the Numbering Policy implementation note to describe the `aliascnt` pattern actually used in `preamble/theorem_setup.tex`; fixed the Index Policy notation example to include an explicit sort key.
