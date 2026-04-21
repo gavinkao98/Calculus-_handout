@@ -19,21 +19,28 @@
 % immediate step unless a genuinely new idea begins.
 %
 % Implementation note: a naive \newenvironment that wraps \[...\] introduces
-% an extra TeX group around amsmath's display. amsmath propagates a "no
-% \parindent on the next paragraph" hook (LaTeX's \@doendpe: it sets \@endpe,
-% redefines \par, and rewrites \everypar so that the first paragraph after
-% the display eats its own indent box) past its OWN group, but not past a
-% second outer group. When that second group closes, \everypar and \par are
-% rolled back to their pre-display definitions and continuation prose is
-% spuriously indented by 1.5em. \newdisplayenv is the house helper for
-% defining display-math-wrapping environments: it re-invokes \@doendpe via
-% \aftergroup so the hook is reinstalled in the outer scope after the env's
-% implicit group closes. Every new environment that wraps \[...\] should be
-% declared with \newdisplayenv rather than \newenvironment, so this fix
-% applies globally by default.
+% an extra TeX group around amsmath's display. amsmath's internal "no
+% \parindent on the next paragraph" hook (LaTeX's \@doendpe: sets \@endpe,
+% redefines \par, and rewrites \everypar so the first paragraph after the
+% display eats its own indent box) only survives amsmath's own display group,
+% not a second outer group: when that second group closes, \everypar and \par
+% are rolled back and continuation prose is spuriously indented by 1.5em.
+%
+% \newdisplayenv is the house helper for defining display-math-wrapping
+% environments. It uses etoolbox's \AfterEndEnvironment to install
+% \@afterheading *after* \end{env} completes (after the implicit \endgroup),
+% which reinstalls an \everypar that eats the indent box of the next
+% paragraph in the outer scope. This is the same mechanism the noindentafter
+% package uses and is also how LaTeX's own sectioning commands suppress the
+% post-heading indent, so it is battle-tested across engines and releases.
+%
+% Every new environment that wraps \[...\] should be declared with
+% \newdisplayenv rather than \newenvironment, so this fix applies globally
+% by default.
 \makeatletter
 \newcommand{\newdisplayenv}[3]{%
-  \newenvironment{#1}{\[#2}{#3\]\aftergroup\@doendpe}%
+  \newenvironment{#1}{\[#2}{#3\]}%
+  \AfterEndEnvironment{#1}{\@afterheading}%
 }
 \makeatother
 
