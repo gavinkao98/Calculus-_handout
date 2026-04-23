@@ -1,6 +1,6 @@
 # Storyboard Authoring Guide: LaTeX Handout to Manim YAML
 
-**Version 1.2** -- refines the voiceover sentence-count SHOULD to match practice observed during the Sec. 1.1 v2 rewrite: carves out `section_transition` scenes (which are naturally 1-2 sentences) and `example_walkthrough` scenes that bundle procedure plus verification (which naturally run 7-9 sentences). The underlying rule now targets cohesion (one teaching idea) over raw sentence count.
+**Version 1.3** -- adds a SHOULD rule for `example_walkthrough` `data.decay_previous`: scenes whose voiceover calls back verbally to an earlier `math_line` or `step` should set it to `false` so the scene does not dim the line the narration is about to re-read. Also adds a matching pre-render checklist item. v1.2 (below) remains the current voiceover sentence-count rule.
 
 **Version 1.1** -- adds a conformance legend (MUST / SHOULD / MAY), two worked before/after examples (LaTeX source -> YAML -> voiceover), softens the single-exemplar dependency on Sec. 1.1, aligns the "direct from LaTeX" workflow across `README.md`, `MANIM_README.md`, and `MANIM_CHECKLIST.md`, and replaces non-ASCII punctuation (em-dash, en-dash, arrow) in body text so the file reads cleanly in terminal contexts.
 
@@ -354,6 +354,7 @@ Do not repeat the `statement` inside `math_lines`. If the statement is a formula
 - `math_lines`: the symbolic scratch-work. Use `math_layout: "equals_aligned"` when the derivation is a chain of equations that shares an `=` anchor (it almost always does for solve-for-x problems).
 - Use `animation: "transform_from_previous"` between math lines that evolve from each other (e.g., `y = x^3 + 2` -> `x = \sqrt[3]{y-2}`). Use `highlight` on the final line.
 - `takeaway`: one sentence. This is where "always verify the cancellation equation" or "a single counterexample is enough" belongs.
+- `data.decay_previous` (opt, default `true`) controls whether earlier `math_lines` fade to low opacity as later ones are introduced. **SHOULD** set to `false` whenever any `voiceover` sentence verbally refers back to an earlier `math_line` or `step` in the same scene (for example, a verification pass that re-reads an earlier result, or a procedure + verification bundle where the verification line plugs a prior expression back in). If the narration calls back to a line that has already dimmed, the scene and the voiceover desynchronize.
 
 #### Worked example: example + solution -> `example_walkthrough` scene
 
@@ -631,6 +632,7 @@ Before running `render_manim_lesson.py`:
 ### Data
 - [ ] Every `definition_math` scene has both `statement` (English) and `math_lines` (symbolic).
 - [ ] `example_walkthrough` scenes use `equals_aligned` when the algebra shares an `=` anchor.
+- [ ] `example_walkthrough` scenes whose voiceover calls back to an earlier `math_line` or `step` set `data.decay_previous: false`.
 - [ ] `transform_from_previous` is used between evolving equations, `highlight` on the final line.
 - [ ] Every `graph_focus` plot has its `x_range` set to the restricted domain if relevant, and `label_side` / `label_x` set when labels could overlap.
 - [ ] `cbrt(...)` is used for cube roots, not `**(1/3)`.
@@ -665,6 +667,7 @@ If the handout changes are large (an entire subsection rewritten), a partial rew
 
 ## Changelog
 
+- **v1.3** -- added a SHOULD rule for `example_walkthrough` `data.decay_previous`: scenes whose voiceover calls back to an earlier `math_line` or `step` should set it to `false`. Added a matching pre-render checklist item. Motivated by the Sec. 1.1 v2 preview render, where `example_walkthrough` scenes with default `decay_previous: true` dimmed earlier lines before the TTS narration reached its verbal reference to them.
 - **v1.2** -- refined the voiceover sentence-count SHOULD based on audit findings from the Sec. 1.1 v2 rewrite. The 3-to-6-sentence target was being violated in 10 of 19 scenes, but on review the violations were not defects: `section_transition` scenes are naturally 1-2 sentences (they are interludes), and `example_walkthrough` scenes that bundle procedure plus verification are naturally 7-9 sentences (one cohesive teaching idea, not two). Two carve-outs now written into the rule and into the pre-render checklist. No other rules weakened.
 - **v1.1** -- added a Conformance Keywords section (MUST / SHOULD / MAY) and rewrote load-bearing rules (scene decomposition, exercise exclusion, voiceover must-nots, `cbrt` usage, `content_type` on `definition_math`, `scene_exit` default) to use the new keywords. Added two worked before/after examples: Sec. 1.1.1 one-to-one definition (definition -> `definition_math`) and Sec. 1.1.3 cubic inverse example (example + solution -> `example_walkthrough`). Softened the single-exemplar framing so Sec. 1.1 is a reference calibration point rather than a tiebreaker. Replaced em-dash, en-dash, arrow, section-sign, and multiplication-sign in body text with ASCII equivalents so the file reads cleanly in terminals that degrade non-ASCII to `?`. Paired with cross-doc updates to `README.md`, `MANIM_README.md`, and `MANIM_CHECKLIST.md` that unify "direct from LaTeX" as the recommended workflow and demote seeding to a legacy bootstrap path.
 - **v1.0** -- initial guide. Derived from reverse-engineering the Sec. 1.1 *Inverse Functions* storyboard against `chapters/ch01_foundations.tex`. Covered scope, scene decomposition, environment->template mapping, voiceover rewriting, `data` shaping, figure handling, titles, timing, `content_type`, ordering heuristics, hook usage, a pre-render checklist, and handout-change maintenance.

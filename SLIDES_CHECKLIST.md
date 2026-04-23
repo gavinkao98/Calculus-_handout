@@ -104,7 +104,7 @@ python .\tools\synthesize_section_audio_f5.py --deck-id ch01_inverse_functions -
 ```
 
 Check that the output WAV filenames match the current slide ids.
-If you pass `--reference-text`, make sure it is the exact transcript of the reference WAV.
+If you pass `--reference-text`, make sure it is the exact transcript of the reference WAV. If you omit `--reference-text`, the wrapper auto-transcribes the reference clip locally; see [`VIDEO_README.md`](VIDEO_README.md) for the exact behavior.
 
 ## 7. Validate Video Inputs
 
