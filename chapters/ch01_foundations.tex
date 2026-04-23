@@ -355,7 +355,9 @@ The domain of \(\arcsin x\) is \([-1,1]\), and its range is \(\left[-\frac{\pi}{
 The notation \(\sin^{-1}x\) is also used for \(\arcsin x\), but it does not mean \((\sin x)^{-1}=1/\sin x\).
 \end{remark}
 
-\begin{proposition}
+The composition identities for \(\arcsin\) take the following form.
+
+\begin{proposition}[Inverse sine identities]
 \begin{conditiondisplay}
 \sin(\arcsin x) &= x, \qquad & -1\le x\le 1,\\
 \arcsin(\sin x) &= x, \qquad & -\frac{\pi}{2}\le x\le \frac{\pi}{2}.
@@ -456,7 +458,9 @@ The \emph{inverse cosine function}\index{inverse cosine function}\index{arccosin
 
 The domain of \(\arccos x\) is \([-1,1]\), and its range is \([0,\pi]\).
 
-\begin{proposition}
+The composition identities for \(\arccos\) are analogous to those for \(\arcsin\), with the principal range adjusted.
+
+\begin{proposition}[Inverse cosine identities]
 \begin{conditiondisplay}
 \cos(\arccos x) &= x, \qquad & -1\le x\le 1,\\
 \arccos(\cos x) &= x, \qquad & 0\le x\le \pi.
@@ -507,7 +511,9 @@ The \emph{inverse tangent function}\index{inverse tangent function}\index{arctan
 
 The domain of \(\arctan x\) is \(\mathbb{R}\), and its range is \(\left(-\frac{\pi}{2},\frac{\pi}{2}\right)\).
 
-\begin{proposition}
+The composition identities for \(\arctan\) are stated over the full real line on one side and the open principal interval on the other.
+
+\begin{proposition}[Inverse tangent identities]
 \begin{conditiondisplay}
 \tan(\arctan x) &= x, \qquad & x\in\mathbb{R},\\
 \arctan(\tan x) &= x, \qquad & -\frac{\pi}{2}<x<\frac{\pi}{2}.
@@ -526,7 +532,7 @@ Let \(y=\arctan x\). Then
 \end{conditiondisplay}
 We want to find \(\cos y\). Using \(1+\tan^{2}y=\sec^{2}y\), we get \(\sec^{2}y=1+x^{2}\). Since \(-\frac{\pi}{2}<y<\frac{\pi}{2}\), we have \(\cos y>0\) and hence \(\sec y>0\). Therefore \(\sec y=\sqrt{1+x^{2}}\), and so
 \[
-\cos(\arctan x)=\cos y=\frac{1}{\sec y}=\frac{1}{\sqrt{1+x^{2}}}.
+\cos(\arctan x)=\cos y=\frac{1}{\sec y}=\frac{1}{\sqrt{1+x^{2}}}. \qedhere
 \]
 \end{solution}
 \end{workedexample}
@@ -740,7 +746,7 @@ x & 0.9 & 0.99 & 0.999 & 1.001 & 1.01 & 1.1 \\
 \]
 The table suggests that \(\frac{x-1}{x^{2}-1}\) gets close to \(\frac{1}{2}\) as \(x\) approaches \(1\). Thus we guess that
 \[
-\lim_{x\to 1}\frac{x-1}{x^{2}-1}=\frac{1}{2}.
+\lim_{x\to 1}\frac{x-1}{x^{2}-1}=\frac{1}{2}. \qedhere
 \]
 \end{solution}
 \end{workedexample}
@@ -766,7 +772,7 @@ t & -0.1 & -0.01 & 0.01 & 0.1 \\
 \]
 These values are close to \(\frac{1}{6}=0.166666\cdots\), so we guess that
 \[
-\lim_{t\to 0}\frac{\sqrt{t^{2}+9}-3}{t^{2}}=\frac{1}{6}.
+\lim_{t\to 0}\frac{\sqrt{t^{2}+9}-3}{t^{2}}=\frac{1}{6}. \qedhere
 \]
 \end{solution}
 \end{workedexample}
@@ -859,7 +865,7 @@ Since the left-hand limit and the right-hand limit are different, \(\lim_{x\to 2
 
 In some cases, the values of \(f(x)\) do not approach a finite number as \(x\to a\). Instead, they become arbitrarily large positive or arbitrarily large negative.
 
-\begin{definition}
+\begin{definition}\label{def:infinite-limit-informal}
 Let \(f\) be a function defined on both sides of \(a\), except possibly at \(a\) itself. We write
 \[
 \lim_{x\to a}f(x)=\infty
@@ -872,6 +878,8 @@ Similarly, we write
 \]
 if the values of \(f(x)\) can be made arbitrarily large negative by taking \(x\) sufficiently close to \(a\), with \(x\ne a\).
 \end{definition}
+
+This is again an informal description; a precise \(\varepsilon\)-\(\delta\)-style formulation is given in \cref{def:infinite-limit-precise}.
 
 The symbols \(\infty\) and \(-\infty\) do not represent real numbers. They indicate that a function grows without bound (positively or negatively) near a specific point.
 
@@ -1171,9 +1179,7 @@ These laws can be summarized verbally as follows:
     \item The limit of a quotient is the quotient of the limits, provided the denominator limit is not \(0\).
 \end{enumerate}
 
-\begin{remark}
 These properties will be proved rigorously later. For now, they provide an effective way to evaluate many limits.
-\end{remark}
 
 \subsection{Direct substitution}
 
@@ -1325,7 +1331,7 @@ Also,
 \pairdisplay{\lim_{x\to 0}(-x^{2})=0,}{\lim_{x\to 0}x^{2}=0.}
 Therefore, by the squeeze theorem,
 \[
-\lim_{x\to 0}x^{2}\sin\left(\frac{1}{x}\right)=0.
+\lim_{x\to 0}x^{2}\sin\left(\frac{1}{x}\right)=0. \qedhere
 \]
 \end{solution}
 \end{workedexample}
@@ -1356,7 +1362,7 @@ Also,
 \pairdisplay{\lim_{x\to 0}(-|x|)=0,}{\lim_{x\to 0}|x|=0.}
 Therefore, by the squeeze theorem,
 \[
-\lim_{x\to 0}x\cos\left(\frac{1}{x}\right)=0.
+\lim_{x\to 0}x\cos\left(\frac{1}{x}\right)=0. \qedhere
 \]
 \end{solution}
 \end{workedexample}
@@ -1641,7 +1647,7 @@ Therefore, \(\lim_{x\to 1} (x^{2}-5x+6)=2\).
 \end{solution}
 \end{workedexample}
 
-\begin{definition}
+\begin{definition}\label{def:infinite-limit-precise}
 We write
 \(
 \lim_{x\to a} f(x)=\infty
@@ -1652,10 +1658,7 @@ f(x)>M
 \qquad \text{whenever} \qquad
 0<|x-a|<\delta.
 \]
-\end{definition}
-
-\begin{definition}
-We write
+Similarly, we write
 \(
 \lim_{x\to a} f(x)=-\infty
 \)
@@ -1667,7 +1670,7 @@ f(x)<N
 \]
 \end{definition}
 
-In the first definition we may think of \(M\) as any large positive threshold, such as \(100\), \(1000\), \(10000\), and so on: no matter how large a bound \(M\) we fix, \(f(x)\) eventually exceeds it whenever \(x\) is close enough to \(a\). Similarly, in the second definition we think of \(N\) as any negative threshold, such as \(-100\), \(-1000\), \(-10000\), and so on, below which \(f(x)\) is eventually forced.
+This formalizes the informal notion introduced in \cref{def:infinite-limit-informal}: ``\(f(x)\) can be made arbitrarily large'' becomes ``\(f(x)>M\) for every \(M>0\),'' and the analogous replacement applies for \(-\infty\). We may think of \(M\) as any large positive threshold, such as \(100\), \(1000\), \(10000\), and so on: no matter how large a bound \(M\) we fix, \(f(x)\) eventually exceeds it whenever \(x\) is close enough to \(a\). Similarly, \(N\) is any negative threshold, such as \(-100\), \(-1000\), \(-10000\), and so on, below which \(f(x)\) is eventually forced.
 
 The \(\varepsilon\)-\(\delta\) formulation also allows us to give a precise meaning to a property of functions that will appear throughout the chapters to come. If \(f\) is defined at every point near \(a\), including \(a\), and if
 \[
