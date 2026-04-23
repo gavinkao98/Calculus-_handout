@@ -85,7 +85,6 @@ tools/manim_templates/
   animations.py         animation utilities (write_math, scene_exit, reveal_groups)
   templates.py          9 scene template renderers ("Midnight Canvas" design)
   helpers.py            base building blocks (titles, bullet lists, math stacks, cards)
-  hooks.py              compatibility re-exports for legacy hook paths
   registry.py           template dispatch + hook resolution
   scene_player.py       StoryboardTemplateScene + scene exit
 tools/manim_hooks/
@@ -516,7 +515,6 @@ Recommended convention:
 
 - put reusable chapter/topic hooks under `tools/manim_hooks/`
 - use dotted import paths like `tools.manim_hooks.ch01_inverse_functions.horizontal_line_test_comparison`
-- keep `tools/manim_templates/hooks.py` only as a backwards-compatible shim for older paths
 
 Example hook path:
 
