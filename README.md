@@ -70,33 +70,36 @@ grep "^% expansion:" chapters/chNN_*.tex
 
 — the user sees every non-manuscript addition at a glance and decides *keep*, *rewrite*, or *remove* per marker, without having to diff the full chapter against the manuscript.
 
-#### Named-content guardrail (the hard rule that survives liberal expansion)
+#### Named-content: mark with a source, do not self-censor
 
-Even with a liberal expansion policy, **named content** stays gated:
+Named content — specific historical figures, dates, centuries, proper-name attributions, named results — is **permitted** in drafting mode. The user has indicated they will manually verify names and dates during post-hoc review, so Claude's job is to include the content when it fits the Stewart / Rogawski register and to mark a source (or the nearest standard reference) so review is efficient.
 
-- specific historical figures by name;
-- specific dates, centuries, or quotations;
-- proper-name attributions of theorems, methods, or ideas;
-- named results or conjectures not introduced in the manuscript or an earlier chapter.
+Pattern:
 
-These are the highest-risk class for hallucination because a wrong attribution or a misdated note is invisible to a casual reader and expensive to correct after print. Claude **does not include** named content unless:
+```latex
+% expansion:history [source: <specific source OR "standard calculus-textbook historical note">] — <description>
+```
 
-- (a) the manuscript introduces it, or
-- (b) an earlier committed chapter establishes it, or
-- (c) the user explicitly authorises the specific name / date / attribution, or
-- (d) the expansion marker cites a verifiable source, e.g. `% expansion:history [source: Stewart, Calculus 8e, §1.3 historical note] — brief context on the development of limits`, and the user understands that signing off on the marker during review endorses the cited source.
+- If Claude can identify a specific source (e.g. *Stewart 8e §2.4 historical note*, *Rogawski 4e Ch 2*, *Wikipedia "History of calculus"*), cite it in the marker. That lets the user verify against one place rather than guessing.
+- If the content is a common textbook-register passage that most calculus books share — the Newton / Leibniz origin, the nineteenth-century ε-δ resolution, Archimedes and the method of exhaustion — use `[source: standard calculus-textbook historical note]` with a short description of what Claude drew on. The user treats this as *"I will check the claim is non-controversial"* rather than *"I will look up one specific page."*
+- **Direct quotations** still require a specific source. Quoting a mathematician verbatim is the highest-risk subclass; if no specific source is available, paraphrase instead of quote.
 
-When the anchor is uncertain, default to **vague framing** instead of specific facts: *"early treatments of this problem by seventeenth-century mathematicians"* (no names, no specific year) rather than *"Fermat's 1637 method of adequality"* (three named facts, each a potential hallucination). Vague framing is in-policy; named-but-unsourced framing is not.
+The spirit: Claude should err toward **including** pedagogically helpful named content rather than self-censoring to be safe. The marker makes the content reviewable; the source tag makes review efficient. Self-censorship produces thin chapters; over-inclusion produces chapters the user quickly trims at review. The cost of the first is much higher than the cost of the second.
+
+#### Expansion density calibration
+
+The correct density target is **Stewart / Rogawski self-study textbook**, not minimalist manuscript translation. Concretely that means:
+
+- multiple `example` expansions per major technique are welcome when they illustrate different angles;
+- synthesis prose (connecting paragraphs, summarising conclusions, pulling threads together) should be generous, not sparse;
+- historical openings, applied tie-ins, and intuitive framing for the opening of each section are the default, not the exception;
+- `strategy` and `caution` boxes for standard pitfalls are part of the house voice.
+
+The committed Chapter 1 before the fresh Mode A pass (commit `f701c02`) is a useful density reference — that draft, written by the user, shows the intended richness. When in doubt, Claude should lean toward more expansion (with markers) rather than less. Under-expansion is harder to fix after the fact than over-expansion, because users can always delete a marked expansion during review but rarely write additional expansion during review.
 
 #### Volumetric sanity check (soft, not enforced)
 
-Expansions should amplify the manuscript, not overwhelm it. Rough calibration:
-
-- a 3-line definition typically gets at most a 3-line *Informally* gloss, one short `caution`, and at most one short `remark` — not all of them stacked;
-- a section where `% expansion:` markers visibly outnumber manuscript-derived content is drifting; flag it in the chapter's roadmap *Open questions* so the ratio gets reviewed during sign-off;
-- historical and application expansions should be shorter than the mathematical content they attach to.
-
-No hard rule on ratios — just a self-check. If post-hoc review consistently flags over-expansion, Claude should tighten in subsequent chapters.
+No hard rule on expansion-to-manuscript ratio, just a self-check: if a section's `% expansion:` markers dominate to the point where the manuscript content is hard to find amid the expansions, something has drifted. Flag it in the chapter's roadmap *Open questions* so the ratio can be reviewed during sign-off. Otherwise, amplify freely.
 
 #### Still forbidden in drafting mode
 

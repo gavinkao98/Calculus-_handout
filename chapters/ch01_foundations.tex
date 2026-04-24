@@ -559,6 +559,11 @@ The domains of \(\arccsc\) and \(\arcsec\) are \((-\infty, -1] \cup [1, \infty)\
 For \(\arcsec x\), another common choice of principal range is \(y \in \left[0, \tfrac{\pi}{2}\right) \cup \left(\tfrac{\pi}{2}, \pi\right]\). In this text we use \(y \in \left[0, \tfrac{\pi}{2}\right) \cup \left[\pi, \tfrac{3\pi}{2}\right)\) because it makes the differentiation formulas for the inverse secant simpler. When consulting other sources or software, always check which convention is in use, since different branch choices can lead to different values.
 \end{remark}
 
+% expansion:intuition — parallels the sec^{-1} alternative-branch discussion so the csc^{-1} coverage is symmetric
+\begin{remark}
+For \(\arccsc x\), another common choice of principal range is \(y \in \left[-\tfrac{\pi}{2}, 0\right) \cup \left(0, \tfrac{\pi}{2}\right]\). In this text we use \(y \in \left(0, \tfrac{\pi}{2}\right] \cup \left(\pi, \tfrac{3\pi}{2}\right]\) so that the chosen branch parallels the one selected for \(\arcsec x\). Once the principal range is fixed consistently, either convention gives a valid inverse function.
+\end{remark}
+
 % TODO: add \subsection*{Exercises} block with end-of-section problems for Section 1.2, following CONTENT_SPEC.md §14 and CONTENT_EXERCISES.md.
 
 \section{The Limit of a Function}
@@ -825,6 +830,29 @@ The two one-sided limits together determine the two-sided limit.
 \end{proposition}
 
 If the two one-sided limits differ, then the two-sided limit does not exist.
+
+% expansion:example — piecewise worked example illustrating the two-sided criterion in action; the manuscript introduces one-sided limits through definitions alone and this example makes the mechanism concrete
+\begin{workedexample}
+\begin{example}
+Let
+\[
+f(x) =
+\begin{cases}
+x + 1, & x < 2,\\[4pt]
+4 - x, & x \ge 2.
+\end{cases}
+\]
+Evaluate \(\displaystyle\lim_{x \to 2^{-}} f(x)\) and \(\displaystyle\lim_{x \to 2^{+}} f(x)\), and determine whether \(\displaystyle\lim_{x \to 2} f(x)\) exists.
+\end{example}
+
+\begin{solution}
+From the left we use the branch \(f(x) = x + 1\), so \(\displaystyle\lim_{x \to 2^{-}} f(x) = 3\).
+
+From the right we use the branch \(f(x) = 4 - x\), so \(\displaystyle\lim_{x \to 2^{+}} f(x) = 2\).
+
+Since the left-hand and right-hand limits differ, \(\displaystyle\lim_{x \to 2} f(x)\) does not exist.
+\end{solution}
+\end{workedexample}
 
 \subsection{Infinite limits}
 
@@ -1264,6 +1292,31 @@ Since \(\displaystyle \lim_{x \to 0}(-x^{2}) = 0 = \lim_{x \to 0} x^{2}\), the s
 \end{solution}
 \end{workedexample}
 
+% expansion:example — supplementary squeeze-theorem example using cosine and a single factor of x; reinforces the technique on a slightly different shape
+\begin{workedexample}
+\begin{example}
+Evaluate
+\[
+\lim_{x \to 0} x \cos\!\left(\frac{1}{x}\right).
+\]
+\end{example}
+
+\begin{solution}
+Since \(\left|\cos(1/x)\right| \le 1\) for all \(x \neq 0\),
+\[
+\left|x \cos\!\left(\frac{1}{x}\right)\right| \le |x|,
+\]
+equivalently
+\[
+-|x| \le x \cos\!\left(\frac{1}{x}\right) \le |x|.
+\]
+Since \(\displaystyle \lim_{x \to 0}(-|x|) = 0 = \lim_{x \to 0} |x|\), the squeeze theorem yields
+\[
+\lim_{x \to 0} x \cos\!\left(\frac{1}{x}\right) = 0. \qedhere
+\]
+\end{solution}
+\end{workedexample}
+
 % expansion:strategy — distils the method across the worked examples in this section
 \begin{strategy}[Computing a limit \(\lim_{x \to a} f(x)\)]
 \begin{enumerate}
@@ -1279,7 +1332,10 @@ Since \(\displaystyle \lim_{x \to 0}(-x^{2}) = 0 = \lim_{x \to 0} x^{2}\), the s
 
 \section{The Precise Definition of a Limit}
 
-In the previous sections we used graphs, tables, and algebraic techniques to study limits, and we stated the limit laws without proof. Those arguments rested on informal phrases such as ``\(f(x)\) is close to \(L\)'' and ``\(x\) is close to \(a\).'' To make the arguments rigorous --- and, eventually, to prove the limit laws --- we need a definition that replaces ``close'' with numerical precision. That definition is the \(\varepsilon\)-\(\delta\) definition\index{epsilon-delta definition@$\varepsilon$-$\delta$ definition}, introduced below.
+% expansion:history [source: standard calculus-textbook historical note; cf. Stewart 8e §2.4 and Rogawski 4e Ch 2 openings] — Newton/Leibniz framing and the nineteenth-century ε-δ resolution, both of which are standard textbook register for opening a rigorous-limit section
+From the time of Newton and Leibniz, calculus was remarkably successful at solving problems in geometry, mechanics, and astronomy. For a long time, however, there was also controversy about its logical foundations. Early arguments often relied on infinitesimals --- quantities thought of as being extremely small but not described in a fully precise way --- and mathematicians continued to ask what it really means to say that \(x\) approaches \(a\) or that \(f(x)\) approaches \(L\). The modern resolution, developed in the nineteenth century, is the \(\varepsilon\)-\(\delta\) definition\index{epsilon-delta definition@$\varepsilon$-$\delta$ definition} of a limit, which gave calculus the level of rigor used in modern mathematics.
+
+In the previous sections we used graphs, tables, and algebraic techniques to study limits, and we stated the limit laws without proof. Those arguments rested on informal phrases such as ``\(f(x)\) is close to \(L\)'' and ``\(x\) is close to \(a\).'' To make the arguments rigorous --- and, eventually, to prove the limit laws --- we need a definition that replaces ``close'' with numerical precision.
 
 To motivate the definition, consider the function
 \[
@@ -1394,6 +1450,38 @@ if for every \(\varepsilon > 0\) there exists a \(\delta > 0\) such that
 \end{figure}
 
 The condition \(0 < |x - a| < \delta\) says that \(x\) lies within distance \(\delta\) of \(a\), but \(x \neq a\). The inequality \(|f(x) - L| < \varepsilon\) says that \(f(x)\) lies within distance \(\varepsilon\) of \(L\). The key phrase is ``for every \(\varepsilon > 0\)'': no matter how small a tolerance \(\varepsilon\) we demand, we must be able to find a corresponding \(\delta\).
+
+% expansion:formula — short standard proof of limit uniqueness via the triangle inequality; illustrates how the ε-δ definition is used and gives the section a first theoretical payoff
+A first payoff of the \(\varepsilon\)-\(\delta\) definition is that the value of a limit, when it exists, is unambiguous.
+
+\begin{proposition}[Uniqueness of limits]
+If \(\displaystyle\lim_{x \to a} f(x)\) exists, then it is unique.
+\end{proposition}
+
+\begin{proof}
+Suppose that
+\begin{aligneddisplay}
+\lim_{x \to a} f(x) &= L,\\
+\lim_{x \to a} f(x) &= M,
+\end{aligneddisplay}
+and that \(L \neq M\). Let \(\varepsilon = \tfrac{|L - M|}{2}\). By the definition of the limit, there exist \(\delta_{1}, \delta_{2} > 0\) such that
+\[
+|f(x) - L| < \varepsilon \qquad \text{whenever} \qquad 0 < |x - a| < \delta_{1},
+\]
+and
+\[
+|f(x) - M| < \varepsilon \qquad \text{whenever} \qquad 0 < |x - a| < \delta_{2}.
+\]
+If \(0 < |x - a| < \min\{\delta_{1}, \delta_{2}\}\), both inequalities hold. By the triangle inequality,
+\begin{aligneddisplay}
+|L - M|
+&= |L - f(x) + f(x) - M|\\
+&\le |L - f(x)| + |f(x) - M|\\
+&< 2\varepsilon\\
+&= |L - M|,
+\end{aligneddisplay}
+which is impossible. Therefore \(L = M\).
+\end{proof}
 
 % expansion:strategy — distils the method across the two worked examples that follow
 \begin{strategy}[Verifying a limit from the \(\varepsilon\)-\(\delta\) definition]
