@@ -17,6 +17,49 @@ Pick the task you have, open the linked file.
 
 ---
 
+## Authoring workflow
+
+Chapters originate as **manuscripts written by different teachers** who have split the book between them. Claude's role in this repository is:
+
+1. Receive a teacher's manuscript from the user.
+2. Convert it into project-compliant LaTeX at `chapters/chNN_<slug>.tex`, following [`CONTENT_SPEC.md`](CONTENT_SPEC.md) and [`CONTENT_QUICKSTART.md`](CONTENT_QUICKSTART.md).
+3. Expand *around* the manuscript where completeness or the Stewart / Rogawski self-study register demands additions: *"Informally, ..."* glosses inside `definition`, intuition paragraphs before formal statements, `strategy` boxes distilling a method that the manuscript's examples share, `caution` boxes for subtle restrictions, `remark` additions with a clear usefulness hook, and figure ideas the manuscript implies but does not draw. These additions are **additive, not substitutive**: they surround the manuscript, they do not replace it.
+4. Update [`CONTENT_ROADMAP.md`](CONTENT_ROADMAP.md) to reflect what the manuscript actually decided, replacing any pre-manuscript working-hypothesis entries.
+
+### Hard rule: no fabricated content
+
+Every mathematical claim, definition, theorem, example, proof, figure, historical note, date, and proper name in a chapter **MUST** trace to one of:
+
+- (a) the teacher's manuscript itself;
+- (b) an earlier chapter of this book (already committed to `chapters/*.tex`);
+- (c) a widely-verifiable standard calculus result the user can sanity-check against a named source.
+
+When a fact does not have a clear anchor in (a), (b), or (c), **do not invent one**. Instead, leave the material out and mark the gap with a comment in the LaTeX source:
+
+```latex
+% TODO: manuscript silent on <topic>; user to decide whether to add and from which source.
+```
+
+Asking one clarifying question is always cheaper than shipping a fabricated fact. A calculus handout with a wrong theorem attribution, a misdated historical note, or an invented "canonical example" is worse than a handout that omits the material entirely, because students cannot know which claims to verify independently.
+
+Specifically forbidden without explicit authorisation:
+
+- inventing worked examples the manuscript does not contain;
+- attributing theorems to mathematicians the manuscript did not name;
+- supplying historical dates or quotations the manuscript did not give;
+- inventing exercises (exercise inventories come from the manuscript; see [`CONTENT_EXERCISES.md`](CONTENT_EXERCISES.md));
+- supplying a proof the manuscript omitted — per [`CONTENT_SPEC.md`](CONTENT_SPEC.md) §5, proofs are optional; omission is the default.
+
+### When manuscript and spec disagree
+
+- **Formatting**: [`CONTENT_SPEC.md`](CONTENT_SPEC.md) wins. Rewrite the manuscript's phrasing to comply (e.g., `\textbf{...}` → `\emph{...}` in prose, ASCII quotes → TeX quotes, manual cross-reference prefixes → `\cref{}`). The mathematics is unchanged.
+- **Mathematical content**: the manuscript wins. If the manuscript proves a theorem a particular way, preserve the method; if the manuscript defines a term in a specific form, preserve that form. Notational differences from §9 of the spec get reconciled to the house convention, with a `caution` note if the reconciliation is non-trivial.
+- **Genuine conflicts** (manuscript insists on a rule the spec forbids for editorial reasons, not mathematical ones): ask the user. Record the decision in the chapter's roadmap entry under *Open questions*.
+
+Per-chapter manuscript tracking — who wrote it, when it was received, conversion status — lives in each chapter's entry in [`CONTENT_ROADMAP.md`](CONTENT_ROADMAP.md) under **Manuscript source**.
+
+---
+
 ## Golden path
 
 ```

@@ -4,6 +4,8 @@ This file carries the **course arc** of the handout: which chapters exist, in wh
 
 When you begin a new chapter, update the entry below **before** drafting. When you close a chapter, mark it done and revisit downstream prereq statements.
 
+The book is assembled from **manuscripts written by different teachers**. Each chapter entry records its manuscript source under the **Manuscript source** field so the drafting origin and conversion status are visible at a glance. The manuscript-to-LaTeX workflow and the anti-hallucination rule that governs Claude's expansion of manuscripts both live in [`README.md`](README.md) §*Authoring workflow*; this file is where per-chapter manuscript tracking lands.
+
 ---
 
 ## Audience and positioning
@@ -51,6 +53,8 @@ Copy this block into the chapter list area when beginning a new chapter.
 **Status**: draft | skeleton | planned | done
 **Source file**: chapters/chNN_<slug>.tex
 **Estimated length**: N pages printed (12 pt, 3.3 cm margins)
+**Manuscript source**: <teacher name | "pre-manuscript working hypothesis" | "pre-existing LaTeX — entry reverse-engineered">
+ — <pending | received YYYY-MM-DD | converted YYYY-MM-DD>. <optional note on coverage, gaps, or register hints from the teacher>.
 
 **Role in the arc**
 - One paragraph on what this chapter does for the reader.
@@ -99,6 +103,7 @@ Each item MUST match a bullet in the chapter's "By the end of this chapter, you 
 **Status**: draft
 **Source file**: [`chapters/ch01_foundations.tex`](chapters/ch01_foundations.tex) — the filename slug `foundations` is the arc-level tag (Chapter 1 is the *foundations* phase of the arc), not part of the printed chapter title.
 **Estimated length**: *(fill in after first full compile)*
+**Manuscript source**: pre-existing LaTeX — entry reverse-engineered from the already-committed `chapters/ch01_foundations.tex`. Treat the LaTeX source as canonical; this entry is a description of existing content, not a plan for future drafting. When Chapter 1 receives further edits, update both the LaTeX and this entry together.
 
 **Role in the arc**
 Chapter 1 is the **foundations** phase of the course arc. It sets up the two foundational machines of calculus: inverse functions (the algebraic machine for "running a rule backward") and limits (the analytic machine for "approaching without equalling"). The chapter intentionally pairs these because both force the reader to reason about correspondences and approximations rather than about formulas in isolation.
@@ -151,8 +156,9 @@ Chapter 1 is the **foundations** phase of the course arc. It sets up the two fou
 ### Chapter 2: Derivatives
 
 **Status**: planned
-**Source file**: `chapters/ch02_derivatives.tex` (to be created when drafting begins)
+**Source file**: `chapters/ch02_derivatives.tex` (to be created when the manuscript arrives)
 **Estimated length**: *(fill in after first full compile)*
+**Manuscript source**: **pending** — teacher manuscript has not yet been received. This entry is a **pre-manuscript working hypothesis** drawn from a Stewart-style reference arc. Every field below (core skills, key figures, strategy boxes, notation, cautions, open questions) is provisional: when the manuscript arrives, the entry will be reconciled against the teacher's actual decisions, and any field that disagrees with the manuscript will be revised. Treat these bullets as a conversation starter, not a commitment. See [`README.md`](README.md) §*Authoring workflow* for the manuscript-to-LaTeX pipeline and the anti-hallucination rule that governs expansion.
 
 **Role in the arc**
 Chapter 2 is the **development** phase of Calc I. It converts the limit machinery from Chapter 1 into a working operator: given a function, produce another function describing its instantaneous rate of change. Ch 1 did the heavy conceptual lifting (what does it mean to approach without equalling?); Ch 2 cashes that in algorithmically (how do you differentiate a polynomial, a trig function, a composition?). Every applications chapter that follows — Ch 3 on extrema and optimization, Ch 4's connection to integrals via the Fundamental Theorem, all of Ch 12 on partial derivatives — takes "the derivative" as a known object and builds on it.
