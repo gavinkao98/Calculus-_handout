@@ -1199,6 +1199,12 @@ If \(\lim_{x\to a}g(x)\ne 0\), then
 =
 \frac{\lim_{x\to a}f(x)}{\lim_{x\to a}g(x)}.
 \]
+Moreover, for every positive integer \(n\),
+\[
+\lim_{x\to a}\bigl[f(x)\bigr]^{n}
+=
+\left[\lim_{x\to a}f(x)\right]^{n}.
+\]
 \end{theorem}
 
 These laws can be summarized verbally as follows:
@@ -1208,6 +1214,7 @@ These laws can be summarized verbally as follows:
     \item The limit of a constant multiple is the constant times the limit.
     \item The limit of a product is the product of the limits.
     \item The limit of a quotient is the quotient of the limits, provided the denominator limit is not \(0\).
+    \item The limit of an integer power is that power of the limit.
 \end{enumerate}
 
 These properties will be proved rigorously later. For now, they provide an effective way to evaluate many limits.
@@ -1233,6 +1240,31 @@ If \(r(x)\) is a rational function and \(r(a)\) is defined, then
 \end{proposition}
 
 So for polynomials and rational functions, the first step is usually direct substitution. If substitution gives a meaningful number, then the limit is found immediately.
+
+\begin{workedexample}
+\begin{example}
+Evaluate
+\[
+\lim_{x\to 1}\frac{x^{3}+2x^{2}-1}{5-3x}.
+\]
+\end{example}
+
+\begin{solution}
+Both numerator and denominator are polynomials, so each of their limits at \(x=1\) can be obtained by direct substitution. Applying the limit laws,
+\begin{aligneddisplay}
+\lim_{x\to 1}\bigl(x^{3}+2x^{2}-1\bigr) &= 1^{3}+2\cdot 1^{2}-1 = 2,\\
+\lim_{x\to 1}(5-3x) &= 5-3\cdot 1 = 2.
+\end{aligneddisplay}
+Since the denominator's limit is nonzero, the quotient law applies, and
+\[
+\lim_{x\to 1}\frac{x^{3}+2x^{2}-1}{5-3x}
+=
+\frac{2}{2}
+=
+1. \qedhere
+\]
+\end{solution}
+\end{workedexample}
 
 \subsection{Algebraic simplification}
 
