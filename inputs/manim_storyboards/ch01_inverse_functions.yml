@@ -1,11 +1,11 @@
-# Section 1.1 Inverse Functions -- storyboard v2 (authored against STORYBOARD_AUTHORING.md v1.1).
+# Section 1.1 Inverse Functions -- storyboard v2 (authored against MANIM_STORYBOARD.md v1.1).
 #
 # Source: chapters/ch01_foundations.tex, Section 1.1 (lines 7-315).
 # Scene plan: 19 scenes covering subsec 1.1.1 (one-to-one), 1.1.2 (inverse), 1.1.3 (finding the inverse),
 # with two section_transitions between the three subsections, added graph_focus visualizations
 # for every prose geometric claim, and opening/recap bookends.
 #
-# Deliberate skips (documented per STORYBOARD_AUTHORING.md "When to skip a book figure entirely"):
+# Deliberate skips (documented per MANIM_STORYBOARD.md "When to skip a book figure entirely"):
 # - Book fig:inverse-composition (TikZ mapping diagram, chapters/ch01_foundations.tex line 210) is NOT
 #   redrawn as its own scene. Its content -- that f and f^{-1} travel x<->y in opposite directions --
 #   is carried by the voiceover of `composition_identities` and the geometry of `cubic_graph_reflection`.
@@ -144,7 +144,7 @@ scenes:
     content_type: "warning"
     scene_exit: "hold"
     title: "Why $x^2$ Cannot Be Inverted on $[-1, 1]$"
-    # This scene is not in the book -- added per STORYBOARD_AUTHORING.md rule: prose geometric claims
+    # This scene is not in the book -- added per MANIM_STORYBOARD.md rule: prose geometric claims
     # ("two inputs share the output 1/4") deserve their own graph_focus visualization.
     voiceover: >
       Let us see that failure on a graph. Here is the parabola y equals x squared on the interval
@@ -198,7 +198,7 @@ scenes:
     template: "definition_math"
     content_type: "proposition"
     # Book environment is \begin{remark}, but the horizontal line test is a named rule with an
-    # if-and-only-if characterization -- per STORYBOARD_AUTHORING.md, such remarks are promoted
+    # if-and-only-if characterization -- per MANIM_STORYBOARD.md, such remarks are promoted
     # to proposition-level scenes.
     scene_exit: "hold"
     title: "The Horizontal Line Test"
@@ -506,7 +506,7 @@ scenes:
     scene_id: "cubic_graph_reflection"
     template: "graph_focus"
     content_type: "example"
-    # Added per STORYBOARD_AUTHORING.md: book states "graphs are reflections across y=x" in prose
+    # Added per MANIM_STORYBOARD.md: book states "graphs are reflections across y=x" in prose
     # alone (chapters/ch01_foundations.tex line 243). Prose geometric claim -> graph_focus scene.
     scene_exit: "hold"
     title: "Graphs of $f$ and $f^{-1}$"

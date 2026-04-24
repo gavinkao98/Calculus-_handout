@@ -1,6 +1,6 @@
 % Copy this file when starting a new chapter.
 % Replace the placeholders with real content; do not \include this file directly.
-% If a chapter needs an explicit exception under CONTENT_README.md, record it
+% If a chapter needs an explicit exception under CONTENT_SPEC.md, record it
 % immediately below \chapter{...} as a comment.
 % DELETE ALL "% Layout note:" and "% Pattern note:" blocks before committing a
 % real chapter file copied from this template.
@@ -13,7 +13,7 @@ to earlier material, and preview the central results. Keep it motivational
 and orienting; do not introduce new notation unless it is unavoidable.
 
 % Layout note:
-% - The bullet list below is MUST per CONTENT_README.md v3.0 §4 (Chapter
+% - The bullet list below is MUST per CONTENT_SPEC.md §4 (Chapter
 %   opening). It lists 3-5 concrete learning outcomes. Use verbs describing
 %   what the reader will be able to *do* (solve, compute, recognise, prove),
 %   not what the chapter will "cover" or "discuss". Target at most half a
@@ -105,9 +105,10 @@ refer back to it as a checklist.
 % - \pairdisplay{...}{...}: exactly two short formulas meant to be compared
 % - formal equivalence "A iff B": use display math with \Longleftrightarrow
 %   and an inline or prose condition; do not introduce a custom iff helper
-% - if an example has no worked solution, use `example` alone rather than
-%   `workedexample`
-% - see CONTENT_README.md for the full policy before committing
+% - every `example` MUST be paired with exactly one `solution` and wrapped
+%   in a `workedexample`; do not use `example` standalone. If there is no
+%   computation to show, prefer prose, a `remark`, or an `exercise` placeholder
+% - see CONTENT_SPEC.md for the full policy before committing
 
 \begin{aligneddisplay}
 u(x) &= x^2-1,\\
@@ -157,9 +158,9 @@ Therefore,
 \end{solution}
 \end{workedexample}
 
-\begin{example}
-State a brief illustrative example here when no worked solution follows.
-\end{example}
+% Note: `example` without a paired `solution` and `workedexample` is not allowed.
+% If no computation is being demonstrated, write it as prose, a `remark`, or an
+% `exercise` instead. See CONTENT_SPEC.md §5.
 
 \begin{theorem}[Example Theorem Name]
 State a formal result here when the section needs one. Named theorems MUST
@@ -172,12 +173,12 @@ Give a genuine proof only when the book's level and the manuscript warrant it.
 \end{proof}
 
 % TODO: add \subsection*{Exercises} block with end-of-section problems for
-% this section, following CONTENT_README.md §14.
+% this section, following CONTENT_SPEC.md §14 and CONTENT_EXERCISES.md.
 
 \section*{Summary}
 
 % Layout note:
-% - The Summary section at chapter end is MUST per CONTENT_README.md v3.0 §4.
+% - The Summary section at chapter end is MUST per CONTENT_SPEC.md §4.
 % - Half a page to one page total, organised into three blocks.
 % - Do not introduce new content here; reference existing items by name only.
 

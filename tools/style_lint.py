@@ -46,11 +46,11 @@ LINE_CHECKS: tuple[tuple[str, re.Pattern[str]], ...] = (
         re.compile(r"\\(?:newpage|pagebreak|clearpage)\b"),
     ),
     (
-        "bold emphasis in prose is disallowed; use \\emph{} instead (CONTENT_README.md v3.0 \u00a78)",
+        "bold emphasis in prose is disallowed; use \\emph{} instead (CONTENT_SPEC.md \u00a78)",
         re.compile(r"\\textbf\{"),
     ),
     (
-        "italic emphasis in prose is disallowed; use \\emph{} instead (CONTENT_README.md v3.0 \u00a78)",
+        "italic emphasis in prose is disallowed; use \\emph{} instead (CONTENT_SPEC.md \u00a78)",
         re.compile(r"\\textit\{"),
     ),
 )
@@ -81,7 +81,7 @@ def check_definitions_have_index(path: Path, text: str) -> list[Violation]:
     """Every \\begin{definition} body MUST contain at least one \\index{...} entry,
     except when the block is a paired *precise* restatement (label ending in
     ``-precise``), since the term was already indexed at its informal first
-    occurrence (CONTENT_README.md v3.0 \u00a711 rule: place index at first
+    occurrence (CONTENT_SPEC.md \u00a711 rule: place index at first
     occurrence only).
     """
     violations: list[Violation] = []
@@ -101,7 +101,7 @@ def check_definitions_have_index(path: Path, text: str) -> list[Violation]:
                 line_number=line_number,
                 message=(
                     "definition body lacks \\index{...}; every defined term must be indexed "
-                    "at its first occurrence (CONTENT_README.md v3.0 \u00a711)"
+                    "at its first occurrence (CONTENT_SPEC.md \u00a711)"
                 ),
                 line=snippet_line,
             )
@@ -137,7 +137,7 @@ def check_named_theorems_have_index(path: Path, text: str) -> list[Violation]:
                 line_number=line_number,
                 message=(
                     f"named theorem ``{match.group('name')}'' has no matching \\index{{{name}}} "
-                    f"within 400 characters (CONTENT_README.md v3.0 \u00a76)"
+                    f"within 400 characters (CONTENT_SPEC.md \u00a76)"
                 ),
                 line=snippet_line,
             )
@@ -156,7 +156,7 @@ def check_chapter_opening_structure(path: Path, text: str) -> list[Violation]:
     """Every chapter file MUST open with \\chapter{...} followed (eventually) by
     a ``\\paragraph{By the end of this chapter, ...}`` learning-outcomes bullet
     list, and at least one paragraph of overview prose between the two
-    (CONTENT_README.md v3.0 \u00a74).
+    (CONTENT_SPEC.md \u00a74).
 
     The check is structural rather than editorial: we do not police the
     wording of the overview, only that (1) the chapter begins with
@@ -175,7 +175,7 @@ def check_chapter_opening_structure(path: Path, text: str) -> list[Violation]:
                 Violation(
                     path=path,
                     line_number=1,
-                    message="chapter file has sections but no \\chapter{...} (CONTENT_README.md v3.0 \u00a74)",
+                    message="chapter file has sections but no \\chapter{...} (CONTENT_SPEC.md \u00a74)",
                     line="",
                 )
             )
@@ -198,7 +198,7 @@ def check_chapter_opening_structure(path: Path, text: str) -> list[Violation]:
                 message=(
                     "chapter opening lacks ``\\paragraph{By the end of this chapter, ...}'' "
                     "learning-outcomes bullet list before the first \\section "
-                    "(CONTENT_README.md v3.0 \u00a74)"
+                    "(CONTENT_SPEC.md \u00a74)"
                 ),
                 line=snippet_line,
             )
@@ -219,7 +219,7 @@ def check_chapter_opening_structure(path: Path, text: str) -> list[Violation]:
                 line_number=line_number,
                 message=(
                     "chapter opening lacks overview prose before the learning-outcomes "
-                    "bullet list (CONTENT_README.md v3.0 \u00a74)"
+                    "bullet list (CONTENT_SPEC.md \u00a74)"
                 ),
                 line=snippet_line,
             )

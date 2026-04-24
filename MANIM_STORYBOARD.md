@@ -1,15 +1,15 @@
-# Storyboard Authoring Guide: LaTeX Handout to Manim YAML
+# Manim Storyboard Authoring: LaTeX Handout to YAML
 
 **Version 1.3** -- adds a SHOULD rule for `example_walkthrough` `data.decay_previous`: scenes whose voiceover calls back verbally to an earlier `math_line` or `step` should set it to `false` so the scene does not dim the line the narration is about to re-read. Also adds a matching pre-render checklist item. v1.2 (below) remains the current voiceover sentence-count rule.
 
-**Version 1.1** -- adds a conformance legend (MUST / SHOULD / MAY), two worked before/after examples (LaTeX source -> YAML -> voiceover), softens the single-exemplar dependency on Sec. 1.1, aligns the "direct from LaTeX" workflow across `README.md`, `MANIM_README.md`, and `MANIM_CHECKLIST.md`, and replaces non-ASCII punctuation (em-dash, en-dash, arrow) in body text so the file reads cleanly in terminal contexts.
+**Version 1.1** -- adds a conformance legend (MUST / SHOULD / MAY), two worked before/after examples (LaTeX source -> YAML -> voiceover), softens the single-exemplar dependency on Sec. 1.1, aligns the "direct from LaTeX" workflow across `README.md`, `MANIM_REFERENCE.md`, and `MANIM_CHECKLIST.md`, and replaces non-ASCII punctuation (em-dash, en-dash, arrow) in body text so the file reads cleanly in terminal contexts.
 
 Derived by reverse-engineering the Sec. 1.1 *Inverse Functions* storyboard ([`inputs/manim_storyboards/ch01_inverse_functions.yml`](inputs/manim_storyboards/ch01_inverse_functions.yml)) against the source section of [`chapters/ch01_foundations.tex`](chapters/ch01_foundations.tex). Sec. 1.1 is the current reference exemplar: it is the one worked-through section this guide is calibrated against. When the guide and Sec. 1.1 disagree, treat it as a signal to review both -- a chapter-specific preference in Sec. 1.1 should not silently become a general rule, and a general rule that produces a worse result in Sec. 1.1's context should not survive unchallenged. As more chapters are storyboarded, rules should converge on the common denominator across them, not on any single section.
 
 This guide is the translation methodology layer. It is distinct from:
 
-- [`MANIM_README.md`](MANIM_README.md) -- field reference, template catalog, rendering commands, visual design system.
-- [`CONTENT_README.md`](CONTENT_README.md) -- textbook writing rules (authority over the `.tex` source).
+- [`MANIM_REFERENCE.md`](MANIM_REFERENCE.md) -- field reference, template catalog, rendering commands, visual design system.
+- [`CONTENT_SPEC.md`](CONTENT_SPEC.md) -- textbook writing rules (authority over the `.tex` source).
 - [`MANIM_CHECKLIST.md`](MANIM_CHECKLIST.md) -- operational steps for running the pipeline.
 
 Read those for *what the machinery is* and *how to operate it*. Read this guide for *what to put in the YAML when staring at a chapter section*.
@@ -62,7 +62,7 @@ The video is **a class**, not a book being read aloud. Three commitments follow:
 Before writing a line of YAML, have these open:
 
 - The target section in `chapters/<chapter>.tex` -- read it start to end, including the chapter opening prose if this is the first section.
-- [`MANIM_README.md`](MANIM_README.md) -- the **Templates (9)** table and the **Midnight Canvas** color semantics.
+- [`MANIM_REFERENCE.md`](MANIM_REFERENCE.md) -- the **Templates (9)** table and the **Midnight Canvas** color semantics.
 - An existing storyboard (start with Sec. 1.1) for cross-reference on style and field usage.
 - The `schemas/manim_storyboard.schema.json` if you need the exact field contract.
 
@@ -279,7 +279,7 @@ Math symbols must be rewritten as speech. Do **not** let the TTS pronounce `f(x_
 | `\Leftrightarrow` | "if and only if" |
 | `\lim_{x \to a} f(x)` | "the limit of f of x as x approaches a" |
 | `f'(x)` | "f prime of x" |
-| `\sin^{-1}(x)` | "inverse sine of x" (or "arc sine of x", follow CONTENT_README.md) |
+| `\sin^{-1}(x)` | "inverse sine of x" (or "arc sine of x", follow CONTENT_SPEC.md) |
 
 Numbers: write "minus one half", not "negative one-half", to match how the Sec. 1.1 narration reads.
 
@@ -448,7 +448,7 @@ Thus the inverse is correct.
 
 ### `graph_focus`
 
-- Stay inside the expression-helper vocabulary: `sin`, `cos`, `tan`, `sqrt`, `exp`, `log`, `cbrt`, `abs`, `pi`, `e`. `graph_focus` expressions **MUST** use `cbrt(...)` for cube roots and **MUST NOT** use `**(1/3)`; the latter produces complex numbers on negative bases and breaks Manim's plotter. ([MANIM_README.md:220-233](MANIM_README.md#L220-L233))
+- Stay inside the expression-helper vocabulary: `sin`, `cos`, `tan`, `sqrt`, `exp`, `log`, `cbrt`, `abs`, `pi`, `e`. `graph_focus` expressions **MUST** use `cbrt(...)` for cube roots and **MUST NOT** use `**(1/3)`; the latter produces complex numbers on negative bases and breaks Manim's plotter. ([MANIM_REFERENCE.md:220-233](MANIM_REFERENCE.md#L220-L233))
 - Set `x_range` on a plot to the restricted domain if you are illustrating a restriction; do not rely on axis clipping.
 - Use `label_side` and `label_x` when two curves are close together or a label might overlap the `y = x` line. Preview with `preview_graph_focus.py` to verify.
 - Keep `annotations` to one short sentence each, 6.5 units wide at most.
@@ -669,5 +669,5 @@ If the handout changes are large (an entire subsection rewritten), a partial rew
 
 - **v1.3** -- added a SHOULD rule for `example_walkthrough` `data.decay_previous`: scenes whose voiceover calls back to an earlier `math_line` or `step` should set it to `false`. Added a matching pre-render checklist item. Motivated by the Sec. 1.1 v2 preview render, where `example_walkthrough` scenes with default `decay_previous: true` dimmed earlier lines before the TTS narration reached its verbal reference to them.
 - **v1.2** -- refined the voiceover sentence-count SHOULD based on audit findings from the Sec. 1.1 v2 rewrite. The 3-to-6-sentence target was being violated in 10 of 19 scenes, but on review the violations were not defects: `section_transition` scenes are naturally 1-2 sentences (they are interludes), and `example_walkthrough` scenes that bundle procedure plus verification are naturally 7-9 sentences (one cohesive teaching idea, not two). Two carve-outs now written into the rule and into the pre-render checklist. No other rules weakened.
-- **v1.1** -- added a Conformance Keywords section (MUST / SHOULD / MAY) and rewrote load-bearing rules (scene decomposition, exercise exclusion, voiceover must-nots, `cbrt` usage, `content_type` on `definition_math`, `scene_exit` default) to use the new keywords. Added two worked before/after examples: Sec. 1.1.1 one-to-one definition (definition -> `definition_math`) and Sec. 1.1.3 cubic inverse example (example + solution -> `example_walkthrough`). Softened the single-exemplar framing so Sec. 1.1 is a reference calibration point rather than a tiebreaker. Replaced em-dash, en-dash, arrow, section-sign, and multiplication-sign in body text with ASCII equivalents so the file reads cleanly in terminals that degrade non-ASCII to `?`. Paired with cross-doc updates to `README.md`, `MANIM_README.md`, and `MANIM_CHECKLIST.md` that unify "direct from LaTeX" as the recommended workflow and demote seeding to a legacy bootstrap path.
+- **v1.1** -- added a Conformance Keywords section (MUST / SHOULD / MAY) and rewrote load-bearing rules (scene decomposition, exercise exclusion, voiceover must-nots, `cbrt` usage, `content_type` on `definition_math`, `scene_exit` default) to use the new keywords. Added two worked before/after examples: Sec. 1.1.1 one-to-one definition (definition -> `definition_math`) and Sec. 1.1.3 cubic inverse example (example + solution -> `example_walkthrough`). Softened the single-exemplar framing so Sec. 1.1 is a reference calibration point rather than a tiebreaker. Replaced em-dash, en-dash, arrow, section-sign, and multiplication-sign in body text with ASCII equivalents so the file reads cleanly in terminals that degrade non-ASCII to `?`. Paired with cross-doc updates to `README.md`, `MANIM_REFERENCE.md`, and `MANIM_CHECKLIST.md` that unify "direct from LaTeX" as the recommended workflow and demote seeding to a legacy bootstrap path.
 - **v1.0** -- initial guide. Derived from reverse-engineering the Sec. 1.1 *Inverse Functions* storyboard against `chapters/ch01_foundations.tex`. Covered scope, scene decomposition, environment->template mapping, voiceover rewriting, `data` shaping, figure handling, titles, timing, `content_type`, ordering heuristics, hook usage, a pre-render checklist, and handout-change maintenance.

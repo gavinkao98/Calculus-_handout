@@ -40,7 +40,11 @@ Most rules are followed by a **Rationale** paragraph that explains why the rule 
 ### Relationship to other files
 
 - [`README.md`](README.md) — repository layout, preamble structure, build instructions.
-- [`MANIM_README.md`](MANIM_README.md), [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md), etc. — media pipeline rules (separate concern).
+- [`MANIM_REFERENCE.md`](MANIM_REFERENCE.md), [`MANIM_STORYBOARD.md`](MANIM_STORYBOARD.md), [`MANIM_CHECKLIST.md`](MANIM_CHECKLIST.md) — Manim animation pipeline (primary media path).
+- [`LEGACY_SLIDE_PIPELINE.md`](LEGACY_SLIDE_PIPELINE.md) — frozen static-slide/PDF path (reference only).
+- [`CONTENT_QUICKSTART.md`](CONTENT_QUICKSTART.md) — short daily-reference companion to this file.
+- [`CONTENT_ROADMAP.md`](CONTENT_ROADMAP.md) — course arc, chapter order, prerequisites, core skills per chapter.
+- [`CONTENT_EXERCISES.md`](CONTENT_EXERCISES.md) — minimum exercise skeleton ahead of the full deferred design round.
 - [`chapters/_chapter_template.tex`](chapters/_chapter_template.tex) — starter skeleton for new chapters, encoding the rules in this file.
 
 When repository layout or preamble decisions change, `README.md` is authoritative. When writing or typesetting rules change, **this file** is authoritative.

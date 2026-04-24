@@ -1,8 +1,8 @@
 # Manim Workflow Checklist
 
-The phase-by-phase operational checklist for producing a calculus teaching video through the **Manim animation pipeline** (LaTeX source → storyboard → rendered MP4). For the static slide/PDF path, use [`SLIDES_CHECKLIST.md`](SLIDES_CHECKLIST.md) instead.
+The phase-by-phase operational checklist for producing a calculus teaching video through the **Manim animation pipeline** (LaTeX source → storyboard → rendered MP4). For the frozen static-slide/PDF path, see [`LEGACY_SLIDE_PIPELINE.md`](LEGACY_SLIDE_PIPELINE.md).
 
-Related docs: [`MANIM_README.md`](MANIM_README.md) (full reference), [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md) (LaTeX-to-YAML translation playbook), [`CONTENT_README.md`](CONTENT_README.md) (lecture-note authoring rules).
+Related docs: [`MANIM_REFERENCE.md`](MANIM_REFERENCE.md) (full reference), [`MANIM_STORYBOARD.md`](MANIM_STORYBOARD.md) (LaTeX-to-YAML translation playbook), [`CONTENT_SPEC.md`](CONTENT_SPEC.md) (lecture-note authoring rules).
 
 ---
 
@@ -28,7 +28,7 @@ python -c "import sys; sys.path.insert(0,'.deps_f5'); import f5_tts; print('F5 O
 
 The storyboard YAML is hand-written from the finalized LaTeX source. It does **not** regenerate from the chapter file; every change to `chapters/*.tex` that affects the target section requires a manual YAML revision.
 
-Work through [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md) for the full translation playbook (scene decomposition, environment-to-template mapping, voiceover rewriting, figure handling, `content_type` assignment, timing). The condensed flow:
+Work through [`MANIM_STORYBOARD.md`](MANIM_STORYBOARD.md) for the full translation playbook (scene decomposition, environment-to-template mapping, voiceover rewriting, figure handling, `content_type` assignment, timing). The condensed flow:
 
 1. Read the target section in `chapters/<chapter>.tex` end to end.
 2. Sketch a scene list in order (one bullet per scene) including the required opening `title_bullets` and closing `recap_cards`.
@@ -43,7 +43,7 @@ A first-draft YAML can be seeded from an existing slide-pipeline deck JSON:
 python .\tools\seed_manim_storyboard.py --deck-id <DECK_ID>
 ```
 
-Prerequisite: `artifacts/slide_spec/<DECK_ID>.json` exists. The seeded draft is a bootstrap, not a finished storyboard -- it must be hand-revised against `STORYBOARD_AUTHORING.md` before rendering.
+Prerequisite: `artifacts/slide_spec/<DECK_ID>.json` exists. The seeded draft is a bootstrap, not a finished storyboard -- it must be hand-revised against `MANIM_STORYBOARD.md` before rendering.
 
 Once the YAML exists (hand-written or seeded-and-revised), open it and verify: `deck_id`, `language`, scene count, template assignments.
 

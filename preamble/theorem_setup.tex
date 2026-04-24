@@ -20,9 +20,9 @@
 
 % ---------------------------------------------------------------------------
 % Formal-statement environments.
-% Per CONTENT_README.md v3.0 (Numbering and Cross-References), each formal
+% Per CONTENT_SPEC.md (Numbering and Cross-References), each formal
 % environment has its own chapter-scoped counter. This is a change from the
-% v2.x shared-counter pattern: high-school self-study readers looking up
+% earlier shared-counter pattern: high-school self-study readers looking up
 % "Definition 1.3" expect it to be the third definition, not the third
 % formal statement of any type. Per-env counters match that expectation.
 %
@@ -60,7 +60,7 @@
 %               boxes (numbered step list or short paragraph).
 %
 % Both carry chapter-scoped counters of their own. Labels are optional (see
-% CONTENT_README.md §6).
+% CONTENT_SPEC.md §6).
 % ---------------------------------------------------------------------------
 \mdfdefinestyle{cautionmdstyle}{%
   leftline=true, rightline=false, topline=false, bottomline=false,
@@ -100,7 +100,7 @@
 
 % ---------------------------------------------------------------------------
 % Solution environment.
-% Visually distinct from proof, per CONTENT_README.md v3.0 (Environment Set --
+% Visually distinct from proof, per CONTENT_SPEC.md (Environment Set --
 % example and solution): bold "Solution." label, upright body text, and a
 % filled QED box at the end (proof uses italic "Proof." with an open box).
 % Optional argument overrides the label, e.g. \begin{solution}[Alternative solution].

@@ -1,229 +1,129 @@
-# Calculus Textbook Project
+# Calculus Handout Project
 
-This repository has two separate working tracks:
+A single-sided A4 **calculus handout** for high-school students self-studying toward college calculus, paired with companion teaching videos. The handout is self-sufficient; the video is reinforcement.
 
-- textbook content authoring
-- slide, narration, and video generation
+This file is the **repository hub**. It is authoritative for repo layout, preamble structure, and build instructions. Content-authoring rules and media-pipeline rules live in their own files, linked below.
 
-Use the dedicated guides instead of treating this file as the full rulebook.
+---
 
-Operational checklists (shortest path to a finished artifact):
+## Start here
 
-- [`SLIDES_CHECKLIST.md`](SLIDES_CHECKLIST.md): slide/PDF pipeline checklist
-- [`MANIM_CHECKLIST.md`](MANIM_CHECKLIST.md): Manim animation pipeline checklist
+Pick the task you have, open the linked file.
 
-Full references:
+- **Writing or revising a chapter.** Start with [`CONTENT_QUICKSTART.md`](CONTENT_QUICKSTART.md). Fall back to [`CONTENT_SPEC.md`](CONTENT_SPEC.md) when the quickstart does not answer your question. Check [`CONTENT_ROADMAP.md`](CONTENT_ROADMAP.md) before starting a new chapter.
+- **Producing a video** (primary path — Manim animations). Start with [`MANIM_CHECKLIST.md`](MANIM_CHECKLIST.md) for step-by-step, then [`MANIM_STORYBOARD.md`](MANIM_STORYBOARD.md) for how to translate a finalised section into a YAML storyboard, and [`MANIM_REFERENCE.md`](MANIM_REFERENCE.md) for templates, field contracts, and render commands.
+- **Static-slide MP4** (frozen legacy path). Use [`LEGACY_SLIDE_PIPELINE.md`](LEGACY_SLIDE_PIPELINE.md). No new development on this path — use Manim for new work.
+- **Designing end-of-section exercises.** [`CONTENT_EXERCISES.md`](CONTENT_EXERCISES.md) (minimum skeleton until the full design round opens).
 
-- [`CONTENT_README.md`](CONTENT_README.md): authoritative textbook writing and editorial rules
-- [`SLIDES_README.md`](SLIDES_README.md): slide-generation workflow and plan rules
-- [`SCRIPT_README.md`](SCRIPT_README.md): narration draft/final workflow (slide/PDF path)
-- [`VIDEO_README.md`](VIDEO_README.md): audio synthesis and MP4 rendering (slide/PDF path)
-- [`MANIM_README.md`](MANIM_README.md): storyboard-driven Manim workflow
-- [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md): translation guide for turning a finalized chapter section into a Manim storyboard YAML
+---
+
+## Golden path
+
+```
+  chapters/*.tex  ──▶  inputs/manim_storyboards/<deck_id>.yml
+  (CONTENT_SPEC)      (MANIM_STORYBOARD + MANIM_REFERENCE)
+                                   │
+                                   ▼
+                         preview → audio → render
+                         (MANIM_CHECKLIST)
+                                   │
+                                   ▼
+                       artifacts/video/<deck_id>_manim.mp4
+```
+
+Finalize the chapter content first. Hand-write the storyboard from the finalized LaTeX. Preview scenes one at a time. Render audio and final MP4 once scenes feel right.
+
+---
+
+## Document map
+
+| Layer | File | Purpose |
+|---|---|---|
+| hub | `README.md` | repo layout, preamble map, build rules |
+| content spec | [`CONTENT_SPEC.md`](CONTENT_SPEC.md) | authoritative textbook writing rules |
+| content daily | [`CONTENT_QUICKSTART.md`](CONTENT_QUICKSTART.md) | 1-2 page author cheat sheet |
+| content arc | [`CONTENT_ROADMAP.md`](CONTENT_ROADMAP.md) | chapter order, prereqs, per-chapter core skills |
+| content exercises | [`CONTENT_EXERCISES.md`](CONTENT_EXERCISES.md) | minimum exercise skeleton |
+| manim operational | [`MANIM_CHECKLIST.md`](MANIM_CHECKLIST.md) | phase-by-phase pipeline checklist |
+| manim reference | [`MANIM_REFERENCE.md`](MANIM_REFERENCE.md) | field contracts, templates, render commands |
+| manim methodology | [`MANIM_STORYBOARD.md`](MANIM_STORYBOARD.md) | LaTeX-to-YAML translation playbook |
+| frozen legacy | [`LEGACY_SLIDE_PIPELINE.md`](LEGACY_SLIDE_PIPELINE.md) | static-slide/PDF + TTS + MP4 (no new development) |
+
+---
 
 ## Repository Layout
 
-- `main.tex`: main LaTeX entry point for the book
-- `chapters/`: chapter source files
-- `chapters/_chapter_template.tex`: starter skeleton for drafting a new chapter in the house style
-- `chapters/_scratch.tex`: optional local scratch chapter, gated by `\ifincludescratchchapter` in `main.tex`
-- `preamble/`: shared LaTeX setup
-- `preamble_smoketest.tex`: minimal regression document for preamble-only layout checks
-- `refs/`: bibliography data
-- `.github/workflows/`: CI checks for the book source
-- `tools/`: media-generation scripts plus book-source support utilities such as `style_lint.py`, `run_preamble_smoketest.py`, and vendored helpers like `loguru.py`
-- `schemas/`: JSON schema files for generated deck data
-- `inputs/`: reusable raw inputs such as source voice recordings, section media plans, and Manim storyboards
-- `artifacts/`: mostly generated slides, narration, audio, and video outputs; the tracked exceptions are `artifacts/scripts/*_final.md`, `artifacts/slides/*.tex`, and `artifacts/manim/*/narration.md`
+- `main.tex` — LaTeX entry point for the book.
+- `chapters/` — chapter source files.
+  - `chapters/_chapter_template.tex` — starter skeleton for a new chapter.
+  - `chapters/_scratch.tex` — optional local scratch chapter, gated by `\ifincludescratchchapter`.
+- `preamble/` — shared LaTeX setup (see *Preamble Map* below).
+- `preamble_smoketest.tex` — minimal regression document for preamble-only layout checks.
+- `refs/` — bibliography data.
+- `tools/` — media-generation scripts plus book-source utilities (`style_lint.py`, `run_preamble_smoketest.py`, and vendored helpers).
+- `schemas/` — JSON schema files for generated deck data.
+- `inputs/` — reusable raw inputs: voice recordings, section media plans, Manim storyboards.
+- `artifacts/` — mostly generated slides, narration, audio, video. Tracked exceptions: `artifacts/scripts/*_final.md`, `artifacts/slides/*.tex`, and `artifacts/manim/*/narration.md`.
+- `.github/workflows/` — CI checks.
 
-Authoring note:
-- `workedexample` is the canonical semantic wrapper for exactly one `example` + `solution` pair; it is not just a page-break trick or visual macro
-- keep `\footnote`, `\marginpar`, and manual `\hypertarget` outside `workedexample`
-
-Voice-reference note:
-- keep new voice reference inputs under `inputs/voice/` as `.wav` files
-- `inputs/voice/reference_script_en.txt` is a starter script for recording a new F5 reference clip
-- if you pass `--reference-text` to F5 clone mode, it must be the verbatim transcript of that exact reference WAV
-- do not reuse `reference_script_en.txt` as the transcript for unrelated sample clips unless the clip was recorded from that script
-
-Media-plan note:
-- keep section slide plans under `inputs/media_plans/`
-- each plan selects one source section and defines the slide sequence, learning goals, and source selectors used for extracted formulas or figures
-
-Manim-storyboard note:
-- keep storyboard files under `inputs/manim_storyboards/`
-- **recommended workflow**: write the storyboard by hand directly from the finalized LaTeX source in `chapters/*.tex`, following the translation rules in [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md)
-- **legacy bootstrap**: `tools/seed_manim_storyboard.py` produces a first-draft YAML from an existing deck JSON (from the slide/PDF pipeline). Seeding is retained for one-off bootstrapping; it is not the designed path and a seeded draft still needs substantial manual revision to reach the quality bar described in `STORYBOARD_AUTHORING.md`
-- the storyboard owns Manim `voiceover` text and can optionally bridge back into the existing TTS scripts
-- `render_manim_lesson.py --with-audio` writes bridge files to `artifacts/manim/<deck_id>/narration.md` and `artifacts/manim/<deck_id>/tts_deck.json`
-- you can edit `narration.md` for proofreading, then run `sync_narration_back.py` to push changes back to the YAML
-- for the Manim path, the storyboard is the source of truth; `narration.md` is a readable editing surface that syncs back
+---
 
 ## Preamble Map
 
-The `preamble/` directory is split by responsibility so layout and template behavior can be found quickly:
+`preamble/` is split by responsibility so layout and template behavior can be found quickly:
 
-- `preamble/packages.tex`: shared package loading for Times-style text and math fonts (`newtxtext` + `newtxmath`), micro-typography (`microtype`), math (`amsmath`, `amsthm`, `mathtools`), figures (`graphicx`, `tikz`, `pgfplots`), float handling (`float`, `flafter`), page-break control (`needspace`), lists (`enumitem`), page geometry (`margin=3.3cm`, see *Output Format* below), headers, cross-references (`hyperref`, `cleveref`), framed-environment support for `caution` / `strategy` (`mdframed` with `framemethod=TikZ`), colour infrastructure (`xcolor`), and house inverse-trig operators (`\arccsc`, `\arcsec`, `\arccot` via `\DeclareMathOperator`, added when `physics` was removed)
-- `preamble/colors.tex`: the three-role semantic palette (`colorprimary` blue, `colorcaution` red, `colorauxiliary` gray) that drives figure colouring and the accent bars on the `caution` / `strategy` environments. Hex values are the working draft; tune once the first few chapters are proofread in print
-- `preamble/layout.tex`: paragraph indentation and spacing, list spacing, global line spread (`\linespread{1.05}` to give display math breathing room at 12pt Times), float placement parameters, running headers and footers, chapter-title spacing, `\Needspace` hooks on `\section` and `\subsection`, shared short-formula display helpers (`aligneddisplay`, `conditiondisplay`, `\pairdisplay`), and the `\newdisplayenv{name}{begin}{end}` helper used to declare any new environment that wraps `\[...\]` so `\parindent` is correctly suppressed on the following paragraph (the helper installs LaTeX's kernel `\@doendpe` hook in the outer scope via `\AfterEndEnvironment`)
-- `preamble/theorem_setup.tex`: formal-statement environments (`definition`, `theorem`, `proposition`, `corollary`) each with their own chapter-scoped counter (per-env numbering, v3.0), the `solution` environment, the `caution` and `strategy` environments with left-colour-bar styling via `\newmdtheoremenv`, stronger page-bottom protection for formal result blocks, lighter page-flow protection for worked material and aside environments, and the `workedexample` semantic wrapper that measures and reserves space for an `example`+`solution` pair as one unit
-- `preamble/numbering.tex`: equation numbering by chapter
-- `preamble/bibliography.tex`: bibliography backend and bibliography source file
+- `preamble/packages.tex` — package loading: Times text/math fonts (`newtxtext` + `newtxmath`), `microtype`, `amsmath` / `amsthm` / `mathtools`, `graphicx` / `tikz` / `pgfplots`, `float` / `flafter`, `needspace`, `enumitem`, page geometry (3.3 cm margins), headers, `hyperref` / `cleveref`, `mdframed` with `framemethod=TikZ` for `caution` / `strategy`, `xcolor`, and the house inverse-trig operators (`\arccsc`, `\arcsec`, `\arccot`).
+- `preamble/colors.tex` — the three-role semantic palette (`colorprimary` blue, `colorcaution` red, `colorauxiliary` gray) driving figures and accent bars on `caution` / `strategy`.
+- `preamble/layout.tex` — paragraph indentation and spacing, list spacing, global `\linespread{1.05}`, float placement, running headers and footers, `\Needspace` hooks, shared short-formula helpers (`aligneddisplay`, `conditiondisplay`, `\pairdisplay`), and `\newdisplayenv{name}{begin}{end}` for any new wrapper around `\[...\]` (installs the kernel `\@doendpe` hook via `\AfterEndEnvironment` to suppress stray indents after the environment).
+- `preamble/theorem_setup.tex` — per-env chapter-scoped counters for `definition` / `theorem` / `proposition` / `corollary`; the `solution` environment; `caution` and `strategy` (left-colour-bar `\newmdtheoremenv`); page-flow protection hooks; and the `workedexample` semantic wrapper that reserves space for an `example` + `solution` pair as a single unit.
+- `preamble/numbering.tex` — equation numbering by chapter.
+- `preamble/bibliography.tex` — bibliography backend and source file.
+
+---
 
 ## Output Format
 
-The book is produced as a **single-sided A4 PDF**, meant to be printed one page per sheet and distributed as a handout rather than bound into a book. The preamble and `main.tex` reflect that:
+Single-sided A4 PDF, meant to be printed one page per sheet and distributed as a handout rather than bound.
 
-- `\documentclass[a4paper,12pt,oneside]{book}`: `oneside` makes every page follow the same margin rule, so there is no inner/outer asymmetry
-- `margin=3.3cm` symmetric on all four sides, giving a text block near the 66-72 characters-per-line comfort range for 12pt Times
-- `\linespread{1.05}` provides modest extra leading for math-dense prose without making pages feel sparse
-- `\fancyhead[L]`/`\fancyhead[R]`/`\fancyfoot[R]` (not the `[LE]`/`[RO]` twoside pattern) place the chapter mark, section mark, and page number consistently on every page
-- `main.tex` wraps `\maketitle` in `\begingroup\hypersetup{pageanchor=false}...\endgroup` to avoid duplicate-destination warnings on the title page; no manual `\clearpage` is needed because `titlepage` handles the page break internally
-- `main.tex` keeps `\ifprintbibliography` and `\ifincludescratchchapter` toggles near the top so bibliography output and local scratch content can stay opt-in instead of accidentally shipping
+- `\documentclass[a4paper,12pt,oneside]{book}` — same margin rule on every page.
+- `margin=3.3cm` symmetric; text block near the 66–72 characters-per-line comfort range for 12 pt Times.
+- `\linespread{1.05}` — modest extra leading for math-dense prose without sparse pages.
+- `\fancyhead[L]` / `\fancyhead[R]` / `\fancyfoot[R]` (not the twoside `[LE]`/`[RO]` pattern).
+- `main.tex` wraps `\maketitle` in `\begingroup\hypersetup{pageanchor=false}...\endgroup` to avoid duplicate-destination warnings on the title page.
+- `main.tex` keeps `\ifprintbibliography` and `\ifincludescratchchapter` toggles near the top so the bibliography and the scratch chapter stay opt-in.
 
-If the project ever needs a bound-book edition later, the minimum changes are: switch to `\documentclass[a4paper,12pt,twoside,openright]{book}`, rework `\fancyhead`/`\fancyfoot` to use `[LE]`/`[RO]` pairs, and consider asymmetric `inner`/`outer` margins with a `bindingoffset`.
+If the project ever needs a bound-book edition later, minimum changes: switch to `\documentclass[a4paper,12pt,twoside,openright]{book}`, rework `\fancyhead`/`\fancyfoot` to use `[LE]`/`[RO]` pairs, and consider asymmetric `inner`/`outer` margins with a `bindingoffset`.
 
-## Recent Book-Source Infrastructure
+---
 
-Recent repository-level changes worth knowing before editing the book:
+## Build and CI
 
-- text and math fonts now use `newtxtext` + `newtxmath` instead of `lmodern`, and `microtype` is enabled for spacing/protrusion improvements
-- the old `physics` package was removed; the house inverse-trig operators are declared explicitly in `preamble/packages.tex`
-- `hyperref` now carries PDF metadata (`pdftitle`, `pdfauthor`, numbered/open bookmarks) and the title page avoids duplicate page-anchor warnings
-- `preamble/layout.tex` now owns the single-sided handout defaults: symmetric 3.3 cm margins, `\linespread{1.05}`, and oneside-style running heads/feet
-- `\newdisplayenv` uses LaTeX's kernel `\@doendpe` hook so prose after custom display wrappers does not pick up a stray paragraph indent
-- Chapter 1 figure code was adjusted to compile warning-free, including the inverse-composition diagram sizing and the sine-graph marker overlay
-- book-source checks now include a regex style lint, a dedicated preamble smoke test, and a GitHub Actions workflow that runs both plus a full `latexmk` build
-- [`CONTENT_README.md`](CONTENT_README.md) was rewritten from scratch as v3.0 with a new positioning ("self-sufficient Stewart-register A4 handout for high-school self-study readers"). Concrete infrastructure follow-ups that landed alongside v3.0:
-  - formal-statement environments now use per-type chapter-scoped counters (Definition 1.1, 1.2, ...; Theorem 1.1, 1.2, ...), replacing the earlier shared-counter pattern; `aliascnt` is no longer loaded
-  - `lemma` is dropped from the environment set
-  - two new environments `caution` (red left-bar) and `strategy` (blue left-bar) are available for notation traps and Stewart-style method boxes, implemented via `\newmdtheoremenv`
-  - the display-helper set is reduced from seven to five: `aligneddisplay`, `conditiondisplay`, `\pairdisplay`, plain `\[...\]`, and inline `\(...\)`. The earlier `\iffwithconditions` and `\iffstackeddisplay` macros are removed; equivalences are written as ordinary display math with `\Longleftrightarrow`
-  - `preamble/colors.tex` declares the semantic colour palette (blue / red / gray)
-  - `tools/style_lint.py` gained four new checks: no `\textbf` / `\textit` in prose, every `\begin{definition}` body contains an `\index{...}`, every named theorem has a matching index entry, and every chapter file opens with `\chapter{...}` plus an overview plus a learning-outcomes bullet list
+Local build:
 
-Template pagination note:
-- formal result blocks such as `theorem`, `proposition`, `corollary`, and `definition` reserve more vertical space before they start
-- `example`, `exercise`, `solution`, `proof`, `remark`, `caution`, and `strategy` use lighter protection and may span pages naturally
-- `\section` and `\subsection` headings reserve a few baselines of the following body text, so a heading cannot be stranded alone at the bottom of a page
-- `workedexample` measures the combined `example`+`solution` height once (capped at 16 baselines) and reserves that much space, so short pairs stay together without forcing a break for near-page-height units
-- do not add manual `\newpage`, `\pagebreak`, or `\clearpage` in chapter files just to keep these blocks together unless a task explicitly calls for a local exception
+```powershell
+latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error main.tex
+```
 
-## Formula Display Strategy
+Before committing a chapter, also run:
 
-Use this as the quick authoring rule for how formulas should appear on the page:
+```powershell
+python tools/style_lint.py
+python tools/run_preamble_smoketest.py
+```
 
-- keep short formulas inline when they belong naturally to the sentence
-- in `solution`, keep `Solution.` inline when the body begins with prose
-- if a `solution` begins with `enumerate`, `itemize`, or display math, place `\solutionbreak` before the first block
-- if the last line of a `solution` is displayed math, place `\qedhere` on that last displayed line so the closing box does not drift to a separate line
-- within one local math unit, prefer one display grammar instead of mixing centered displays, aligned blocks, and prose-side conditions for the same step
-- keep one-off conditions such as `provided that ...` in prose when they apply to only one formula
-- use ordinary display math for visually central formulas or multi-step calculations
-- use `aligneddisplay` for short related formulas that should be read top-to-bottom
-- use `conditiondisplay` when formulas carry trailing domain/range/branch conditions that need explicit spacing
-- use `\pairdisplay{...}{...}` only when exactly two short formulas are meant to be compared left-to-right; it auto-stacks if either side gets too wide
-- do not use `aligneddisplay` just to line up unrelated factual statements; if two short facts are being compared, prefer `\pairdisplay{...}{...}` or ordinary display math
-- for a formal equivalence `A iff B`, use ordinary display math with `\Longleftrightarrow` and an inline or prose condition; do not introduce a custom iff helper (the earlier `\iffwithconditions` and `\iffstackeddisplay` macros were removed in the v3.0 rewrite)
+All three checks run on every push and PR via [`.github/workflows/latex-checks.yml`](.github/workflows/latex-checks.yml).
 
-For the full decision rules and examples, see `§7 Formula Display` in [`CONTENT_README.md`](CONTENT_README.md).
+Authority: when repository layout or preamble decisions change, **this file** is authoritative; when writing or typesetting rules change, [`CONTENT_SPEC.md`](CONTENT_SPEC.md) is authoritative.
 
-## Which File To Read
+---
 
-If you are writing or revising textbook content:
-- start with [`CONTENT_README.md`](CONTENT_README.md)
-- then work in the relevant file under `chapters/`
+## Media scope note
 
-If you are generating media, first decide which pipeline:
+End-of-section `\subsection*{Exercises}` blocks are for the printed handout only. They are **not** included in slide decks, narration scripts, Manim storyboards, synthesized audio, or rendered video. When planning section media, ignore the exercise block of the source section and build from definitions, theorems, examples, and exposition prose.
 
-- slide/PDF path -- start with [`SLIDES_CHECKLIST.md`](SLIDES_CHECKLIST.md) for the end-to-end steps; drill into [`SLIDES_README.md`](SLIDES_README.md), [`SCRIPT_README.md`](SCRIPT_README.md), and [`VIDEO_README.md`](VIDEO_README.md) when you need details; scripts live under `tools/`
-- Manim animation path -- start with [`MANIM_CHECKLIST.md`](MANIM_CHECKLIST.md) for the phase-by-phase steps; use [`MANIM_README.md`](MANIM_README.md) for the full reference
-
-## Current Scope
-
-The book source is general, but the checked-in textbook draft is currently centered on Chapter 1:
-
-- `chapters/ch01_foundations.tex` now drafts the full Chapter 1 arc: inverse functions, inverse trigonometric functions, limits, one-sided and infinite limits, limit laws, and the precise definition of a limit. The chapter carries the v3.0 chapter-opening pattern (overview + ``By the end of this chapter, you will be able to:'' bullet list), a mandatory `\section*{Summary}` at chapter end, three `strategy` boxes (finding an inverse, computing a limit, verifying an $\varepsilon$-$\delta$ limit), and two `caution` boxes for the `\sin^{-1}` notation trap and the out-of-principal-interval identity trap
-- end-of-section exercises are still placeholders in that chapter; see *Known open items* below
-- the media pipeline exemplar is still Section 1.1 ("Inverse Functions"), even though the book chapter itself now extends well beyond that section
-- the storyboard [`inputs/manim_storyboards/ch01_inverse_functions.yml`](inputs/manim_storyboards/ch01_inverse_functions.yml) -- currently v2, hand-authored against `STORYBOARD_AUTHORING.md` v1.2 with 19 scenes including two `section_transition` interludes and three supplementary `graph_focus` visualizations not present in the book prose
-- the slide/PDF pipeline plan [`inputs/media_plans/ch01_inverse_functions.json`](inputs/media_plans/ch01_inverse_functions.json) -- still tracked for the slide path; the Manim path no longer depends on this plan
-- generated and reviewable media assets under `artifacts/` -- last preview render produced an 8:09 MP4 at 960x540 with Coqui Jenny builtin narration covering all 19 scenes; see *Known open items* below for the follow-up pacing issue
-
-### Known open items
-
-Project-level tracking of rules that are authoritative in [`CONTENT_README.md`](CONTENT_README.md) or [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md) but not yet fully realized in every in-scope chapter:
-
-- **End-of-section exercises.** Chapter 1 currently carries `% TODO: add \subsection*{Exercises} block ...` placeholders at the end of every section (1.1 through 1.6). The Exercise Policy in `CONTENT_README.md` is the target; the TODO markers are the audit trail. Replacing each TODO with a real exercise block is the remaining work.
-- **Manim scene pacing vs. narration.** The pipeline synchronizes only scene-total duration (`scene_exit: "hold"` + `minimum_duration_seconds` floor), not within-scene animation beats. In the current Section 1.1 render, `example_walkthrough` scenes with `decay_previous: true` (the default) can dim earlier `math_lines` before the TTS narration reaches its verbal reference to those lines. The rule is now encoded in `STORYBOARD_AUTHORING.md` v1.3 as a SHOULD (set `data.decay_previous: false` whenever the voiceover calls back by name to an earlier step). Remaining work is the audit pass: walk every existing `example_walkthrough` scene in `inputs/manim_storyboards/` and apply the rule where applicable; optionally also slow `theme.transitions.context_decay` globally.
-
-Entries in this list are not exceptions to the rules (per-chapter exceptions are documented under the Exception Protocol in `CONTENT_README.md`). They are known incomplete areas where the rule has been written before the content has been filled in. An item is removed from this list only when the corresponding rule is fully satisfied in every in-scope chapter.
-
-### Media scope: exercises are book-only
-
-End-of-section `\subsection*{Exercises}` blocks are for student self-practice on the printed/PDF book only. They are **not** included in any media pipeline -- not in slide decks, narration scripts, Manim storyboards, synthesized audio, or rendered video. When planning a section media plan or Manim storyboard, ignore the exercise block of the source section and build the storyboard from the definitions, theorems, examples, and exposition prose. The book-level exercise TODOs under *Known open items* are therefore not a blocker for video readiness.
-
-## Media Workflow Snapshot
-
-The current media flow is intentionally staged:
-
-1. finish the lecture-note version in `chapters/*.tex`
-2. generate slide artifacts plus a narration draft and narration final file from a section media plan
-3. revise only the final narration file until the spoken version is ready
-4. synthesize audio from the final narration file
-5. render the MP4 from slide PDF plus narration WAV files
-
-The Manim path now exists in parallel:
-
-1. hand-write `inputs/manim_storyboards/<deck_id>.yml` directly from the LaTeX chapter source, following [`STORYBOARD_AUTHORING.md`](STORYBOARD_AUTHORING.md) (or, as a legacy bootstrap, run `tools/seed_manim_storyboard.py` against an existing deck JSON and then hand-revise the seeded YAML into compliance)
-2. edit storyboard scenes, `voiceover`, timings, and optional hooks directly
-3. preview one scene at a time until the animation feels right
-4. run `render_manim_lesson.py --with-audio` once to export the bridge narration files
-5. synthesize one WAV per scene into `artifacts/audio/<deck_id>_manim/`
-6. rerun `render_manim_lesson.py --with-audio` to mux scene audio into `artifacts/video/<deck_id>_manim.mp4`
-
-Narration ownership rule -- the two pipelines use different source-of-truth models, summarized side-by-side below:
-
-| Aspect | Slide/PDF path | Manim animation path |
-|---|---|---|
-| Source of truth | `artifacts/scripts/<deck_id>_final.md` | `voiceover` field per scene in `inputs/manim_storyboards/<deck_id>.yml` |
-| Regenerated & disposable | `artifacts/scripts/<deck_id>_draft.md` | n/a -- no draft/final split |
-| Editable mirror | n/a -- edit the final file in place | `artifacts/manim/<deck_id>/narration.md` |
-| TTS reads from | `*_final.md` | bridge files (`tts_deck.json` + `narration.md`) exported from the storyboard |
-| Sync mechanism | none needed -- edit in place | `tools/sync_narration_back.py` pushes `narration.md` edits back into the YAML |
-| Where to put a joke or aside | the relevant `Narration:` block in `*_final.md` | the scene's `voiceover` in the YAML, or in `narration.md` followed by a sync-back |
-
-Version-control rule:
-
-- commit `artifacts/scripts/*_final.md` when you want narration edits in project history
-- commit `artifacts/slides/*.tex` when you want the generated Beamer source in project history
-- commit `inputs/manim_storyboards/*.yml` when you want Manim animation and narration edits in project history
-- commit `artifacts/manim/*/narration.md` when you want the Manim narration in project history (the storyboard remains canonical)
-- do not commit `*_draft.md`, slide PDFs, or LaTeX build artifacts under `artifacts/`
-
-For the actual commands and file paths, use:
-
-- [`MANIM_README.md`](MANIM_README.md)
-- [`SLIDES_README.md`](SLIDES_README.md)
-- [`SCRIPT_README.md`](SCRIPT_README.md)
-- [`VIDEO_README.md`](VIDEO_README.md)
-
-## Quality Checks
-
-For book-source changes, run these checks before committing:
-
-- `python tools/style_lint.py` -- regex linter. Line-level checks forbid manual cross-reference prefixes such as `Figure~\ref{...}`, manual page-break commands (`\newpage`/`\pagebreak`/`\clearpage`) in chapter or `main.tex` source, ASCII `"..."` quotes, and `\textbf{}`/`\textit{}` used for emphasis in prose. Block-level checks then require every `\begin{definition}` body to carry an `\index{...}` (with an exemption for paired precise restatements labeled `def:*-precise`), every `\begin{theorem}[Name]` to have a matching `\index{}` entry nearby, and every chapter file to open with `\chapter{...}` followed by an overview paragraph followed by a `\paragraph{By the end of this chapter, ...}` learning-outcomes bullet list before the first `\section`
-- `python tools/run_preamble_smoketest.py` -- compiles `preamble_smoketest.tex` and checks that continuation prose after `aligneddisplay` / `conditiondisplay` is not spuriously indented (guards the `\newdisplayenv` `\@doendpe` hook)
-- `latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error main.tex`
-
-The same three checks run on every push and pull request via [`.github/workflows/latex-checks.yml`](.github/workflows/latex-checks.yml).
-
-`main.tex` keeps two explicit toggles near the top:
-
-- `\ifprintbibliography` controls whether `\printbibliography` is emitted
-- `\ifincludescratchchapter` controls whether `chapters/_scratch.tex` is included (the scratch chapter defaults to off so a local work-in-progress draft does not accidentally ship with the book)
+---
 
 ## Notes
 
-- `style_guide.md` is only a short redirect note now.
 - Local caches, virtual environments, and vendored dependencies live in hidden repo folders such as `.cache/`, `.venv/`, `.deps/`, and `.deps_f5/`.
+- The checked-in media exemplar is Section 1.1 *Inverse Functions* (`ch01_inverse_functions`). The Manim storyboard lives at [`inputs/manim_storyboards/ch01_inverse_functions.yml`](inputs/manim_storyboards/ch01_inverse_functions.yml); the frozen slide plan lives at [`inputs/media_plans/ch01_inverse_functions.json`](inputs/media_plans/ch01_inverse_functions.json).
