@@ -28,11 +28,16 @@ Two cross-cutting targets sit above any chapter-specific content:
 | # | Title | Status | Sections |
 |---|---|---|---|
 | 1 | Inverse Functions and Limits | draft | 1.1 Inverse Functions and One-to-One Functions; 1.2 Inverse Trigonometric Functions; 1.3 Limits; 1.4 One-Sided and Infinite Limits; 1.5 Limit Laws; 1.6 The Precise Definition of a Limit |
-| 2 | *(TBD — fill in before drafting)* | planned | — |
-| 3 | *(TBD)* | planned | — |
-| … | | | |
+| 2 | Derivatives | planned | 2.1 The Derivative at a Point; 2.2 The Derivative as a Function; 2.3 Differentiation Rules; 2.4 Derivatives of Trigonometric Functions; 2.5 The Chain Rule; 2.6 Implicit Differentiation; 2.7 Derivatives of Inverse Functions; 2.8 Derivatives of Exponential and Logarithmic Functions; 2.9 Higher-Order Derivatives |
+| 3-14 | *(TBD — titles added as each chapter is drafted)* | planned | — |
 
-Author note: this list is currently a stub. The first editorial task that ships as part of Phase 3 of the repo restructure should be to commit the remaining chapter titles and section skeletons here — not as a plan to follow rigidly, but as a working hypothesis that reviewers can push back on.
+Target scope: Calc I + II + III (single-variable through multivariable vector calculus). Loose Stewart / Rogawski TOC as the reference arc. The natural full arc at this scope runs roughly 14 chapters:
+
+- **Calc I** (Ch 1-4): Inverse Functions and Limits → Derivatives → Applications of Differentiation → Integrals.
+- **Calc II** (Ch 5-9): Applications of Integration → Techniques of Integration → Differential Equations → Parametric and Polar Coordinates → Infinite Sequences and Series.
+- **Calc III** (Ch 10-14): Vectors and the Geometry of Space → Vector Functions → Partial Derivatives → Multiple Integrals → Vector Calculus.
+
+Titles for Ch 3 onward are **not committed** until the preceding chapter's draft stabilises. The per-workflow decision is explicit: we fill a chapter's full roadmap entry (role, prereqs, core skills, key figures, notation, cautions, open questions) at the moment its immediate predecessor reaches the `draft` status bar — not earlier, since upstream decisions in the predecessor chapter shift what the successor needs to teach.
 
 ---
 
@@ -138,6 +143,67 @@ Chapter 1 is the **foundations** phase of the course arc. It sets up the two fou
 
 **Open questions**
 - End-of-section exercises are still `% TODO` placeholders in all six sections. See [`CONTENT_EXERCISES.md`](CONTENT_EXERCISES.md) for the minimum exercise skeleton that should land before the chapter is declared `done`.
+
+---
+
+## Chapter 2 (filled entry)
+
+### Chapter 2: Derivatives
+
+**Status**: planned
+**Source file**: `chapters/ch02_derivatives.tex` (to be created when drafting begins)
+**Estimated length**: *(fill in after first full compile)*
+
+**Role in the arc**
+Chapter 2 is the **development** phase of Calc I. It converts the limit machinery from Chapter 1 into a working operator: given a function, produce another function describing its instantaneous rate of change. Ch 1 did the heavy conceptual lifting (what does it mean to approach without equalling?); Ch 2 cashes that in algorithmically (how do you differentiate a polynomial, a trig function, a composition?). Every applications chapter that follows — Ch 3 on extrema and optimization, Ch 4's connection to integrals via the Fundamental Theorem, all of Ch 12 on partial derivatives — takes "the derivative" as a known object and builds on it.
+
+**Prerequisites**
+- **From Chapter 1**: all six sections, especially §1.3 (limits), §1.4 (one-sided and infinite limits), §1.5 (limit laws), and the `\lim` notation introduced there. The derivative is defined as a limit; students who are shaky on limit manipulation will not survive the definition in §2.1. §1.2 (inverse trig) supplies the identities used in §2.7. §1.6 (ε-δ) is not strictly prerequisite — the derivative is phrased through the algebraic limit, not the ε-δ form — but a student who has seen §1.6 will find §2.1's rigour less jarring.
+- **Precalculus**: polynomial, rational, and trigonometric manipulation; function composition (for §2.5); the Pythagorean and addition-of-angle identities (used to derive trig derivatives in §2.4).
+- **No prior exposure to derivatives needed** — the chapter assumes the derivative is new.
+
+**Core skills** (will match the chapter opening bullet list)
+- state the limit definition of the derivative $f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$ and apply it to compute derivatives from first principles for polynomial and root functions;
+- use the power, constant-multiple, sum, product, and quotient rules to differentiate algebraic combinations of elementary functions;
+- differentiate trigonometric, inverse trigonometric, exponential, and logarithmic functions;
+- apply the chain rule to compositions, including nested compositions of three or more functions;
+- differentiate implicitly when a relation cannot be solved for $y$ in closed form;
+- compute higher-order derivatives and interpret $f''$ geometrically (concavity) and physically (acceleration).
+
+**Key figures**
+- secant-to-tangent limit diagram (§2.1): a curve with a sequence of secant lines converging to a tangent line as $h \to 0$.
+- the derivative as a function (§2.2): a pair of graphs showing $f$ above and $f'$ below, aligned on the $x$-axis so zeros, extrema, and sign changes line up visually.
+- product rule geometric picture (§2.3): a rectangle with sides $f$ and $g$, showing how the area changes in response to small increments in each side.
+- chain rule as composed mapping (§2.5): stacked input-intermediate-output axes showing how a change at the input propagates through the intermediate to the output.
+- implicit differentiation (§2.6): the circle $x^2 + y^2 = r^2$ with a tangent line drawn at a non-trivial point, used to motivate why solving for $y$ first is awkward.
+- inverse-function derivative geometric picture (§2.7): the reflection-across-$y=x$ figure from Ch 1 reused, with tangent slopes at corresponding points marked as reciprocals.
+- higher-order derivatives (§2.9): a single function graphed alongside $f'$ and $f''$ on aligned axes to show the hierarchy of slopes and curvatures.
+
+**Handout self-sufficiency vs. video reinforcement**
+- The handout alone carries the limit definition, every differentiation rule with a proof sketch, every worked example, and every strategy box.
+- The companion videos add: (a) animated secant-to-tangent convergence that is hard to convey on a static page; (b) a dynamic slope-of-tangent-line demo where the tangent point sweeps across a curve and the slope is plotted below in real time, showing $f'$ emerging as a function; (c) narrated chain-rule intuition using successive mapping animations.
+- Nothing in the video substitutes for reading the handout; promotion direction stays *video → handout*, never the reverse.
+
+**Strategy boxes expected**
+- *Choosing a differentiation rule* (§2.3 or §2.5): decision tree — is the expression a sum? a product? a quotient? a composition? solved / implicit? This is the highest-leverage strategy box in the chapter, because rule selection is the skill students struggle with the most.
+- *Implicit differentiation* (§2.6): a 4-step method — (1) differentiate both sides with respect to $x$, treating $y$ as a function of $x$; (2) collect $dy/dx$ terms; (3) solve for $dy/dx$; (4) substitute a specific point if requested.
+- *Inverse-function derivative* (§2.7): the formula $(f^{-1})'(y) = 1 / f'(x)$ at $y = f(x)$, with "when is this useful" guidance (when $f$ is hard to invert explicitly but $f'$ is easy, e.g., deriving $\arcsin'$ from $\sin'$).
+
+**Notation introduced**
+- $f'(x)$, $\dfrac{dy}{dx}$, $\dfrac{df}{dx}$, $\dfrac{d}{dx}[f(x)]$, $f''(x)$, $f^{(n)}(x)$ — the four conventional derivative notations, introduced with explicit guidance on when each is most natural. Index entries at first use for each of prime notation and Leibniz notation.
+- $\Delta x$, $\Delta y$, $h$ — increment notation; flagged in a caution that $\Delta x$ and $h$ are synonyms in this context.
+- $(f^{-1})'(x)$ — inverse-function derivative; notation chosen to avoid the $1/f'$ ambiguity.
+
+**Common pitfalls (caution boxes)**
+- *Power rule domain*: $\frac{d}{dx}[x^n] = n x^{n-1}$ holds for any real $n$ when $x > 0$; the subtleties for $n$ rational or $x \le 0$ need separate treatment. A caution flags this and defers the full treatment.
+- *Quotient rule asymmetry*: $\frac{d}{dx}\left[\frac{f}{g}\right] = \frac{f'g - g'f}{g^2}$ is not symmetric in $f$ and $g$; order of terms in the numerator matters.
+- *Chain rule is not multiplication*: $\frac{dy}{dx} \ne \frac{dy}{du} \cdot \frac{du}{dx}$ in the sense of two independent fractions; the Leibniz notation for the chain rule is a single expression whose internal consistency is a consequence of the rule, not an application of fraction algebra.
+- *Implicit answers stay implicit*: $dy/dx$ from implicit differentiation is typically expressed in terms of both $x$ and $y$. Do not attempt to eliminate $y$ unless the problem explicitly demands a single-variable form.
+
+**Open questions**
+- *Timing of $e^x$ and $\ln x$ derivatives* (§2.8): the elegant derivation uses the limit $\lim_{h \to 0} \frac{e^h - 1}{h} = 1$, which in turn motivates *defining* $e$ as the base for which this limit equals 1. Stewart defers this partially (treats $e^x$ in a derivative chapter but defers the rigorous definition to after integration); Rogawski introduces $e$ more assertively up front. Decide at drafting time whether Ch 2 gives a rigorous derivation, a motivated informal derivation, or a *"we will justify this in Ch 4"* forward reference with the rule stated as given.
+- *Section 2.7 vs 2.8 order*: inverse trig derivatives can be obtained either (a) via the inverse-function derivative rule (depends on §2.7), or (b) directly via implicit differentiation on $\sin(y) = x$. Current §2.7–§2.8 ordering assumes (a). If (b) turns out cleaner in draft, the two sections may swap.
+- *Higher-order-derivative worked examples*: pick 2-3 canonical ones for §2.9 — candidates include $\sin$ / $\cos$ cycling through four derivatives, polynomials eventually vanishing, and the connection to velocity / acceleration. Decision deferred to drafting.
 
 ---
 
