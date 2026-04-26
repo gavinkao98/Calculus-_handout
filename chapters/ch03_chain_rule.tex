@@ -188,6 +188,17 @@ By the sum-to-product identity \(\cos(x + h) - \cos x = -2 \sin(h/2) \sin(x + h/
 Taking \(h \to 0\), the first factor again approaches \(1\) and the second approaches \(\sin x\), giving \(\cos'(x) = -\sin x\).
 \end{proof}
 
+% expansion:strategy [pass: enrichment] — distils the shared three-step template used in the proofs of \cref{thm:derivative-sin} and \cref{thm:derivative-cos}; Mode B's earlier audit flagged \S3.1's missing strategy box as a Mode C candidate, this fills it
+\begin{strategy}[Differentiating $\sin$ or $\cos$ from first principles]
+The proofs of \cref{thm:derivative-sin} and \cref{thm:derivative-cos} share a three-step template:
+\begin{enumerate}
+    \item \emph{Expand the difference quotient with a sum-to-product identity}, converting the difference into a product of one factor that depends only on \(h\) and one factor that depends on both \(x\) and \(h\). Sine uses \(\sin(x + h) - \sin x = 2 \sin(h/2) \cos(x + h/2)\); cosine uses \(\cos(x + h) - \cos x = -2 \sin(h/2) \sin(x + h/2)\).
+    \item \emph{Factor so the \(h\)-only piece becomes the fundamental limit.} Divide by \(h\) and rewrite \(2 \sin(h/2)/h\) as \(\sin(h/2)/(h/2)\); this is the \(\sin \theta / \theta\) form (with \(\theta = h/2\)) that \cref{thm:sin-theta-over-theta} sends to \(1\).
+    \item \emph{Send \(h \to 0\) using the limit-product law.} The \(\sin(h/2)/(h/2)\) factor approaches \(1\) by \cref{thm:sin-theta-over-theta}; the remaining \(\cos(x + h/2)\) or \(\sin(x + h/2)\) factor approaches \(\cos x\) or \(\sin x\) by \cref{prop:sin-cos-continuous}.
+\end{enumerate}
+The same template gives \(d/dx \tan x\) once one rewrites \(\tan x = \sin x / \cos x\) and applies the quotient rule (next), and it adapts to any difference quotient that a single trigonometric identity collapses into a product of an \(h\)-only piece and a continuous piece.
+\end{strategy}
+
 % expansion:formula — d/dx tan x is an immediate quotient-rule consequence; the manuscript doesn't include it but no calculus chapter on trig derivatives should omit it
 \begin{corollary}\label{cor:derivative-tan}\index{tangent!derivative}
 \(\displaystyle \frac{d}{dx} \tan x = \sec^{2} x\) wherever \(\cos x \neq 0\), where \(\sec x = 1/\cos x\).

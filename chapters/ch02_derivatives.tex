@@ -194,6 +194,18 @@ At \(a = 1\) the slope is \(2\), so the tangent is \(y - 1 = 2(x - 1)\), i.e.\ \
 \end{solution}
 \end{workedexample}
 
+% expansion:application [pass: enrichment] — gives the physical reading of the secant-to-tangent limit; the chapter overview promises an instantaneous-rate-of-change interpretation but \S2.1 itself develops only the tangent-slope geometry
+\paragraph{Velocity as an instantaneous rate of change.}
+The same limit that produced the tangent-line slope captures a familiar physical idea: instantaneous velocity. If \(s(t)\) describes the position of a moving object at time \(t\), the average velocity over the time interval \([t_{0},\, t_{0} + h]\) is the displacement divided by the elapsed time,
+\[
+\overline{v}_{[t_{0},\, t_{0} + h]} = \frac{s(t_{0} + h) - s(t_{0})}{h}.
+\]
+This is the difference quotient of \cref{prop:tangent-h-form} in physical clothing. The instantaneous velocity at \(t_{0}\) is the limit as the elapsed time shrinks,
+\[
+v(t_{0}) = \lim_{h \to 0} \frac{s(t_{0} + h) - s(t_{0})}{h}.
+\]
+Geometrically this is the slope of the tangent line to the position-versus-time graph at \(t = t_{0}\); physically it is the speedometer reading at the instant \(t_{0}\). The two views are the same calculation. For instance, an object falling from rest under gravity has position \(s(t) = \tfrac{1}{2} g t^{2}\); the parabola limit of \cref{ex:tangent-parabola} (with \(a\) renamed to \(t_{0}\) and a constant factor \(\tfrac{1}{2} g\) carried through) gives \(v(t_{0}) = g t_{0}\), the familiar formula that the velocity of a freely falling object grows linearly with time.
+
 % expansion:summary — pulls the parabola example forward: the slope formula 2a is itself a function of a. This is exactly the bridge to §2.2.
 The parabola calculation in \cref{ex:tangent-parabola} produced more than a single tangent line: it produced a \emph{formula}, \(m = 2a\), giving the slope at any point of the curve. The right-hand side is itself a function of \(a\), and storing slopes as a function rather than computing them point-by-point is the conceptual move that turns the tangent-line construction into something one differentiates rather than something one re-evaluates. The next section makes this move official.
 
