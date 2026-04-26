@@ -73,7 +73,7 @@ provided this limit exists. When the limit fails to exist, we say the curve has 
 
 % expansion:caution — the popular "touches the curve at one point" picture is geometrically wrong; flagging this once now saves rework later
 \begin{caution}
-A common informal description of the tangent line --- ``the line that touches the curve at exactly one point'' --- is not the right idea. A line can touch a curve at one point without being tangent to it (a vertical line touches \(y = x^{3}\) at one point but is not its tangent), and a tangent line can touch the curve at more than one point (the tangent to \(y = \sin x\) at \(x = 0\) is \(y = x\), which meets the curve again at every integer multiple of \(\pi\) where \(\sin x\) crosses \(y = x\)). The mathematically correct picture is the limiting-secant one of \cref{def:tangent-line}: we ask for the line whose slope is the limit of nearby secant slopes, not for the line that ``touches at one point''.
+A common informal description of the tangent line --- ``the line that touches the curve at exactly one point'' --- is not the right idea. A line can touch a curve at one point without being tangent to it (a vertical line touches \(y = x^{3}\) at one point but is not its tangent), and a tangent line can touch the curve at more than one point: the horizontal tangent to \(y = x^{3} - 3x\) at the local maximum \(x = -1\) is the line \(y = 2\), and that line meets the curve again at \(x = 2\) (since \(x^{3} - 3x - 2 = (x + 1)^{2}(x - 2)\)). The mathematically correct picture is the limiting-secant one of \cref{def:tangent-line}: we ask for the line whose slope is the limit of nearby secant slopes, not for the line that ``touches at one point''.
 \end{caution}
 
 % expansion:figure — the manuscript's "zoom in" remark deserves its own diagram. Standard textbook content; emphasises that the tangent line is the local linearisation.
@@ -627,7 +627,7 @@ To differentiate a polynomial:
     \item Drop any constant terms (their derivative is \(0\)).
     \item Sum the resulting terms.
 \end{enumerate}
-The result is a polynomial whose degree is one less than the original. The first non-zero term of the original polynomial (the constant) becomes \(0\) after differentiation, which is why the degree drops by one.
+The result is a polynomial whose degree is one less than the original: the leading term \(a_{n} x^{n}\) becomes \(n a_{n} x^{n - 1}\), reducing the degree from \(n\) to \(n - 1\). The constant term \(a_{0}\) becomes \(0\) and disappears entirely --- a separate phenomenon from the degree drop, but worth noting because it explains why the derivative has no constant term unless one was already produced from a higher-power term.
 \end{strategy}
 
 \begin{workedexample}
@@ -710,9 +710,9 @@ The statement about higher derivatives follows by induction: \(f' = e^{x}\), so 
 \begin{remark}[Derivative of \(b^{x}\)]
 For a general positive base \(b\), the same calculation gives
 \[
-\frac{d}{dx}\bigl[b^{x}\bigr] = b^{x} \cdot \log_{e} b,
+\frac{d}{dx}\bigl[b^{x}\bigr] = b^{x} \cdot \ln b,
 \]
-where the proportionality factor \(\log_{e} b\) (the natural logarithm of \(b\)) reduces to \(1\) exactly when \(b = e\). The derivation routes through the chain rule applied to \(b^{x} = e^{x \log b}\); we will give it once the chain rule is available.
+where the proportionality factor \(\ln b\) (the natural logarithm of \(b\)) reduces to \(1\) exactly when \(b = e\). The derivation routes through the chain rule applied to \(b^{x} = e^{x \ln b}\); we will give it once the chain rule is available.
 \end{remark}
 
 % expansion:summary — closing synthesis paragraph linking to §2.5
