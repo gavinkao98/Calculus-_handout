@@ -57,7 +57,7 @@ Claude may expand around the manuscript without pre-authorisation, on the condit
 placed on the line immediately preceding the expansion content. The bracket hints are optional individually but obey strict rules when present:
 
 - `<category>` is required and must be drawn from the table below.
-- `[pass: <pass-id>]` identifies which mode-pass introduced the expansion. Omit it in Mode A — an unmarked expansion is taken to be original Mode A drafting. **Required** for Mode C, with the literal value `[pass: enrichment]`, so post-hoc review can distinguish original drafting from later enrichment.
+- `[pass: <pass-id>]` identifies which mode-pass introduced the expansion. Omit it in Mode A — an `% expansion:` marker without a `[pass: ...]` hint is taken to be original Mode A drafting (the marker itself is still required, only the `[pass: ...]` hint is optional). **Required** for Mode C, with the literal value `[pass: enrichment]`, so post-hoc review can distinguish original drafting from later enrichment.
 - `[source: <brief source>]` cites the reference an expansion draws on. Optional in general; **required** for `history`-category named content per the Named-content rule below, and recommended for any expansion whose accuracy depends on a specific reference.
 - When both hints are present, **`[pass: ...]` precedes `[source: ...]`**. The order is fixed so `book_style_lint` can detect malformed markers; markers in the wrong order are a lint error.
 - Unknown bracket keys are a lint error — only `pass` and `source` are recognised. A typo like `[soure: …]` would otherwise silently strip the hint from review.

@@ -85,8 +85,14 @@ _EXPANSION_CATEGORIES = frozenset(
     }
 )
 _EXPANSION_MARKER_RE = re.compile(r"^\s*%\s*expansion:([A-Za-z_]+)\s*(.*)$")
-_BRACKET_HINT_RE = re.compile(r"\[\s*([A-Za-z_][A-Za-z0-9_]*)\s*:")
+_BRACKET_HINT_RE = re.compile(r"\[\s*([A-Za-z_][A-Za-z0-9_]*)\s*:([^\]]*)\]")
 _RECOGNISED_HINT_KEYS = ("pass", "source")  # tuple order is the canonical order
+# [pass: ...] takes a value drawn from this allow-list. Today the only legal
+# value is "enrichment" (Mode C). Add new entries here when a new mode-pass
+# is introduced; do not loosen the check to accept any string, since a typo
+# like [pass: enrichmnt] would otherwise silently misclassify an expansion
+# in post-hoc review.
+_RECOGNISED_PASS_VALUES = ("enrichment",)
 
 
 # Whole-file structural checks.
@@ -314,42 +320,77 @@ def lint_file(path: Path) -> list[Violation]:
                         line=raw_line.strip(),
                     )
                 )
-            # Bracket-hint checks: only scan the region between the category
-            # and the em-dash separator, so brackets inside the description
-            # (e.g. "[x]" notation references) cannot false-positive.
+            # Em-dash separator is required: it both terminates the bracket-hint
+            # region and introduces the description. Missing em-dash is itself
+            # a violation; we still run the bracket-hint check on the whole
+            # tail in that case so a malformed line surfaces every defect at
+            # once (rather than the user fixing the em-dash and then learning
+            # about the typo'd hint key on the next run).
             em_dash_idx = rest.find("\u2014")
-            if em_dash_idx >= 0:
+            if em_dash_idx < 0:
+                violations.append(
+                    Violation(
+                        path=path,
+                        line_number=line_number,
+                        message=(
+                            "malformed expansion marker: missing em-dash ('\u2014') separator "
+                            "before the description (see README.md \u00a7 Authoring workflow)"
+                        ),
+                        line=raw_line.strip(),
+                    )
+                )
+                bracket_region = rest
+            else:
                 bracket_region = rest[:em_dash_idx]
-                hint_keys = [m.group(1) for m in _BRACKET_HINT_RE.finditer(bracket_region)]
-                for key in hint_keys:
-                    if key not in _RECOGNISED_HINT_KEYS:
-                        valid_keys = ", ".join(_RECOGNISED_HINT_KEYS)
-                        violations.append(
-                            Violation(
-                                path=path,
-                                line_number=line_number,
-                                message=(
-                                    f"unknown bracket hint key '{key}' in expansion marker; "
-                                    f"recognised keys are: {valid_keys} "
-                                    f"(see README.md \u00a7 Authoring workflow)"
-                                ),
-                                line=raw_line.strip(),
-                            )
+            hint_pairs = [
+                (m.group(1), m.group(2).strip())
+                for m in _BRACKET_HINT_RE.finditer(bracket_region)
+            ]
+            hint_keys = [key for key, _ in hint_pairs]
+            for key, value in hint_pairs:
+                if key not in _RECOGNISED_HINT_KEYS:
+                    valid_keys = ", ".join(_RECOGNISED_HINT_KEYS)
+                    violations.append(
+                        Violation(
+                            path=path,
+                            line_number=line_number,
+                            message=(
+                                f"unknown bracket hint key '{key}' in expansion marker; "
+                                f"recognised keys are: {valid_keys} "
+                                f"(see README.md \u00a7 Authoring workflow)"
+                            ),
+                            line=raw_line.strip(),
                         )
-                if "pass" in hint_keys and "source" in hint_keys:
-                    if hint_keys.index("pass") > hint_keys.index("source"):
-                        violations.append(
-                            Violation(
-                                path=path,
-                                line_number=line_number,
-                                message=(
-                                    "expansion marker bracket hints out of canonical order; "
-                                    "[pass: ...] must precede [source: ...] "
-                                    "(see README.md \u00a7 Authoring workflow)"
-                                ),
-                                line=raw_line.strip(),
-                            )
+                    )
+                    continue
+                if key == "pass" and value not in _RECOGNISED_PASS_VALUES:
+                    valid_values = ", ".join(_RECOGNISED_PASS_VALUES)
+                    violations.append(
+                        Violation(
+                            path=path,
+                            line_number=line_number,
+                            message=(
+                                f"unknown [pass: ...] value '{value}'; "
+                                f"recognised values are: {valid_values} "
+                                f"(see README.md \u00a7 Authoring workflow)"
+                            ),
+                            line=raw_line.strip(),
                         )
+                    )
+            if "pass" in hint_keys and "source" in hint_keys:
+                if hint_keys.index("pass") > hint_keys.index("source"):
+                    violations.append(
+                        Violation(
+                            path=path,
+                            line_number=line_number,
+                            message=(
+                                "expansion marker bracket hints out of canonical order; "
+                                "[pass: ...] must precede [source: ...] "
+                                "(see README.md \u00a7 Authoring workflow)"
+                            ),
+                            line=raw_line.strip(),
+                        )
+                    )
         line = strip_comments(raw_line)
         if not line:
             continue
