@@ -31,7 +31,9 @@ Two cross-cutting targets sit above any chapter-specific content:
 |---|---|---|---|
 | 1 | Inverse Functions and Limits | draft | 1.1 Inverse Functions and One-to-One Functions; 1.2 Inverse Trigonometric Functions; 1.3 Limits; 1.4 One-Sided and Infinite Limits; 1.5 Limit Laws; 1.6 The Precise Definition of a Limit |
 | 2 | Derivatives | drafting | 2.1 The Tangent Line and the Derivative at a Point; 2.2 The Derivative as a Function; 2.3 Differentiability, Continuity, and Higher Derivatives; 2.4 Derivatives of Polynomials and the Exponential Function; 2.5 The Product and Quotient Rules |
-| 3-14 | *(TBD — titles added as each chapter is drafted)* | planned | — |
+| 3 | Chain Rule and Trigonometric Derivatives | drafting | 3.1 Derivatives of the Sine and Cosine Functions; 3.2 The Chain Rule; 3.3 Applications of the Chain Rule |
+| 4 | The Exponential and Logarithmic Functions | planned | 4.1 Construction of the Exponential Function; 4.2 Continuity and the Exponent Law for $e^x$; 4.3 The Derivative of $e^x$; 4.4 Rolle's Theorem and the Mean Value Theorem; 4.5 Monotonicity and the Logarithmic Function |
+| 5-14 | *(TBD — titles added as each chapter is drafted)* | planned | — |
 
 Target scope: Calc I + II + III (single-variable through multivariable vector calculus). Loose Stewart / Rogawski TOC as the reference arc. The natural full arc at this scope runs roughly 14 chapters:
 
@@ -200,9 +202,111 @@ Chapter 2 is the **development** phase of Calc I. It converts the limit machiner
 - *(fg)' is not f'g'*: the manuscript's opening counterexample for the product rule (`f = x`, `g = x^2`, `fg = x^3`); a caution preserves it as the headline pitfall.
 
 **Open questions**
-- *Manuscript scope vs original 9-section hypothesis*: the manuscript covers 5 of the 9 originally hypothesised sections. The remaining four — *Derivatives of Trigonometric Functions*, *The Chain Rule*, *Implicit Differentiation*, *Derivatives of Inverse Functions*, plus *Logarithmic Derivatives* — are not in this manuscript. **Decision needed**: are they coming as a follow-up manuscript that will extend Ch 2 to ~9 sections, or are they being deferred to Ch 3 or later? The current entry assumes the former is plausible but draft as the manuscript decided.
+- ~~*Manuscript scope vs original 9-section hypothesis*~~ — **resolved 2026-04-27**: two follow-up manuscripts (`2023-10-28-chainRule` and `2023-11-4-ExponentialFunction`) cover the missing topics (trig derivatives, chain rule, ln/arcsin/x^x via chain rule, rigorous $e^x$, MVT, ln). The 4 missing topics did not extend Ch 2; they became Ch 3 (*Chain Rule and Trigonometric Derivatives*) and Ch 4 (*The Exponential and Logarithmic Functions*). Implicit differentiation is not in either manuscript and remains deferred to a later chapter.
 - *Treatment of $e^x$ derivative*: the manuscript proves $(e^x)' = e^x$ using the series definition $e^x = 1 + x + x^2/2! + \dots$ and the term-by-term derivative of the series. This is more direct than the Stewart "define $e$ as the base for which $\lim_{h \to 0}(e^h - 1)/h = 1$" approach. The series-based derivation is the manuscript's choice and the chapter follows it; flag for sign-off.
 - *Higher derivatives placement*: the manuscript treats higher derivatives ($f''$, $f'''$, $f^{(n)}$) as a brief addendum at the end of the differentiability discussion, rather than as a standalone section. The draft follows the manuscript and groups higher derivatives into §2.3 as a short subsection. Sign-off: confirm this placement, vs.\ promoting to its own section.
+
+---
+
+## Chapter 3 (filled entry)
+
+### Chapter 3: Chain Rule and Trigonometric Derivatives
+
+**Status**: drafting
+**Source file**: `chapters/ch03_chain_rule.tex`
+**Estimated length**: *(fill in after first full compile)*
+**Manuscript source**: `2023-10-28-chainRule` (handwritten manuscript dated 2023-10-28, received 2026-04-27). The manuscript covers (i) derivatives of $\sin x$ and $\cos x$ via the squeezing lemma + sector geometry, (ii) the chain rule with a proof using the remainder-form definition of differentiability ($f(x_0 + h) = f(x_0) + mh + R(h)$ with $R(h)/h \to 0$), and (iii) chain-rule applications including $d/dx \ln x$, $d/dx x^x$, and $d/dx \arcsin y$. The manuscript also re-states the product rule and the differentiable-implies-continuous lemma; both are treated as cross-references back to Ch 2 rather than re-derived in Ch 3.
+
+**Role in the arc**
+Chapter 3 is the **rules continuation** of Calc I. Chapter 2 built the limit definition of the derivative and the basic algebraic rules (constant, power, sum, product, quotient, $e^x$); Chapter 3 adds the rule for compositions (chain rule) and applies it to introduce the trigonometric derivatives and to extract the derivatives of inverse and implicitly-defined functions. Together with Ch 4's rigorous treatment of $e^x$ and $\ln x$, Ch 3 closes out the differentiation toolkit.
+
+**Prerequisites**
+- **From Chapter 1**: §1.5 (the squeeze theorem in particular — used directly for $\lim_{\theta \to 0} \sin \theta / \theta = 1$). §1.2 (inverse trig — $\arcsin$ is one of the chain-rule example targets).
+- **From Chapter 2**: all five sections, especially §2.5 product rule (the chain-rule manuscript re-derives this; we cross-ref instead) and §2.3 differentiable $\Rightarrow$ continuous (used inside the chain-rule proof and the trigonometric continuity proofs).
+- **Trigonometric identities**: the sum-to-product identity $\sin(x + h) - \sin(x) = 2 \sin(h/2) \cos(x + h/2)$ is the chapter's main algebraic device. Pythagorean identity $1 + \tan^2 = \sec^2$ also appears in worked examples.
+
+**Core skills**
+- compute $d/dx \sin x$, $d/dx \cos x$, $d/dx \tan x$, and (via chain rule) $d/dx \sin(g(x))$, $d/dx \cos(g(x))$, etc.;
+- apply the chain rule to differentiate compositions of two or more functions, including $f(g(h(x)))$-type nestings;
+- use the chain rule + log differentiation to differentiate $x^x$, $f(x)^{g(x)}$, and similar non-standard exponential expressions;
+- derive $d/dx \arcsin x$, $d/dx \arctan x$, and $d/dx \ln x$ from the inverse-function relations $\sin(\arcsin y) = y$, etc., applied chain rule.
+
+**Key figures**
+- secant inequality figure (§3.1): unit circle with sector $OAB$ and triangles $\triangle OAB$, $\triangle ABC$ to ground the bound $\cos \theta \le \sin \theta / \theta \le 1$.
+- chain rule as composed mapping (§3.2): stacked input–intermediate–output axes showing how a small $h$ at the input propagates to a change at the output, scaled by the product of the intermediate slopes.
+
+**Strategy boxes expected**
+- *Chain-rule decomposition* (§3.2): given a complicated expression, identify the outermost operation; write the expression as $f(g(x))$; differentiate as $f'(g(x)) \cdot g'(x)$. Iterate for nested compositions.
+- *Logarithmic differentiation* (§3.3): when an expression has the form $f(x)^{g(x)}$ or a product/quotient with many factors, take $\ln$ of both sides, apply chain rule and product rule, then solve for $y'$.
+
+**Notation introduced**
+- The remainder-form definition of differentiability $f(x_0 + h) = f(x_0) + m h + R(h)$ with $R(h)/h \to 0$. This is Def 2 in the manuscript; equivalent to the standard limit definition but more convenient for the chain-rule proof.
+- $\arcsin'$, $\arccos'$, $\arctan'$ are introduced in §3.3 via the chain-rule technique on $\sin(\arcsin y) = y$ etc.
+
+**Common pitfalls (caution boxes)**
+- *Chain rule is one identity, not two fractions*: $\frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx}$ is the chain rule, not the cancellation $du / du = 1$. The Leibniz form's apparent fraction-cancellation is a useful mnemonic but not the proof.
+- *Forgetting the inner derivative*: the most common chain-rule error is $\frac{d}{dx}[\sin(g(x))] = \cos(g(x))$ instead of $\cos(g(x)) \cdot g'(x)$. A worked example flags this.
+- *Domain issues for $\arcsin$ derivative*: the formula $1/\sqrt{1 - y^2}$ is valid only for $y \in (-1, 1)$ (open interval — the endpoints have vertical tangents). A caution flags this.
+- *$\ln$ used informally before rigorous construction*: §3.3 treats $\ln$ as "the inverse of $e^x$" and uses the relation $e^{\ln x} = x$ to extract $d/dx \ln x = 1/x$. The rigorous construction is deferred to Ch 4. A note flags this dependence.
+
+**Open questions**
+- *Trig derivatives placement vs squeeze-theorem location*: $\lim_{\theta \to 0} \sin \theta / \theta = 1$ is the central limit of §3.1 and uses the squeeze theorem from §1.5. The chain-rule manuscript actually restates the squeeze theorem at the start (with two formulations: $x \to \infty$ and $x \to x_0$). The Ch 3 draft will cross-reference the §1.5 statement and only restate the additional formulation if needed; sign-off: confirm this rather than duplicating the squeeze statement.
+- *Two equivalent definitions of differentiability*: Def 2 (remainder form) is introduced in §3.2 because the chain-rule proof uses it. Def 1 was established in §2.2. The draft proves equivalence in §3.2 and then uses Def 2 only for the chain-rule proof; sign-off: confirm this is the right place to introduce Def 2.
+- *Implicit differentiation*: the chain-rule manuscript's $\arcsin$ and $x^x$ examples are essentially implicit-differentiation arguments dressed up as chain rule on composition identities. A future chapter on implicit differentiation could revisit these as canonical motivating examples, or stay separate. Decision deferred until that chapter is drafted.
+
+---
+
+## Chapter 4 (filled entry)
+
+### Chapter 4: The Exponential and Logarithmic Functions
+
+**Status**: drafting
+**Source file**: `chapters/ch04_exponential_logarithm.tex`
+**Estimated length**: *(fill in after first full compile)*
+**Manuscript source**: `2023-11-4-ExponentialFunction` (handwritten manuscript dated 2023-11-04, received 2026-04-27). The manuscript covers (i) the rigorous construction of $e^x$ via the power series $\sum x^n / n!$, with completeness of $\mathbb{R}$ used to prove convergence; (ii) continuity of $e^x$ and the exponent law $e^x e^y = e^{x+y}$ via a careful series-multiplication argument and Cauchy convergence; (iii) the derivative $d/dx \, e^x = e^x$ (a more rigorous re-derivation than the one given in Ch 2 §2.4, with an explicit bound on $(e^h - 1)/h - 1$); (iv) Rolle's theorem and the Mean Value Theorem; (v) the corollary $f' \ge 0 \Rightarrow f$ increasing; (vi) the logarithm $\ln x$ as the inverse of $e^x$, its continuity, and $d/dx \ln x = 1/x$ via the inverse-function technique.
+
+**Role in the arc**
+Chapter 4 closes out the rigour foundation for Calc I's differentiation chapters. Ch 2 introduced $e^x$ informally and proved $(e^x)' = e^x$ from a casual term-by-term argument; Ch 4 builds $e^x$ from scratch as a power series, proves the convergence and continuity that Ch 2 took for granted, and re-derives the derivative with full rigour. The chapter then introduces the Mean Value Theorem --- the central existence theorem that drives the derivative-to-monotonicity argument needed to construct $\ln x$ as the inverse of the strictly increasing $e^x$. Chapter 5 onward (applications of differentiation: extrema, optimisation, related rates, L'Hôpital) will reuse the MVT machinery introduced here.
+
+**Prerequisites**
+- **From Chapter 1**: §1.5 (limit laws and basic continuity arguments), §1.6 (precise $\varepsilon$-$\delta$ definition --- §4.2's continuity proof for $e^x$ is essentially $\varepsilon$-$\delta$ in spirit and will be familiar to students who saw §1.6).
+- **From Chapter 2**: §2.4 (the informal $(e^x)' = e^x$ derivation; §4.3 re-does this rigorously and cross-references back), §2.3 (differentiable $\Rightarrow$ continuous, used in MVT setup).
+- **From Chapter 3**: §3.3 used $\ln x$ informally with a forward reference to this chapter for the rigorous construction; §4.5 closes that loop.
+- **Real analysis prerequisites**: completeness of the reals (monotone bounded sequences converge); Bolzano--Weierstrass (proved in §4.2 from completeness via the monotone-subsequence lemma); the binomial theorem (already used in Ch 2 §2.4 for the power-rule proof). Cauchy sequences and the equivalence convergent $\Leftrightarrow$ Cauchy are introduced and **proved** in §4.2.
+
+**Core skills**
+- state the power-series definition of $e^x$ and bound its tail to establish convergence on $\mathbb{R}$;
+- prove that $e^x$ is continuous on $\mathbb{R}$ and satisfies $e^x e^y = e^{x+y}$ via a series-multiplication argument;
+- compute $d/dx \, e^x = e^x$ rigorously using the bound $\lvert (e^h - 1)/h - 1 \rvert \le \lvert h \rvert$ on a small interval;
+- state and prove Rolle's theorem and the Mean Value Theorem;
+- use the MVT to prove that $f' \ge 0$ on $(a, b)$ implies $f$ is increasing on $[a, b]$;
+- define $\ln x$ as the inverse of $e^x$, prove its continuity, and derive $d/dx \ln x = 1/x$.
+
+**Key figures**
+- partial-sum convergence figure (§4.1): plot of $\sum_{n=0}^{k} x^n / n!$ for $k = 1, 2, 3, 4$ on $[-2, 2]$, showing convergence to the smooth $e^x$ curve.
+- secant–tangent figure for the MVT (§4.4): a curve with a secant from $(a, f(a))$ to $(b, f(b))$ drawn dashed, and a parallel tangent at the interior point $c$ drawn solid.
+- $e^x$ and $\ln x$ as reflections (§4.5): reuse Ch 1's reflection-across-$y = x$ setup with $e^x$ in blue and $\ln x$ in red.
+
+**Strategy boxes expected**
+- *Tail-bound argument* (§4.1, §4.2): bound $\sum_{n = n_0 + 1}^{\infty} x^n/n!$ by a geometric series when $n_0 > 2x$. The same template is reused several times in the chapter and is worth distilling.
+- *Verifying the MVT hypotheses before applying* (§4.4): check continuity on $[a, b]$ and differentiability on $(a, b)$ separately. A common error is to apply MVT on a closed interval where the function is not actually differentiable at an endpoint.
+
+**Notation introduced**
+- $e^x$ as a power-series definition (the manuscript's choice). Index entry $\ln x$ at first use in §4.5; index entry $e$ (the constant) and $e^x$ (the function) at first use in §4.1.
+- $C_k^n$ for binomial coefficients (the manuscript's notation). The book uses $\binom{n}{k}$ throughout; cross-reference both notations when the manuscript's appears.
+- $P_k(x) = \sum_{n=0}^{k} x^n / n!$ for the partial sum (manuscript's notation, kept in §4.1–§4.2).
+
+**Common pitfalls (caution boxes)**
+- *Series defines, doesn't derive*: the series $e^x = \sum x^n / n!$ is the **definition** of $e^x$ in this chapter. The familiar exponent law, continuity, and derivative are then theorems to prove. Students who saw $e^x$ informally in Ch 2 may try to use familiar properties before they have been re-established; flag this.
+- *Bolzano--Weierstrass dependency*: the proof of convergent $\Leftrightarrow$ Cauchy in §4.2 routes through Bolzano--Weierstrass (proved from completeness via the monotone-subsequence peak argument). Caution flag in the chapter notes the dependency chain so that students see Cauchy $\Leftrightarrow$ convergent as logically equivalent to completeness.
+- *MVT continuity vs differentiability*: the function must be continuous on the **closed** interval $[a, b]$ and differentiable on the **open** interval $(a, b)$; differentiability at the endpoints is not required. A caution flags this asymmetry.
+- *$\ln$ defined only for $x > 0$*: every formula involving $\ln x$ implicitly carries $x > 0$. Flag in §4.5; same convention as Ch 3 §3.3.
+
+**Open questions**
+- ~~*Cauchy / convergent equivalence proof*~~ — **resolved 2026-04-27 (user-directed)**: the proof was supplied in §4.2 via the Bolzano--Weierstrass theorem and the monotone-subsequence lemma, going beyond what the manuscript itself supplied. The chapter now proves both directions in full.
+- ~~*Exponent law proof level of detail*~~ — **resolved 2026-04-27 (user-directed)**: §4.2's exponent-law proof was originally drafted as a 4-step outline; on user direction it was rewritten as the full 6-step proof matching the manuscript's level of detail (full binomial-theorem reorganisation, explicit (II)-piece tail-bound estimate, telescoped error in step 5).
+- *MVT placement*: the manuscript bundles MVT inside the exponential / logarithm chapter because $\ln$'s rigorous construction needs the monotonicity corollary. When a future chapter on applications of differentiation (extrema, optimisation) is drafted, it will be natural to **propose-only** in Mode B that MVT moves to that chapter. For now, MVT lives in Ch 4.
+- *§4.3 redundancy with §2.4*: Ch 2's informal derivation of $(e^x)' = e^x$ and §4.3's rigorous re-derivation differ mainly in the explicit bound on $(e^h - 1)/h - 1$. Possible refactor: replace Ch 2's casual version with a forward-reference to §4.3, eliminating the duplication. Decision deferred until both chapters are signed off.
 
 ---
 
